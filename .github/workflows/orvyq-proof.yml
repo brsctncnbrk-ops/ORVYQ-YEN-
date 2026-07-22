@@ -8,6 +8,15 @@ name: ORVYQ Proof Render
 on:
   workflow_dispatch:
   pull_request:
+  # GitHub only lets workflow_dispatch target a workflow already indexed on
+  # the default branch or triggered by a real event -- this repo's default
+  # branch has no workflows yet and this task should not open a PR unasked.
+  # Scoping push to the development branch (matching the golden repo's own
+  # PR-into-a-designated-branch pattern) lets the proof run automatically as
+  # work lands here, without touching main.
+  push:
+    branches:
+      - "claude/orvyq-rebuild-canonical-udc3rx"
 
 permissions:
   contents: read
