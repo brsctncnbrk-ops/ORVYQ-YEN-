@@ -36,6 +36,7 @@ import { promises as fs } from "node:fs";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { projectDir, readJson, writeJsonAtomic, pathExists, parseArgs, printJson } from "./lib/fs-utils.mjs";
+import { resolveFullFilmPauses } from "./lib/orvyq-pause-resolver.mjs";
 
 const exec = promisify(execFile);
 const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
@@ -109,15 +110,43 @@ async function prepareNarrator({ dir, audioDir, sourceVoice, sourceDuration }) {
   return { voice: reorderedVoice, repair: { operation: "rotate", rotate_at_seconds: rotateAt, config: "voice/audio_repair.json", reason: repair.reason || null } };
 }
 
-async function prepareEditorialNarration({ dir, audioDir, voice, availableDuration, narrationLimitSeconds, editorialPauses }) {
+async function prepareEditorialNarration({ dir, audioDir, voice, availableDuration, narrationLimitSeconds, editorialPauses, mode }) {
   const sourceNarrationDuration = Number.isFinite(narrationLimitSeconds) && narrationLimitSeconds > 0 ? Math.min(availableDuration, narrationLimitSeconds) : availableDuration;
   if (!editorialPauses) {
     return { voice, sourceNarrationDuration, timelineNarrationDuration: sourceNarrationDuration, editorialPauseSeconds: 0, pauseWindows: [], pauseMap: null };
   }
 
   const pauseMap = await readOptionalJson(path.join(dir, "direction", "editorial_pause_map.json"));
-  const configuredPauses = pauseMap?.proof?.pauses || [];
-  if (!configuredPauses.length) throw new Error("Editorial pause mode requires direction/editorial_pause_map.json proof pauses");
+  // The golden defect this replaces: this used to read pauseMap.proof.pauses
+  // unconditionally, regardless of mode -- running that against a full-
+  // length narration would silently concentrate all four proof pauses in
+  // the first ~114s of an 800+s recording. Full mode instead resolves its
+  // own text-anchored full_film_pause_anchors against the real per-word ASR
+  // timestamps in voice/narration_alignment.json (scripts/lib/orvyq-pause-
+  // resolver.mjs) -- the same resolver scripts/orvyq_full_production_plan.mjs
+  // uses to place pause shots in the edit plan, so the audio mix's pause
+  // timing and the video timeline's pause timing can never independently
+  // drift apart. Proof mode is unchanged.
+  let configuredPauses;
+  if (mode === "full") {
+    const alignment = await readJson(path.join(dir, "voice", "narration_alignment.json"));
+    const anchors = pauseMap?.full_film_pause_anchors || [];
+    if (!anchors.length) throw new Error("Editorial pause mode requires direction/editorial_pause_map.json full_film_pause_anchors");
+    let resolved;
+    ({ pauses: resolved } = resolveFullFilmPauses({ words: alignment.words, anchors }));
+    // full_film_pause_anchors has no per-pause sound_cue/emphasis authored
+    // yet (unlike proof.pauses, which was hand-timed with both) -- rather
+    // than inventing a cue rotation with no editorial backing, every full-
+    // mode pause uses the same real synthesized "low_impact" cue (an
+    // honest simplification, not a fake pass) and carries its own real,
+    // already-authored `purpose` text through as `emphasis` for the mix
+    // metadata, instead of leaving it silently null.
+    configuredPauses = resolved.map((pause) => ({ ...pause, emphasis: pause.purpose, sound_cue: "low_impact" }));
+  } else {
+    configuredPauses = pauseMap?.proof?.pauses || [];
+  }
+  if (!configuredPauses.length)
+    throw new Error(`Editorial pause mode requires direction/editorial_pause_map.json ${mode === "full" ? "full_film_pause_anchors" : "proof pauses"}`);
   const pauses = [...configuredPauses].sort((a, b) => Number(a.source_time_seconds) - Number(b.source_time_seconds));
   const filters = [];
   const labels = [];
@@ -194,8 +223,30 @@ async function generateOriginalSfx(sfxDir) {
   return { low_impact: lowImpact, tonal_bloom: tonalBloom, ui_tick: uiTick };
 }
 
-function musicSectionsForDuration(duration) {
+// Full mode uses direction/music_cue_sheet.json's own full_cues -- nine
+// real, distinct, already-authored music states covering the whole film
+// (not the 5-section proof structure rescaled, which describes the
+// 150-second proof cut specifically and was never written to represent the
+// full film's actual sections). The cue sheet's own start/end values are
+// against its authored duration_seconds, which predates real ASR-measured
+// narration length and the added opening motion hook -- rescaled
+// proportionally onto the real output duration, the same technique already
+// used above for the proof-based fallback and for the SFX "first evidence
+// beat" placement, rather than trusting stale absolute timestamps.
+export function musicSectionsForDuration(duration, { fullCues, fullCuesAuthoredDuration } = {}) {
   if (Math.abs(duration - PROOF_SECONDS) < 0.01) return PROOF_MUSIC_SECTIONS;
+  if (fullCues?.length) {
+    const scale = duration / fullCuesAuthoredDuration;
+    return fullCues.map((cue) => ({
+      id: cue.cue_id,
+      start: cue.start * scale,
+      end: cue.end * scale,
+      function: cue.function,
+      energy_start: cue.energy_start,
+      energy_end: cue.energy_end,
+      under_speech_gain: UNDER_SPEECH_GAIN_DEFAULT
+    }));
+  }
   const boundaries = [0, 0.23, 0.4, 0.63, 0.84, 1].map((ratio) => ratio * duration);
   return PROOF_MUSIC_SECTIONS.map((section, index) => ({ ...section, start: boundaries[index], end: boundaries[index + 1] }));
 }
@@ -203,7 +254,7 @@ function musicSectionsForDuration(duration) {
 // Builds the under-speech ducking curve from the SAME per-duration sections
 // musicSectionsForDuration() returns -- see the file header for why this
 // used to be a second, independently-hardcoded copy of the boundaries.
-function musicVolumeExpression(sections, pauseWindows) {
+export function musicVolumeExpression(sections, pauseWindows) {
   let expression = String(sections.at(-1)?.under_speech_gain ?? UNDER_SPEECH_GAIN_DEFAULT);
   for (let i = sections.length - 2; i >= 0; i -= 1) {
     const section = sections[i];
@@ -291,7 +342,7 @@ export async function buildCanonicalAudioMix(
   const sourceDuration = await durationSecondsOf(sourceVoice);
   const prepared = await prepareNarrator({ dir, audioDir, sourceVoice, sourceDuration });
   const availableDuration = await durationSecondsOf(prepared.voice);
-  const narration = await prepareEditorialNarration({ dir, audioDir, voice: prepared.voice, availableDuration, narrationLimitSeconds, editorialPauses });
+  const narration = await prepareEditorialNarration({ dir, audioDir, voice: prepared.voice, availableDuration, narrationLimitSeconds, editorialPauses, mode });
 
   const outputDuration = Number.isFinite(durationSeconds) && durationSeconds > 0 ? durationSeconds : narration.timelineNarrationDuration;
   if (outputDuration + 0.001 < narration.timelineNarrationDuration)
@@ -304,8 +355,31 @@ export async function buildCanonicalAudioMix(
   const provenance = hasApprovedMusic ? await readOptionalJson(approvedMusicProvenancePath) : null;
   if (hasApprovedMusic && !provenance) throw new Error("Approved music requires approved_bed.provenance.json");
 
+  // Full mode's music structure comes from direction/music_cue_sheet.json's
+  // own full_cues -- real, already-authored per-section music states for
+  // the whole film -- not the proof's 5-section structure blindly rescaled.
+  // Its own policy (continuous_single_loop_forbidden,
+  // full_render_requires_all_cues_ready) is enforced here as an explicit
+  // blocking gap, not silently ignored: a full render must not proceed
+  // against cues that are still spec_ready_asset_pending.
+  let fullCues = null;
+  let fullCuesAuthoredDuration = null;
+  if (mode === "full") {
+    const cueSheet = await readJson(path.join(dir, "direction", "music_cue_sheet.json"));
+    const cues = cueSheet.full_cues || [];
+    if (cues.length < (cueSheet.policy?.minimum_distinct_music_states || 0))
+      throw new Error(`direction/music_cue_sheet.json has fewer full_cues (${cues.length}) than its own minimum_distinct_music_states policy (${cueSheet.policy?.minimum_distinct_music_states})`);
+    if (cueSheet.policy?.continuous_single_loop_forbidden && cues.length < 2)
+      throw new Error("direction/music_cue_sheet.json's continuous_single_loop_forbidden policy requires more than one distinct full_cues state");
+    const notReady = cues.filter((cue) => cue.status !== "ready");
+    if (cueSheet.policy?.full_render_requires_all_cues_ready && notReady.length)
+      throw new Error(`Full ORVYQ render is blocked: direction/music_cue_sheet.json full_cues not yet status "ready": ${notReady.map((cue) => cue.cue_id).join(", ")}`);
+    fullCues = cues;
+    fullCuesAuthoredDuration = Number(cueSheet.duration_seconds);
+  }
+
   const sfx = await generateOriginalSfx(sfxDir);
-  const sections = musicSectionsForDuration(outputDuration);
+  const sections = musicSectionsForDuration(outputDuration, { fullCues, fullCuesAuthoredDuration });
   const sfxPlacements = buildSfxPlacements({ pauseWindows: narration.pauseWindows, outputDuration, sfxAssets: sfx });
   const cuesUsed = [...new Set(sfxPlacements.map((placement) => placement.cue))];
   const inputIndexByCue = new Map(cuesUsed.map((cue, index) => [cue, 2 + index]));

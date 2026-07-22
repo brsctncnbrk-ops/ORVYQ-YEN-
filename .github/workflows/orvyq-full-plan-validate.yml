@@ -1,0 +1,79 @@
+name: ORVYQ Full Edit Plan Validate
+
+# Validates that buildCanonicalEditPlan(mode="full") -- the SAME function
+# and schema proof mode uses, just reading direction/editorial_blueprint.json
+# instead of direction/cinematic_proof_cut.json -- actually produces a valid,
+# schema-conformant full-length edit plan against real data. This is NOT a
+# render: no video frame is ever produced here, no remotion command runs,
+# and this workflow is entirely separate from orvyq-full-render.yml (the
+# gated, human-approval-only final render workflow this task must never
+# trigger). Manual dispatch only -- it never runs automatically, so it never
+# competes with or blocks the proof workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PROJECT_ID: 001-the-ai-race-no-one-can-afford-to-win
+  # Same golden reference orvyq-proof.yml recovers real footage from -- the
+  # full plan's opening motion hook is the exact same real, licensed footage
+  # proof mode uses (direction/motion_hook.json), not a second full-mode-only
+  # asset, so validating it requires the same recovery step.
+  GOLDEN_REPO: brsctncnbrk-ops/YouTube_pepline
+  GOLDEN_REF: 9affbd2494d8197a564c4a552b879fadb0e14a4a
+
+jobs:
+  validate-full-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Recover real motion-hook footage from the golden reference
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.GOLDEN_REPO }}
+          ref: ${{ env.GOLDEN_REF }}
+          lfs: true
+          path: golden-reference
+          sparse-checkout: |
+            projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage
+          sparse-checkout-cone-mode: false
+
+      - name: Stage golden footage into the canonical project
+        run: |
+          set -euo pipefail
+          SRC="golden-reference/projects/$PROJECT_ID"
+          DST="projects/$PROJECT_ID"
+          mkdir -p "$DST/assets/footage"
+          cp "$SRC"/assets/footage/*.mp4 "$DST/assets/footage/"
+          cp "$SRC"/assets/footage/*.provenance.json "$DST/assets/footage/"
+          rm -rf golden-reference
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Validate canonical schemas and project data
+        run: npm run validate:canonical
+
+      - name: Regenerate the full production shot list from real data
+        run: node scripts/orvyq_full_production_plan.mjs --project-id="$PROJECT_ID"
+
+      - name: Build and validate the full canonical edit plan (no render)
+        run: node scripts/orvyq_edit_plan.mjs --project-id="$PROJECT_ID" --mode=full
+
+      - name: Restore editorial_blueprint.json (this run's footage recovery is validation-only, not a data change)
+        run: git checkout -- "projects/$PROJECT_ID/direction/editorial_blueprint.json"

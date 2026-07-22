@@ -33,6 +33,12 @@ jobs:
       - name: Validate canonical schemas and data contracts
         run: npm run validate:canonical
 
+      - name: Run unit tests
+        run: npm test
+
+      - name: Check proof/full renderer parity and isolation
+        run: npm run orvyq:parity-check
+
       - name: Install renderer dependencies
         working-directory: templates/remotion
         run: npm ci

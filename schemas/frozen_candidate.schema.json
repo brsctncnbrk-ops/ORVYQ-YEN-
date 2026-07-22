@@ -17,6 +17,30 @@
     "caption_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
     "audio_mix_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
     "asset_registry_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "approval_version": {
+      "type": "string",
+      "description": "Marks which verification scheme (scripts/orvyq_verify_approval.mjs) this candidate expects to be checked under. Optional and absent on frozen candidates produced before hash-hardened approval verification existed -- their approval remains valid under the original approved===true + frozen_candidate_hash check they were reviewed against."
+    },
+    "renderer_commit_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$",
+      "description": "git SHA of the last commit that touched templates/remotion, independent of source_commit_sha (the checkout commit) -- lets renderer drift be detected even when other project data changes without a renderer change."
+    },
+    "narration_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 of the exact narration audio this candidate's edit plan was timed against (voice/narration_status.json's narration_sha256 for full mode)."
+    },
+    "pause_map_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 of direction/editorial_pause_map.json's real file content."
+    },
+    "script_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 of voice/voice_script.txt's real file content."
+    },
     "selected_render_range": {
       "type": "object",
       "required": ["start_frame", "end_frame"],

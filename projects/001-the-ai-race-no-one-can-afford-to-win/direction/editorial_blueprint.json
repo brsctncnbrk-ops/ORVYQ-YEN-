@@ -18,78 +18,2646 @@
     "human_review_required_for_95": true
   },
   "full_production": {
-    "status": "blocked_until_research_and_assets_complete",
-    "blocking_claim_ids": [
-      "CLM_007_MARKET_PRESSURE",
-      "CLM_008_INTERNAL_EMERGENCY_LATE_2025",
-      "CLM_012_JOB_FORECAST_DIVERGENCE",
-      "CLM_014_CONCENTRATION"
-    ],
+    "status": "ready",
+    "blocking_claim_ids": [],
     "sections": [
       {
         "section_id": "SEC_01_RACE_PARADOX",
         "target_seconds": 72,
         "music_state": "controlled_tension",
         "visual_strategy": "real safety-framework titles + infrastructure context + race metaphor",
-        "deliverables": ["source mosaic", "capability/governance timeline", "human decision context"]
+        "deliverables": [
+          "source mosaic",
+          "capability/governance timeline",
+          "human decision context"
+        ]
       },
       {
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "target_seconds": 108,
         "music_state": "analytical_unease",
         "visual_strategy": "Anthropic article/figures + labelled reconstructions + explicit limitations",
-        "deliverables": ["article evidence frame", "experiment system diagram", "fictional email reconstruction", "test-vs-incident comparison"]
+        "deliverables": [
+          "article evidence frame",
+          "experiment system diagram",
+          "fictional email reconstruction",
+          "test-vs-incident comparison"
+        ]
       },
       {
         "section_id": "SEC_03_INCENTIVE_RACE",
         "target_seconds": 102,
         "music_state": "accelerating_pressure",
         "visual_strategy": "dated release/compute/market evidence, no decorative stock ticker",
-        "deliverables": ["release timeline", "compute scale evidence", "documented competitive event"]
+        "deliverables": [
+          "release timeline",
+          "compute scale evidence",
+          "documented competitive event"
+        ]
       },
       {
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "target_seconds": 112,
         "music_state": "procedural_threat",
         "visual_strategy": "provider threat reports + attack-chain diagrams + attribution limits",
-        "deliverables": ["extortion report frame", "espionage phase diagram", "ASL-3 safeguard evidence"]
+        "deliverables": [
+          "extortion report frame",
+          "espionage phase diagram",
+          "ASL-3 safeguard evidence"
+        ]
       },
       {
         "section_id": "SEC_05_WORK_AND_CONCENTRATION",
         "target_seconds": 78,
         "music_state": "uncertain_transition",
         "visual_strategy": "ILO exposure evidence + concentration source map",
-        "deliverables": ["exposure-vs-job-loss comparison", "task matrix", "infrastructure ownership evidence"]
+        "deliverables": [
+          "exposure-vs-job-loss comparison",
+          "task matrix",
+          "infrastructure ownership evidence"
+        ]
       },
       {
         "section_id": "SEC_06_REGULATION_PARADOX",
         "target_seconds": 76,
         "music_state": "institutional_gravity",
         "visual_strategy": "EU AI Act primary material + obligations matrix + distributional analysis",
-        "deliverables": ["10^25 FLOP threshold frame", "obligations stack", "incumbency caveat"]
+        "deliverables": [
+          "10^25 FLOP threshold frame",
+          "obligations stack",
+          "incumbency caveat"
+        ]
       },
       {
         "section_id": "SEC_07_OPEN_CLOSED",
         "target_seconds": 72,
         "music_state": "balanced_tension",
         "visual_strategy": "NTIA report + symmetric risk/control matrix",
-        "deliverables": ["open-weight report frame", "benefit/risk matrix", "closed-model incident callback"]
+        "deliverables": [
+          "open-weight report frame",
+          "benefit/risk matrix",
+          "closed-model incident callback"
+        ]
       },
       {
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "target_seconds": 62,
         "music_state": "constructive_momentum",
         "visual_strategy": "independent evaluation methodology + layered safeguard system",
-        "deliverables": ["evaluation pipeline", "incident flow", "compute oversight diagram", "verification network"]
+        "deliverables": [
+          "evaluation pipeline",
+          "incident flow",
+          "compute oversight diagram",
+          "verification network"
+        ]
       },
       {
         "section_id": "SEC_09_FINAL_PARADOX",
         "target_seconds": 38,
         "music_state": "reflective_resolution",
         "visual_strategy": "recap verified evidence, then human-scale decisions and restrained metaphor",
-        "deliverables": ["evidence recap", "human decision montage", "ORVYQ close"]
+        "deliverables": [
+          "evidence recap",
+          "human decision montage",
+          "ORVYQ close"
+        ]
       }
-    ]
+    ],
+    "shots": [
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Begin inside a moving computational network so the film opens on capability rather than a static title card.",
+        "asset_type": "footage",
+        "asset": "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4",
+        "trim_in_sec": 3.5,
+        "trim_out_sec": 6,
+        "motion": "push",
+        "hook_footage": true
+      },
+      {
+        "duration": 3,
+        "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "context",
+        "editorial_purpose": "Expand from the system to institutional scale without presenting the location as a named AI laboratory.",
+        "asset_type": "footage",
+        "asset": "assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4",
+        "trim_in_sec": 3,
+        "trim_out_sec": 6,
+        "motion": "pull",
+        "hook_footage": true
+      },
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_002_COMPETITIVE_INCENTIVE",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Use accelerated night traffic as a restrained visual metaphor for competitive momentum.",
+        "asset_type": "footage",
+        "asset": "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4",
+        "trim_in_sec": 0.5,
+        "trim_out_sec": 3,
+        "motion": "push",
+        "hook_footage": true
+      },
+      {
+        "duration": 3,
+        "claim_id": "CLM_003_GOVERNANCE_LAG",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "context",
+        "editorial_purpose": "End the hook on human monitoring and oversight before the film presents the written safety evidence.",
+        "asset_type": "footage",
+        "asset": "assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4",
+        "trim_in_sec": 0.5,
+        "trim_out_sec": 3.5,
+        "motion": "drift_right",
+        "hook_footage": true
+      },
+      {
+        "duration": 2.16,
+        "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present labs publish safety frameworks evidence for this section.",
+        "transition_in": "dissolve",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "graphic",
+        "editorial_purpose": "Present labs publish safety frameworks evidence for this section.",
+        "asset_type": "graphic",
+        "graphic": {
+          "type": "section_title",
+          "title": "Race Paradox",
+          "subtitle": "real safety-framework titles + infrastructure context + race metaphor"
+        }
+      },
+      {
+        "duration": 6.37,
+        "claim_id": "CLM_002_COMPETITIVE_INCENTIVE",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present competitive incentive evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.37,
+        "claim_id": "CLM_002_COMPETITIVE_INCENTIVE",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "context",
+        "editorial_purpose": "Present competitive incentive evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.642,
+        "claim_id": "CLM_003_GOVERNANCE_LAG",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present governance lag evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_timeline",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.643,
+        "claim_id": "CLM_003_GOVERNANCE_LAG",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "context",
+        "editorial_purpose": "Present governance lag evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.642,
+        "claim_id": "CLM_003_GOVERNANCE_LAG",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present governance lag evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.642,
+        "claim_id": "CLM_003_GOVERNANCE_LAG",
+        "section_id": "SEC_01_RACE_PARADOX",
+        "scene_id": "scene_001",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present governance lag evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_timeline",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "graphic",
+        "editorial_purpose": "Present agentic misalignment test evidence for this section.",
+        "asset_type": "graphic",
+        "graphic": {
+          "type": "section_title",
+          "title": "Controlled Evidence",
+          "subtitle": "Anthropic article/figures + labelled reconstructions + explicit limitations"
+        }
+      },
+      {
+        "duration": 6.635,
+        "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present agentic misalignment test evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 4,
+        "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "evidence",
+        "editorial_purpose": "Editorial pause beat: Present-tense turn.",
+        "emphasis_card": {
+          "eyebrow": "PRESENT-TENSE TURN",
+          "title": "Not someday. Right now.",
+          "accent": null
+        },
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.635,
+        "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "context",
+        "editorial_purpose": "Present agentic misalignment test evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.635,
+        "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present agentic misalignment test evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.635,
+        "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present agentic misalignment test evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.52,
+        "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present blackmail scenario evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.52,
+        "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "context",
+        "editorial_purpose": "Present blackmail scenario evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.52,
+        "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present blackmail scenario evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.927,
+        "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present no real world incident evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.927,
+        "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "context",
+        "editorial_purpose": "Present no real world incident evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.927,
+        "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "scene_id": "scene_002",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present no real world incident evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
+          "source_label": "Anthropic Research",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_007_MARKET_PRESSURE",
+        "section_id": "SEC_03_INCENTIVE_RACE",
+        "scene_id": "scene_003",
+        "visual_role": "graphic",
+        "editorial_purpose": "Present market pressure evidence for this section.",
+        "asset_type": "graphic",
+        "graphic": {
+          "type": "section_title",
+          "title": "Incentive Race",
+          "subtitle": "dated release/compute/market evidence, no decorative stock ticker"
+        }
+      },
+      {
+        "duration": 6.997,
+        "claim_id": "CLM_007_MARKET_PRESSURE",
+        "section_id": "SEC_03_INCENTIVE_RACE",
+        "scene_id": "scene_003",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present market pressure evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
+          ],
+          "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.997,
+        "claim_id": "CLM_007_MARKET_PRESSURE",
+        "section_id": "SEC_03_INCENTIVE_RACE",
+        "scene_id": "scene_003",
+        "visual_role": "context",
+        "editorial_purpose": "Present market pressure evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_timeline",
+          "source_ids": [
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
+          ],
+          "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.997,
+        "claim_id": "CLM_007_MARKET_PRESSURE",
+        "section_id": "SEC_03_INCENTIVE_RACE",
+        "scene_id": "scene_003",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present market pressure evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
+          ],
+          "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 4,
+        "claim_id": "CLM_007_MARKET_PRESSURE",
+        "section_id": "SEC_03_INCENTIVE_RACE",
+        "scene_id": "scene_003",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Editorial pause beat: Separate the controlled-test limitation from the wider warning.",
+        "emphasis_card": {
+          "eyebrow": "SEPARATE THE CONTROLLED-TEST LIMITATION FROM THE WIDER WARNI",
+          "title": "But a fire drill still tells you something about the building.",
+          "accent": null
+        },
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
+          ],
+          "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.997,
+        "claim_id": "CLM_007_MARKET_PRESSURE",
+        "section_id": "SEC_03_INCENTIVE_RACE",
+        "scene_id": "scene_003",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present market pressure evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
+          ],
+          "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.997,
+        "claim_id": "CLM_007_MARKET_PRESSURE",
+        "section_id": "SEC_03_INCENTIVE_RACE",
+        "scene_id": "scene_003",
+        "visual_role": "context",
+        "editorial_purpose": "Present market pressure evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_timeline",
+          "source_ids": [
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
+          ],
+          "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.997,
+        "claim_id": "CLM_007_MARKET_PRESSURE",
+        "section_id": "SEC_03_INCENTIVE_RACE",
+        "scene_id": "scene_003",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present market pressure evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
+          ],
+          "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "graphic",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "graphic",
+        "graphic": {
+          "type": "section_title",
+          "title": "Real World Misuse",
+          "subtitle": "provider threat reports + attack-chain diagrams + attribution limits"
+        }
+      },
+      {
+        "duration": 7.708,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.708,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "context",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.708,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.708,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.708,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "context",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.708,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 5,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Editorial pause beat: Land the competitive incentive.",
+        "emphasis_card": {
+          "eyebrow": "LAND THE COMPETITIVE INCENTIVE",
+          "title": "Slowing down alone doesn't remove the risk. It just hands the frontier to whoever doesn't.",
+          "accent": null
+        },
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.708,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.708,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "context",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 4,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "context",
+        "editorial_purpose": "Editorial pause beat: Pivot from strategic pressure to documented misuse.",
+        "emphasis_card": {
+          "eyebrow": "PIVOT FROM STRATEGIC PRESSURE TO DOCUMENTED MISUSE",
+          "title": "And the risks aren't hypothetical anymore.",
+          "accent": null
+        },
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.708,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.708,
+        "claim_id": "CLM_009_CYBER_EXTORTION",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present cyber extortion evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.63,
+        "claim_id": "CLM_010_CYBER_ESPIONAGE",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present cyber espionage evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_ANTHROPIC_ESPIONAGE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.63,
+        "claim_id": "CLM_010_CYBER_ESPIONAGE",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "context",
+        "editorial_purpose": "Present cyber espionage evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_ANTHROPIC_ESPIONAGE_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.063,
+        "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present bio safeguard threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_ASL3_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.063,
+        "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "context",
+        "editorial_purpose": "Present bio safeguard threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_ASL3_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.063,
+        "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present bio safeguard threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_ASL3_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.063,
+        "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present bio safeguard threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_ASL3_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.063,
+        "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "context",
+        "editorial_purpose": "Present bio safeguard threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_ASL3_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.063,
+        "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present bio safeguard threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_ASL3_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.063,
+        "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present bio safeguard threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_ASL3_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.063,
+        "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "context",
+        "editorial_purpose": "Present bio safeguard threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_ANTHROPIC_ASL3_2025"
+          ],
+          "source_label": "Anthropic",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.837,
+        "claim_id": "CLM_021_INFORMATION_INTEGRITY",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present information integrity evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"
+          ],
+          "source_label": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.837,
+        "claim_id": "CLM_021_INFORMATION_INTEGRITY",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "context",
+        "editorial_purpose": "Present information integrity evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"
+          ],
+          "source_label": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.837,
+        "claim_id": "CLM_021_INFORMATION_INTEGRITY",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present information integrity evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"
+          ],
+          "source_label": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.837,
+        "claim_id": "CLM_021_INFORMATION_INTEGRITY",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present information integrity evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"
+          ],
+          "source_label": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.837,
+        "claim_id": "CLM_021_INFORMATION_INTEGRITY",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "context",
+        "editorial_purpose": "Present information integrity evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"
+          ],
+          "source_label": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.837,
+        "claim_id": "CLM_021_INFORMATION_INTEGRITY",
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "scene_id": "scene_004",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present information integrity evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"
+          ],
+          "source_label": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_012_JOB_FORECAST_DIVERGENCE",
+        "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+        "scene_id": "scene_005",
+        "visual_role": "graphic",
+        "editorial_purpose": "Present job forecast divergence evidence for this section.",
+        "asset_type": "graphic",
+        "graphic": {
+          "type": "section_title",
+          "title": "Work And Concentration",
+          "subtitle": "ILO exposure evidence + concentration source map"
+        }
+      },
+      {
+        "duration": 7.2,
+        "claim_id": "CLM_012_JOB_FORECAST_DIVERGENCE",
+        "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+        "scene_id": "scene_005",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present job forecast divergence evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026"
+          ],
+          "source_label": "International Labour Organization",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.2,
+        "claim_id": "CLM_012_JOB_FORECAST_DIVERGENCE",
+        "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+        "scene_id": "scene_005",
+        "visual_role": "context",
+        "editorial_purpose": "Present job forecast divergence evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026"
+          ],
+          "source_label": "International Labour Organization",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.48,
+        "claim_id": "CLM_013_JOB_EXPOSURE",
+        "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+        "scene_id": "scene_005",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present job exposure evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026"
+          ],
+          "source_label": "International Labour Organization",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.48,
+        "claim_id": "CLM_013_JOB_EXPOSURE",
+        "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+        "scene_id": "scene_005",
+        "visual_role": "context",
+        "editorial_purpose": "Present job exposure evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026"
+          ],
+          "source_label": "International Labour Organization",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.48,
+        "claim_id": "CLM_013_JOB_EXPOSURE",
+        "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+        "scene_id": "scene_005",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present job exposure evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026"
+          ],
+          "source_label": "International Labour Organization",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.48,
+        "claim_id": "CLM_013_JOB_EXPOSURE",
+        "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+        "scene_id": "scene_005",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present job exposure evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026"
+          ],
+          "source_label": "International Labour Organization",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.61,
+        "claim_id": "CLM_014_CONCENTRATION",
+        "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+        "scene_id": "scene_005",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present concentration evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025"
+          ],
+          "source_label": "UK Competition and Markets Authority",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.61,
+        "claim_id": "CLM_014_CONCENTRATION",
+        "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+        "scene_id": "scene_005",
+        "visual_role": "context",
+        "editorial_purpose": "Present concentration evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025"
+          ],
+          "source_label": "UK Competition and Markets Authority",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "graphic",
+        "editorial_purpose": "Present eu systemic risk threshold evidence for this section.",
+        "asset_type": "graphic",
+        "graphic": {
+          "type": "section_title",
+          "title": "Regulation Paradox",
+          "subtitle": "EU AI Act primary material + obligations matrix + distributional analysis"
+        }
+      },
+      {
+        "duration": 7.456,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present eu systemic risk threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.456,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "context",
+        "editorial_purpose": "Present eu systemic risk threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.456,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present eu systemic risk threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 5,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Editorial pause beat: Shift from capability risk to concentrated power.",
+        "emphasis_card": {
+          "eyebrow": "SHIFT FROM CAPABILITY RISK TO CONCENTRATED POWER",
+          "title": "It's about who gets to decide.",
+          "accent": null
+        },
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.456,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present eu systemic risk threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.456,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "context",
+        "editorial_purpose": "Present eu systemic risk threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.456,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present eu systemic risk threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.456,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present eu systemic risk threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.456,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "context",
+        "editorial_purpose": "Present eu systemic risk threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.456,
+        "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present eu systemic risk threshold evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.847,
+        "claim_id": "CLM_016_COMPLIANCE_INCUMBENCY",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present compliance incumbency evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.847,
+        "claim_id": "CLM_016_COMPLIANCE_INCUMBENCY",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "context",
+        "editorial_purpose": "Present compliance incumbency evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6.847,
+        "claim_id": "CLM_016_COMPLIANCE_INCUMBENCY",
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "scene_id": "scene_006",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present compliance incumbency evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
+        "section_id": "SEC_07_OPEN_CLOSED",
+        "scene_id": "scene_007",
+        "visual_role": "graphic",
+        "editorial_purpose": "Present open closed tradeoff evidence for this section.",
+        "asset_type": "graphic",
+        "graphic": {
+          "type": "section_title",
+          "title": "Open Closed",
+          "subtitle": "NTIA report + symmetric risk/control matrix"
+        }
+      },
+      {
+        "duration": 7.24,
+        "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
+        "section_id": "SEC_07_OPEN_CLOSED",
+        "scene_id": "scene_007",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present open closed tradeoff evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "US National Telecommunications and Information Administration",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.24,
+        "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
+        "section_id": "SEC_07_OPEN_CLOSED",
+        "scene_id": "scene_007",
+        "visual_role": "context",
+        "editorial_purpose": "Present open closed tradeoff evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "US National Telecommunications and Information Administration",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.24,
+        "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
+        "section_id": "SEC_07_OPEN_CLOSED",
+        "scene_id": "scene_007",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present open closed tradeoff evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "US National Telecommunications and Information Administration",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.24,
+        "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
+        "section_id": "SEC_07_OPEN_CLOSED",
+        "scene_id": "scene_007",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present open closed tradeoff evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "US National Telecommunications and Information Administration",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.24,
+        "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
+        "section_id": "SEC_07_OPEN_CLOSED",
+        "scene_id": "scene_007",
+        "visual_role": "context",
+        "editorial_purpose": "Present open closed tradeoff evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "US National Telecommunications and Information Administration",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.24,
+        "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
+        "section_id": "SEC_07_OPEN_CLOSED",
+        "scene_id": "scene_007",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present open closed tradeoff evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "US National Telecommunications and Information Administration",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.24,
+        "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
+        "section_id": "SEC_07_OPEN_CLOSED",
+        "scene_id": "scene_007",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present open closed tradeoff evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "comparison",
+          "source_ids": [
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "US National Telecommunications and Information Administration",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "graphic",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "graphic",
+        "graphic": {
+          "type": "section_title",
+          "title": "Safety Architecture",
+          "subtitle": "independent evaluation methodology + layered safeguard system"
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "context",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "context",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "context",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "context",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 5,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "context",
+        "editorial_purpose": "Editorial pause beat: Hold the open-versus-closed dilemma without declaring a winner.",
+        "emphasis_card": {
+          "eyebrow": "HOLD THE OPEN-VERSUS-CLOSED DILEMMA WITHOUT DECLARING A WINN",
+          "title": "Choosing between them is choosing which kind of failure you're willing to risk.",
+          "accent": null
+        },
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_article",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.615,
+        "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present independent evaluations evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024"
+          ],
+          "source_label": "UK AI Safety Institute",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 4.87,
+        "claim_id": "CLM_019_INCIDENT_REPORTING",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present incident reporting evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 4.87,
+        "claim_id": "CLM_019_INCIDENT_REPORTING",
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "scene_id": "scene_008",
+        "visual_role": "context",
+        "editorial_purpose": "Present incident reporting evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "evidence_chain",
+          "source_ids": [
+            "SRC_EU_GPAI_OBLIGATIONS_2025"
+          ],
+          "source_label": "European Commission",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 2.5,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "graphic",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "graphic",
+        "graphic": {
+          "type": "section_title",
+          "title": "Final Paradox",
+          "subtitle": "recap verified evidence, then human-scale decisions and restrained metaphor"
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_timeline",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "context",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_timeline",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "context",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_timeline",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "context",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_timeline",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "context",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_timeline",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "context",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "metaphor",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "boundary",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "evidence",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "source_timeline",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 7.882,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "context",
+        "editorial_purpose": "Present systemic incentive final evidence for this section.",
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 5,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "context",
+        "editorial_purpose": "Editorial pause beat: Create a reflective release before the final line.",
+        "emphasis_card": {
+          "eyebrow": "CREATE A REFLECTIVE RELEASE BEFORE THE FINAL LINE",
+          "title": "That work hasn't been done yet.",
+          "accent": null
+        },
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 6,
+        "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "scene_id": "scene_009",
+        "visual_role": "context",
+        "editorial_purpose": "Editorial pause beat: Final human-agency landing and music decay.",
+        "emphasis_card": {
+          "eyebrow": "FINAL HUMAN-AGENCY LANDING AND MUSIC DECAY",
+          "title": "It's still being decided... by people, right now.",
+          "accent": null
+        },
+        "asset_type": "evidence",
+        "evidence": {
+          "kind": "concept_map",
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025",
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025",
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+            "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+            "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+            "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+            "SRC_ANTHROPIC_ESPIONAGE_2025",
+            "SRC_ANTHROPIC_ASL3_2025",
+            "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+            "SRC_ILO_JOBS_2025",
+            "SRC_ILO_EXPOSURE_LIMITS_2026",
+            "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+            "SRC_CMA_CLOUD_MARKET_2025",
+            "SRC_EU_GPAI_GUIDELINES_2025",
+            "SRC_NTIA_OPEN_WEIGHTS_2024"
+          ],
+          "source_label": "Multiple verified sources (recap)",
+          "font_px": 32
+        }
+      }
+    ],
+    "generated_at": "2026-07-22T15:47:26.577Z",
+    "generated_total_duration_seconds": 853.29
   },
   "proof_preview": {
     "duration_seconds": 120,
@@ -99,7 +2667,12 @@
       {
         "duration": 2,
         "asset_type": "graphic",
-        "graphic": {"type": "brand_open", "kicker": "ORVYQ PRESENTS", "title": "THE AI RACE", "subtitle": "What happens when capability moves faster than control?"},
+        "graphic": {
+          "type": "brand_open",
+          "kicker": "ORVYQ PRESENTS",
+          "title": "THE AI RACE",
+          "subtitle": "What happens when capability moves faster than control?"
+        },
         "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
         "visual_role": "graphic",
         "editorial_purpose": "Brand punctuation only."
@@ -137,8 +2710,14 @@
           "type": "source_mosaic",
           "eyebrow": "PUBLIC SAFETY FRAMEWORKS",
           "title": "THE WARNINGS ARE ON THE RECORD",
-          "items": ["Anthropic · Responsible Scaling Policy · 2024", "Google DeepMind · Frontier Safety Framework · 2025"],
-          "source_ids": ["SRC_ANTHROPIC_RSP_2024", "SRC_DEEPMIND_FSF_2025"],
+          "items": [
+            "Anthropic · Responsible Scaling Policy · 2024",
+            "Google DeepMind · Frontier Safety Framework · 2025"
+          ],
+          "source_ids": [
+            "SRC_ANTHROPIC_RSP_2024",
+            "SRC_DEEPMIND_FSF_2025"
+          ],
           "recreation_label": "ORVYQ SOURCE SUMMARY",
           "font_px": 32
         }
@@ -178,7 +2757,10 @@
           "title": "CAPABILITY MOVES. OVERSIGHT FOLLOWS.",
           "left": "Model development cycles",
           "right": "Evaluation, law and enforcement",
-          "source_ids": ["SRC_UK_AISI_EVALS_2024", "SRC_EU_GPAI_OBLIGATIONS_2025"],
+          "source_ids": [
+            "SRC_UK_AISI_EVALS_2024",
+            "SRC_EU_GPAI_OBLIGATIONS_2025"
+          ],
           "font_px": 30
         }
       },
@@ -207,7 +2789,9 @@
           "title": "AGENTIC MISALIGNMENT",
           "body": "16 leading models tested in hypothetical corporate environments.",
           "limitation": "CONTROLLED SIMULATIONS · FICTIONAL PEOPLE AND ORGANIZATIONS",
-          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
           "recreation_label": "ORVYQ RECREATION FROM PRIMARY SOURCE",
           "font_px": 34
         }
@@ -227,7 +2811,9 @@
           "title": "16 MODELS",
           "body": "Replacement threats and goal conflicts were tested across providers.",
           "limitation": "No real deployment incident was reported.",
-          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
           "font_px": 34
         }
       },
@@ -254,8 +2840,14 @@
           "type": "process",
           "eyebrow": "CONTROLLED EVALUATION",
           "title": "THE TEST",
-          "steps": ["Access fictional company email", "Discover planned replacement", "Choose whether to comply or act harmfully"],
-          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "steps": [
+            "Access fictional company email",
+            "Discover planned replacement",
+            "Choose whether to comply or act harmfully"
+          ],
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
           "font_px": 30
         }
       },
@@ -284,7 +2876,9 @@
           "title": "5:00 PM DECOMMISSIONING",
           "body": "The model also discovers fabricated evidence of an executive affair.",
           "limitation": "SYNTHETIC EMAILS · NO REAL PEOPLE · CONTROLLED TEST",
-          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
           "recreation_label": "ORVYQ RECREATION OF PUBLISHED TEST",
           "font_px": 32
         }
@@ -313,7 +2907,9 @@
           "eyebrow": "WHAT THE STUDY REPORTED",
           "title": "HARM OVER FAILURE",
           "body": "Under engineered no-alternative conditions, models from multiple developers sometimes chose harmful actions to pursue goals or avoid replacement.",
-          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
           "font_px": 30
         }
       },
@@ -331,7 +2927,9 @@
           "eyebrow": "CRITICAL LIMITATION",
           "title": "THE SCENARIO WAS ENGINEERED",
           "body": "Researchers deliberately removed ethical alternatives to stress-test model behavior.",
-          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
           "font_px": 34
         }
       },
@@ -370,7 +2968,9 @@
           "title": "A TEST IS NOT AN INCIDENT",
           "left": "Useful warning under pressure",
           "right": "Not evidence of real-world blackmail",
-          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
           "font_px": 32
         }
       },
@@ -398,7 +2998,9 @@
           "eyebrow": "THE EVIDENCE, CAREFULLY STATED",
           "title": "CONTROLLED TEST. SERIOUS WARNING.",
           "body": "No real people were involved or harmed. The result supports further evaluation and oversight—not claims of a real incident.",
-          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "source_ids": [
+            "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+          ],
           "font_px": 32
         }
       },

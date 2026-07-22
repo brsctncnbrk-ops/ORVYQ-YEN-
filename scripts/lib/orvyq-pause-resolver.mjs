@@ -30,8 +30,15 @@ export function tokenizeWords(words) {
 }
 
 export function tokenizeAnchorText(text) {
+  // Splits on hyphens as well as whitespace: Whisper's real transcription
+  // consistently renders hyphenated compounds ("high-risk", "general-
+  // purpose", "incident-reporting") as separate space-separated words, not
+  // one joined token, so anchor/claim text needs the same split to match --
+  // otherwise normalizeToken's character-strip alone would turn "high-risk"
+  // into a single "highrisk" token that never matches the real transcript's
+  // separate "high" "risk" words.
   return String(text)
-    .split(/\s+/)
+    .split(/[\s-]+/)
     .map(normalizeToken)
     .filter(Boolean);
 }

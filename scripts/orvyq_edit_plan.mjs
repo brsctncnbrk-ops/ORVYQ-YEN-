@@ -341,13 +341,43 @@ async function buildFullPlan(dir, projectId, blueprint) {
     }
 
     if (spec.asset_type !== "footage" || !spec.asset) throw new Error(`full_production.shots[${index}] must explicitly declare a footage asset, evidence, or graphic`);
-    if (!(await pathExists(path.join(dir, spec.asset)))) throw new Error(`Missing full-edit asset: ${spec.asset}`);
-    sourceUsage.set(spec.asset, (sourceUsage.get(spec.asset) || 0) + 1);
-    if (sourceUsage.get(spec.asset) > blueprint.global_rules.max_uses_per_source) throw new Error(`${spec.asset} exceeds the ${blueprint.global_rules.max_uses_per_source}-use limit`);
+    // Footage in full mode carries the exact same licensing/provenance
+    // obligation as proof mode's footage branch (buildProofPlan above) --
+    // the opening motion hook is real, licensed footage shared by both
+    // cuts, not a full-mode-only exemption. This mirrors that branch's
+    // checks (approved_for_final_edit, license_url, trim-vs-source-duration
+    // bounds) instead of skipping them, and propagates hook_footage /
+    // contextual_footage so auditMotionHook (which runs unconditionally for
+    // both modes) can see them.
+    const isHookFootage = spec.hook_footage === true;
+    const isContextualFootage = spec.contextual_footage === true;
+    if (!isHookFootage && !isContextualFootage)
+      throw new Error(`${common.shot_id} footage must be either the approved motion hook or approved contextual body footage`);
+    const absoluteVideo = path.join(dir, spec.asset);
+    const provenancePath = path.join(dir, `${spec.asset}.provenance.json`);
+    if (!(await pathExists(absoluteVideo))) throw new Error(`Missing full-edit asset: ${spec.asset}`);
+    if (!(await pathExists(provenancePath))) throw new Error(`${common.shot_id} footage provenance is missing`);
+    const provenance = await readJson(provenancePath);
+    if (!provenance.approved_for_final_edit || !provenance.license_url) throw new Error(`${common.shot_id} footage is not licensed and approved`);
+    const sourceDuration = Number(provenance.actual_duration_seconds || provenance.duration);
     const trimIn = Number(spec.trim_in_sec || 0);
     const trimOut = Number(spec.trim_out_sec || trimIn + duration);
+    if (!Number.isFinite(sourceDuration) || trimIn < 0 || trimOut <= trimIn || trimOut > sourceDuration + 0.02)
+      throw new Error(`${common.shot_id} has an invalid footage trim`);
     if (Math.abs(trimOut - trimIn - duration) > 0.02) throw new Error(`full_production.shots[${index}] trim does not match timeline duration`);
-    shots.push({ ...common, asset_type: "footage", video_asset: spec.asset, trim_in_sec: round(trimIn), trim_out_sec: round(trimOut), motion_variant: spec.motion || "hold" });
+    sourceUsage.set(spec.asset, (sourceUsage.get(spec.asset) || 0) + 1);
+    if (sourceUsage.get(spec.asset) > blueprint.global_rules.max_uses_per_source) throw new Error(`${spec.asset} exceeds the ${blueprint.global_rules.max_uses_per_source}-use limit`);
+    shots.push({
+      ...common,
+      asset_type: "footage",
+      video_asset: spec.asset,
+      trim_in_sec: round(trimIn),
+      trim_out_sec: round(trimOut),
+      motion_variant: spec.motion || "hold",
+      hook_footage: isHookFootage,
+      contextual_footage: isContextualFootage,
+      provenance_mode: isHookFootage ? "approved_motion_hook" : "approved_contextual_footage"
+    });
   }
 
   return {

@@ -34,6 +34,13 @@ concurrency:
 
 env:
   PROJECT_ID: 001-the-ai-race-no-one-can-afford-to-win
+  # The full edit plan's opening motion hook is the exact same real, licensed
+  # footage proof mode uses (direction/motion_hook.json) -- not a second,
+  # full-mode-only asset -- so the full render recovers it from the same
+  # golden reference orvyq-proof.yml uses, rather than requiring it be
+  # committed as a plain (non-LFS) blob to this branch.
+  GOLDEN_REPO: brsctncnbrk-ops/YouTube_pepline
+  GOLDEN_REF: 9affbd2494d8197a564c4a552b879fadb0e14a4a
 
 jobs:
   full-render:
@@ -45,25 +52,47 @@ jobs:
         with:
           lfs: true
 
-      - name: Verify a matching, approved frozen candidate exists
-        run: |
-          set -euo pipefail
-          APPROVAL="projects/$PROJECT_ID/qa/proof_approval.json"
-          if [ ! -f "$APPROVAL" ]; then
-            echo "::error::No qa/proof_approval.json in this commit -- full render is blocked until a human approves a specific frozen candidate (see schemas/proof_approval.schema.json)."
-            exit 1
-          fi
-          APPROVED="$(node -e "console.log(require('./$APPROVAL').approved === true)")"
-          if [ "$APPROVED" != "true" ]; then
-            echo "::error::qa/proof_approval.json.approved is not true."
-            exit 1
-          fi
-
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Replaces the old `require(proof_approval.json).approved === true`
+      # check, which only ever looked at one boolean. This verifies the
+      # approval's frozen_candidate_hash still matches the sha256 of the
+      # frozen_candidate.json actually committed at this exact commit, that
+      # it is a "full"-mode candidate (not the 150s proof's), and that its
+      # source_commit_sha matches the commit being rendered -- see
+      # scripts/orvyq_verify_approval.mjs for why a naive boolean check is
+      # not sufficient (real drift has already happened once in this repo's
+      # own history).
+      - name: Verify a matching, approved, full-mode frozen candidate exists
+        run: node scripts/orvyq_verify_approval.mjs --project-id="$PROJECT_ID" --mode=full --stage=early
+
+      - name: Recover real motion-hook footage from the golden reference
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.GOLDEN_REPO }}
+          ref: ${{ env.GOLDEN_REF }}
+          lfs: true
+          path: golden-reference
+          sparse-checkout: |
+            projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage
+          sparse-checkout-cone-mode: false
+
+      - name: Stage golden footage into the canonical project
+        run: |
+          set -euo pipefail
+          SRC="golden-reference/projects/$PROJECT_ID"
+          DST="projects/$PROJECT_ID"
+          mkdir -p "$DST/assets/footage"
+          cp "$SRC"/assets/footage/*.mp4 "$DST/assets/footage/"
+          cp "$SRC"/assets/footage/*.provenance.json "$DST/assets/footage/"
+          rm -rf golden-reference
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -73,7 +102,6 @@ jobs:
       - name: Install media, PDF and speech tooling
         run: |
           set -euo pipefail
-          npm ci
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ffmpeg poppler-utils
           python -m pip install --disable-pip-version-check faster-whisper==1.2.0 requests==2.32.5
@@ -98,6 +126,14 @@ jobs:
 
       - name: Run full pre-render QA chain
         run: npm run orvyq:qa
+
+      # Recomputes a frozen candidate from the edit plan, captions, audio mix
+      # and asset registry just built above and confirms every hash still
+      # matches the committed, human-approved qa/frozen_candidate.json
+      # exactly -- what is about to render is provably the same bytes a
+      # human reviewed, not something regenerated differently since.
+      - name: Verify the freshly built pipeline still matches the approved frozen candidate
+        run: node scripts/orvyq_verify_approval.mjs --project-id="$PROJECT_ID" --stage=late
 
       - name: Build render-ready project
         run: |
