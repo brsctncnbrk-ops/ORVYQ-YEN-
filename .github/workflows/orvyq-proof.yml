@@ -227,9 +227,28 @@ jobs:
       - name: Render proof range
         working-directory: projects/${{ env.PROJECT_ID }}/remotion/render_ready_project
         run: |
+          set +e
           npx remotion render src/index.ts FactForgeVideo out/orvyq_cinematic_proof_150s.mp4 \
             --codec=h264 --frames="$PROOF_FRAME_RANGE" --concurrency=1 --image-format=png \
             2>&1 | tee out/proof_render_stdout.txt
+          RENDER_EXIT=${PIPESTATUS[0]}
+          set -e
+          # Remotion has been observed to exit non-zero in this CI environment even after
+          # fully encoding every frame and writing a complete, valid video (verified: a prior
+          # run's file was a correct 75.3MB/150.06s/1920x1080/30fps h264 MP4 despite this same
+          # exit code) -- verify the actual output file's duration instead of trusting the
+          # process exit code alone.
+          if [ "$RENDER_EXIT" -ne 0 ]; then
+            echo "::warning::remotion render exited $RENDER_EXIT; verifying the output file directly"
+          fi
+          test -s out/orvyq_cinematic_proof_150s.mp4
+          DURATION="$(ffprobe -v error -show_entries format=duration -of default=nk=1:nw=1 out/orvyq_cinematic_proof_150s.mp4)"
+          echo "Rendered duration: ${DURATION}s"
+          python3 -c "
+          import sys
+          d = float('$DURATION')
+          sys.exit(0 if abs(d - 150.0) < 1.0 else 1)
+          " || { echo "::error::rendered duration ${DURATION}s is not within 1s of the expected 150s"; exit 1; }
 
       - name: Repair isolated renderer brightness corruption
         run: node scripts/orvyq_brightness_repair.mjs --project-id="$PROJECT_ID" --video="projects/$PROJECT_ID/remotion/render_ready_project/out/orvyq_cinematic_proof_150s.mp4"
@@ -252,8 +271,12 @@ jobs:
           VIDEO="projects/$PROJECT_ID/remotion/render_ready_project/out/orvyq_cinematic_proof_150s.mp4"
           OUT="projects/$PROJECT_ID/remotion/render_ready_project/out"
           if [ -f "$VIDEO" ]; then
-            ffmpeg -hide_banner -nostats -y -i "$VIDEO" -vf "fps=1,scale=320:-1,tile=5x6" "$OUT/orvyq_mobile_review_sheet.jpg"
-            ffmpeg -hide_banner -nostats -y -i "$VIDEO" -vf "fps=1/3,scale=640:-1,tile=5x10" "$OUT/orvyq_quality_control_contact_sheet.jpg"
+            # fps is chosen so the sample count exactly matches the tile grid slot count
+            # (150s proof / 5s-per-sample = 30 samples = 5x6; 150s / 3s = 50 samples = 5x10) --
+            # a mismatch here made ffmpeg's image2 muxer try to write more than one tiled
+            # image to the same non-pattern filename and fail. -frames:v 1 is a safety net.
+            ffmpeg -hide_banner -nostats -y -i "$VIDEO" -vf "fps=1/5,scale=320:-1,tile=5x6" -frames:v 1 "$OUT/orvyq_mobile_review_sheet.jpg"
+            ffmpeg -hide_banner -nostats -y -i "$VIDEO" -vf "fps=1/3,scale=640:-1,tile=5x10" -frames:v 1 "$OUT/orvyq_quality_control_contact_sheet.jpg"
             ffprobe -v error -show_format -show_streams -print_format json "$VIDEO" > "$OUT/orvyq_quality_control_probe.json"
           fi
 
