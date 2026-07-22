@@ -23,9 +23,17 @@ projects/*/remotion/scene_config.json
 projects/*/remotion/asset_map.json
 projects/*/remotion/captions.json
 
-# Binary media (footage/audio/evidence images) is not yet tracked in this repo.
-# Before Phase 3/5 populate these directories with real assets, set up
-# .gitattributes Git LFS tracking (see docs/source-audit.md section 4) and
-# remove/narrow these two lines -- do not let large binaries land unindexed.
+# Binary project assets are not committed to this repo. .gitattributes
+# configures Git LFS tracking for when they are (footage *.mp4 + provenance,
+# assets/audio/final_voice.mp3), matching the golden repo's own convention of
+# committing one-time-curated footage/narration but fetching evidence/music/
+# SFX fresh per build -- but THIS session's egress policy blocks all
+# connections to lfs.github.com (confirmed via /root/.ccr/README.md's "403 the
+# destination host is not allowed" class, not a retriable failure), so no LFS
+# push is possible from here. docs/source-audit.md section 4 and the Phase 5
+# report explain the workaround: .github/workflows/orvyq-preview.yml recovers
+# real footage/narration from the golden repo directly during the CI run,
+# which has unrestricted network access. A future session with working LFS
+# push can commit these assets properly and remove this ignore rule.
 projects/*/assets/
 projects/*/footage/

@@ -1,0 +1,55 @@
+name: ORVYQ CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Syntax-check every pipeline script
+        run: |
+          set -euo pipefail
+          find scripts -type f -name '*.mjs' -print0 | xargs -0 -n1 node --check
+          python3 -m py_compile scripts/orvyq_speech_qa.py
+
+      - name: Validate canonical schemas and data contracts
+        run: npm run validate:canonical
+
+      - name: Install renderer dependencies
+        working-directory: templates/remotion
+        run: npm ci
+
+      - name: Type-check renderer
+        working-directory: templates/remotion
+        run: npx tsc --noEmit
+
+      - name: Resolve composition against placeholder data (bundle validation, no render)
+        working-directory: templates/remotion
+        env:
+          FACTFORGE_REMOTION_BROWSER_EXECUTABLE: /opt/hostedtoolcache/chromium/stable/x64/chrome
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium-browser || command -v chromium || true)"
+          if [ -z "$BROWSER" ]; then
+            echo "No system Chrome/Chromium found; skipping composition resolution (type-check above already passed)."
+            exit 0
+          fi
+          export FACTFORGE_REMOTION_BROWSER_EXECUTABLE="$BROWSER"
+          npx remotion compositions src/index.ts
