@@ -30,7 +30,12 @@ export async function runMusicCueAudit(projectId = PROJECT_ID) {
   const failures = [];
   const warnings = [];
   const isProof = plan.mode === "proof";
-  const cinematicProof = isProof && plan.quality_policy?.cinematic_body_footage === true;
+  // cinematicProof historically also required plan.mode === "proof"; that
+  // mode gate was the proof-only cinematic_body_footage restriction itself
+  // (removed in scripts/orvyq_edit_plan.mjs) -- both modes now share one
+  // quality_policy, so this audit applies the same cinematic thresholds to
+  // both instead of silently exempting full mode from them.
+  const cinematicProof = plan.quality_policy?.cinematic_body_footage === true;
 
   if (audioMetadata.procedural_noise_generation !== false) failures.push("procedural noise generation must remain disabled");
   if (cinematicProof) {

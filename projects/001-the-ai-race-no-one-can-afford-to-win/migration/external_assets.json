@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "source_repository": "brsctncnbrk-ops/YouTube_pepline",
+  "source_commit": "6ae8ccc7142eac61ae270b7a68f11e73c8d08e68",
+  "note": "Licensed contextual b-roll footage (Pexels/Pixabay, no attribution required, approved_for_final_edit=true in each companion provenance file) recovered from the immutable YouTube_pepline production commit that also backs this project's motion_hook.json opening shots. Target paths keep the source repo's original scene_NNN_<candidateId>.mp4 filenames -- the same convention motion_hook.json already uses -- rather than renaming to f1..f15.",
+  "imports": [
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4", "target_path": "assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4.provenance.json", "target_path": "assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4", "target_path": "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4.provenance.json", "target_path": "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4", "target_path": "assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4.provenance.json", "target_path": "assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4", "target_path": "assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4.provenance.json", "target_path": "assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4", "target_path": "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4.provenance.json", "target_path": "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4", "target_path": "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4.provenance.json", "target_path": "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4", "target_path": "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4.provenance.json", "target_path": "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4", "target_path": "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4.provenance.json", "target_path": "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_018_f681c3057e36f147005d2652.mp4", "target_path": "assets/footage/scene_018_f681c3057e36f147005d2652.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_018_f681c3057e36f147005d2652.mp4.provenance.json", "target_path": "assets/footage/scene_018_f681c3057e36f147005d2652.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_018_f681c3057e36f147005d2652.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4", "target_path": "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4.provenance.json", "target_path": "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4", "target_path": "assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4.provenance.json", "target_path": "assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4", "target_path": "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4.provenance.json", "target_path": "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_022_740741da33e14d6a45468490.mp4", "target_path": "assets/footage/scene_022_740741da33e14d6a45468490.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_022_740741da33e14d6a45468490.mp4.provenance.json", "target_path": "assets/footage/scene_022_740741da33e14d6a45468490.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_022_740741da33e14d6a45468490.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4", "target_path": "assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4.provenance.json", "target_path": "assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4", "target_path": "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4.provenance.json", "target_path": "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4", "target_path": "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4", "kind": "footage", "note": "Already referenced by direction/motion_hook.json (shared opening hook, both modes); not otherwise part of the 15-clip contextual set." },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4.provenance.json", "target_path": "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4", "target_path": "assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4", "kind": "footage", "note": "Already referenced by direction/motion_hook.json (shared opening hook, both modes); not otherwise part of the 15-clip contextual set." },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4.provenance.json", "target_path": "assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4", "target_path": "assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4.provenance.json", "target_path": "assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_005_e98a421f0d9c432e4d2036fb.mp4", "target_path": "assets/footage/scene_005_e98a421f0d9c432e4d2036fb.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_005_e98a421f0d9c432e4d2036fb.mp4.provenance.json", "target_path": "assets/footage/scene_005_e98a421f0d9c432e4d2036fb.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_005_e98a421f0d9c432e4d2036fb.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4", "target_path": "assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4.provenance.json", "target_path": "assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_008_42946788405d61ee3a28fa31.mp4", "target_path": "assets/footage/scene_008_42946788405d61ee3a28fa31.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_008_42946788405d61ee3a28fa31.mp4.provenance.json", "target_path": "assets/footage/scene_008_42946788405d61ee3a28fa31.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_008_42946788405d61ee3a28fa31.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4", "target_path": "assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4.provenance.json", "target_path": "assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_016_e324304f99b3502cad464d69.mp4", "target_path": "assets/footage/scene_016_e324304f99b3502cad464d69.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_016_e324304f99b3502cad464d69.mp4.provenance.json", "target_path": "assets/footage/scene_016_e324304f99b3502cad464d69.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_016_e324304f99b3502cad464d69.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_023_dbe758e1473aee29a155377a.mp4", "target_path": "assets/footage/scene_023_dbe758e1473aee29a155377a.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_023_dbe758e1473aee29a155377a.mp4.provenance.json", "target_path": "assets/footage/scene_023_dbe758e1473aee29a155377a.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_023_dbe758e1473aee29a155377a.mp4" },
+
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4", "target_path": "assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4", "kind": "footage" },
+    { "source_path": "projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4.provenance.json", "target_path": "assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4.provenance.json", "kind": "provenance", "companion_for": "assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4" }
+  ]
+}

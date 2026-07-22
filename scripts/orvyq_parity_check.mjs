@@ -73,20 +73,19 @@ export async function checkProofFullParity() {
   if ((sharedSection.match(/schema_version:\s*"1\.0-canonical"/g) || []).length !== 1)
     findings.push({ severity: "error", message: "edit_plan schema_version is not defined exactly once in the shared assembly section." });
 
-  // Known, documented asymmetry: quality_policy.cinematic_body_footage is
-  // set directly from `mode === "proof"` inside the shared assembly, so
-  // full mode currently cannot use contextual (non-hook) body footage even
-  // though buildFullPlan's footage branch supports the field structurally.
-  // This is a real, pre-existing editorial-policy asymmetry (full-mode
-  // contextual footage has never been authored or decided on), not
-  // something to silently paper over -- surfaced here as a warning rather
-  // than an error so it stays visible instead of being fixed by guessing at
-  // a policy decision nobody has made.
-  if (sharedSection.includes('cinematic_body_footage: mode === "proof"')) {
+  // cinematic_body_footage was previously set directly from `mode ===
+  // "proof"` in the shared assembly, meaning full mode could never use
+  // contextual (non-hook) body footage even though buildFullPlan's footage
+  // branch supported the field structurally -- a real, then-undecided
+  // editorial-policy asymmetry (docs/full-production-guide.md). That
+  // decision has since been made: both modes now consume contextual footage
+  // through the same shared data model. This check now guards against that
+  // mode-dependent hardcode ever being reintroduced.
+  if (/cinematic_body_footage:\s*mode === "proof"/.test(sharedSection)) {
     findings.push({
-      severity: "warning",
+      severity: "error",
       message:
-        'quality_policy.cinematic_body_footage is hardcoded to mode === "proof" in the shared assembly -- full mode cannot use contextual (non-hook) body footage until this is revisited as a deliberate editorial decision, not a defect this checker can resolve on its own.'
+        'quality_policy.cinematic_body_footage is hardcoded to mode === "proof" again in the shared assembly -- this reintroduces the proof-only contextual-footage restriction that was deliberately removed.'
     });
   }
 

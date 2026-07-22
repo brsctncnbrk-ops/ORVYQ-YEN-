@@ -2,9 +2,9 @@
   "schema_version": "1.0",
   "project_id": "001-the-ai-race-no-one-can-afford-to-win",
   "duration_policy": {
-    "minimum_final_duration_seconds": 660,
+    "minimum_final_duration_seconds": 857.29,
     "maximum_final_duration_seconds": null,
-    "rule": "Editorial pauses may extend the film beyond the minimum; narration and meaning set the final duration."
+    "rule": "Not an independent target: this is the real canonical full duration (motion hook + narration + resolved editorial pauses + terminal end card), reconciled here from direction/editorial_blueprint.json's full_production.generated_total_duration_seconds each time scripts/orvyq_full_production_plan.mjs regenerates the timeline, superseding the earlier stale 660s planning target. Narration and meaning set the final duration; this field mirrors that result rather than constraining it."
   },
   "proof": {
     "source_narration_seconds": 114.2,

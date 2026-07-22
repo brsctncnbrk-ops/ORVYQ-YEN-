@@ -223,13 +223,8 @@ async function buildProofPlan(dir, projectId, blueprint) {
     sourceUsage: assetUsage,
     evidenceIdUsage,
     quality_policy_overrides: {
-      proof_body_stock_assets_forbidden: false,
-      cinematic_body_footage: true,
-      contextual_footage_must_not_claim_literal_evidence: true,
       minimum_emphasis_beats: 4,
-      maximum_uninterrupted_evidence_seconds: 15,
-      motion_hook_min_seconds: 10,
-      motion_hook_max_seconds: 14
+      maximum_uninterrupted_evidence_seconds: 15
     }
   };
 }
@@ -259,9 +254,16 @@ async function buildFullPlan(dir, projectId, blueprint) {
   const sourceUsage = new Map();
   let cursor = 0;
   const shots = [];
+  // Tracks the immediately preceding shot's footage asset+trim_out so an
+  // adjacent pause-hold shot continuing the same clip isn't double-counted
+  // against max_uses_per_source (see below); reset whenever the preceding
+  // shot isn't footage, since "contiguous" requires adjacency, not just a
+  // coincidentally matching trim value.
+  let previousFootage = null;
 
   for (let index = 0; index < full.shots.length; index += 1) {
     const spec = full.shots[index];
+    if (spec.asset_type !== "footage") previousFootage = null;
     const duration = Number(spec.duration);
     if (!Number.isFinite(duration) || duration <= 0 || duration > blueprint.global_rules.max_shot_seconds)
       throw new Error(`full_production.shots[${index}] has invalid duration ${spec.duration}`);
@@ -292,7 +294,11 @@ async function buildFullPlan(dir, projectId, blueprint) {
       transition_in: transitionIn,
       transition_out: transitionOut,
       text_overlay: null,
-      sound_cue: null
+      sound_cue: null,
+      // Full mode has its own real editorial pauses now (8, vs proof's 4)
+      // and needs the same emphasis-card overlay buildProofPlan already
+      // carries through for them.
+      emphasis_card: spec.emphasis_card || null
     };
 
     if (spec.asset_type === "graphic") {
@@ -365,8 +371,16 @@ async function buildFullPlan(dir, projectId, blueprint) {
     if (!Number.isFinite(sourceDuration) || trimIn < 0 || trimOut <= trimIn || trimOut > sourceDuration + 0.02)
       throw new Error(`${common.shot_id} has an invalid footage trim`);
     if (Math.abs(trimOut - trimIn - duration) > 0.02) throw new Error(`full_production.shots[${index}] trim does not match timeline duration`);
-    sourceUsage.set(spec.asset, (sourceUsage.get(spec.asset) || 0) + 1);
-    if (sourceUsage.get(spec.asset) > blueprint.global_rules.max_uses_per_source) throw new Error(`${spec.asset} exceeds the ${blueprint.global_rules.max_uses_per_source}-use limit`);
+    // A shot that continues the immediately preceding shot's own asset from
+    // exactly where its trim left off (an editorial pause hold on the same
+    // footage, split into two shots so neither exceeds max_shot_seconds) is
+    // one continuous use of that clip, not a second one.
+    const isContinuationOfPrevious = previousFootage?.asset === spec.asset && Math.abs(previousFootage.trimOut - trimIn) < 0.02;
+    if (!isContinuationOfPrevious) {
+      sourceUsage.set(spec.asset, (sourceUsage.get(spec.asset) || 0) + 1);
+      if (sourceUsage.get(spec.asset) > blueprint.global_rules.max_uses_per_source) throw new Error(`${spec.asset} exceeds the ${blueprint.global_rules.max_uses_per_source}-use limit`);
+    }
+    previousFootage = { asset: spec.asset, trimOut };
     shots.push({
       ...common,
       asset_type: "footage",
@@ -404,7 +418,10 @@ export async function buildCanonicalEditPlan(projectId = PROJECT_ID, { mode = "p
   const hookAudit = auditMotionHook({
     fps: FPS,
     shots,
-    quality_policy: { motion_hook_min_seconds: quality_policy_overrides.motion_hook_min_seconds || 10, motion_hook_max_seconds: quality_policy_overrides.motion_hook_max_seconds || 14, cinematic_body_footage: mode === "proof" }
+    // cinematic_body_footage is a shared editorial policy now, not a
+    // mode-dependent one: both proof and full consume licensed contextual
+    // footage through the same data model, so both are allowed to use it.
+    quality_policy: { motion_hook_min_seconds: quality_policy_overrides.motion_hook_min_seconds || 10, motion_hook_max_seconds: quality_policy_overrides.motion_hook_max_seconds || 14, cinematic_body_footage: true }
   });
   if (!hookAudit.pass) throw new Error(`Motion hook failed: ${hookAudit.failures.join("; ")}`);
 
@@ -440,6 +457,11 @@ export async function buildCanonicalEditPlan(projectId = PROJECT_ID, { mode = "p
       document_focus_required: true,
       metadata_cannot_define_evidence: true,
       motion_hook_required: true,
+      // Shared by both modes -- see the parity check and
+      // docs/full-production-guide.md for why this is no longer
+      // proof-only.
+      cinematic_body_footage: true,
+      contextual_footage_must_not_claim_literal_evidence: true,
       ...quality_policy_overrides,
       ...fractionSummary(shots, durationFrames)
     },

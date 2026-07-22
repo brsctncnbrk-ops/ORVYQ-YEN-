@@ -35,13 +35,19 @@ projects/*/remotion/captions.json
 # configures Git LFS tracking for when they are (footage *.mp4 + provenance,
 # assets/audio/final_voice.mp3), matching the golden repo's own convention of
 # committing one-time-curated footage/narration but fetching evidence/music/
-# SFX fresh per build -- but THIS session's egress policy blocks all
-# connections to lfs.github.com (confirmed via /root/.ccr/README.md's "403 the
-# destination host is not allowed" class, not a retriable failure), so no LFS
-# push is possible from here. docs/source-audit.md section 4 and the Phase 5
-# report explain the workaround: .github/workflows/orvyq-preview.yml recovers
-# real footage/narration from the golden repo directly during the CI run,
-# which has unrestricted network access. A future session with working LFS
-# push can commit these assets properly and remove this ignore rule.
+# SFX fresh per build -- but this session's egress policy blocks the LFS
+# object-verify callback, which goes directly to lfs.github.com regardless of
+# the session's own repo-scoped git proxy (confirmed via
+# /root/.ccr/__agentproxy/status: "403 to CONNECT ... policy denial", the
+# same non-retriable class documented in /root/.ccr/README.md), so no LFS
+# push is possible from here even though the upload itself succeeds.
+# docs/source-audit.md section 4 and the Phase 5 report explain the existing
+# workaround this project already relies on for the motion hook's footage:
+# .github/workflows/*.yml recover real footage/narration from the golden
+# repo directly during the CI run, which has unrestricted network access.
+# scripts/orvyq_materialize_footage.mjs + projects/*/migration/
+# external_assets.json extend that same recovery mechanism to the full
+# 25-clip contextual footage set this project now uses in both modes. A
+# future session with working LFS push can commit these assets properly and
+# remove this ignore rule.
 projects/*/assets/
-projects/*/footage/

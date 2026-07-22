@@ -21,7 +21,10 @@ export async function buildAlignmentReadiness(projectId = PROJECT_ID) {
     readJson(path.join(dir, "direction", "edit_plan.json"))
   ]);
   const motionHook = auditMotionHook(plan);
-  const cinematicProof = plan.mode === "proof" && plan.quality_policy?.cinematic_body_footage === true;
+  // No longer gated on plan.mode === "proof": both modes share the same
+  // quality_policy now, so both are scored against the same cinematic
+  // primary-evidence targets.
+  const cinematicProof = plan.quality_policy?.cinematic_body_footage === true;
   const primaryEvidenceTargets = cinematicProof
     ? { official_capture_fraction: 0.3, source_backed_fraction: 0.55 }
     : { official_capture_fraction: 0.55, source_backed_fraction: null };

@@ -53,6 +53,14 @@ check(
 {
   const videoConfig = readJson(path.join(PROJECT_DIR, "config/video_config.json"));
   const projectConfig = readJson(path.join(PROJECT_DIR, "config/project_config.json"));
+  // duration_frames is derived from the real canonical timeline
+  // (buildFullProductionPlan's own narration + editorial-pause + motion-hook
+  // + end-card total, committed as direction/editorial_blueprint.json's
+  // full_production.generated_total_duration_seconds by
+  // scripts/orvyq_full_production_plan.mjs) rather than a hand-authored
+  // target -- config/video_config.json no longer carries an independent
+  // target_duration_sec to drift against it.
+  const blueprint = readJson(path.join(PROJECT_DIR, "direction/editorial_blueprint.json"));
   const canonicalProject = {
     schema_version: "1.0-canonical",
     project_id: projectConfig.project_id,
@@ -60,12 +68,7 @@ check(
     fps: videoConfig.fps,
     width: videoConfig.width,
     height: videoConfig.height,
-    // Provisional: config/video_config.json only carries a target_duration_sec
-    // (660s), not a frame-accurate canonical duration -- the real
-    // duration_frames is only known once Phase 3's buildCanonicalEditPlan()
-    // resolves the actual full timeline. Recorded here as a placeholder
-    // computed value, not asserted as final.
-    duration_frames: videoConfig.target_duration_sec * videoConfig.fps,
+    duration_frames: Math.round(blueprint.full_production.generated_total_duration_seconds * videoConfig.fps),
     brand: { name: "ORVYQ", tagline: "Beyond the Known", palette: { ink: "#F3ECDD", signal: "#D84B4B", ground: "#05070C" } },
     created_at: projectConfig.created_at
   };

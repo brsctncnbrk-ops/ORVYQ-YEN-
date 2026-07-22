@@ -25,7 +25,6 @@ export async function buildLicenseAudit(projectId = PROJECT_ID) {
     readJson(path.join(dir, "research", "primary_evidence_manifest.json")),
     readJson(path.join(dir, "assets", "evidence", "primary_evidence.runtime.json"))
   ]);
-  const isProof = plan.mode === "proof";
   const failures = [];
   const sourceById = new Map(evidenceMap.source_catalog.map((source) => [source.source_id, source]));
   const declaredById = new Map(primaryManifest.assets.map((asset) => [asset.evidence_asset_id, asset]));
@@ -120,7 +119,9 @@ export async function buildLicenseAudit(projectId = PROJECT_ID) {
     }
   }
 
-  const cinematicProof = isProof && plan.quality_policy?.cinematic_body_footage === true;
+  // Both modes share one quality_policy now, so this is no longer gated on
+  // plan.mode === "proof".
+  const cinematicProof = plan.quality_policy?.cinematic_body_footage === true;
   const soundEffects = [];
   for (const asset of audioMetadata.sfx_assets || []) {
     if (!(await pathExists(path.join(dir, asset)))) {
