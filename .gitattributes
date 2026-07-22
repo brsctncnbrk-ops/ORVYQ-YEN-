@@ -4,3 +4,12 @@
 *.png filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.jpeg filter=lfs diff=lfs merge=lfs -text
+
+# Committed as a plain blob (LFS push is blocked in the session that added
+# it -- see scripts/README.md / the commit that introduced this file), so the
+# general *.mp3 LFS rule above is explicitly unset for this one path. Without
+# this, git runs the LFS clean filter against the working-tree copy for
+# status/diff purposes, compares it to the raw blob actually committed, and
+# reports a false modification. Migrate this back under the general rule
+# once it is properly re-committed through Git LFS.
+projects/*/assets/audio/final_voice.mp3 -filter -diff -merge -text
