@@ -30,6 +30,7 @@ on:
       - "**/*.md"
       - ".github/workflows/orvyq-narration-validation.yml"
       - "projects/*/assets/audio/final_voice.mp3"
+      - "projects/*/voice/narration_alignment.json"
       - "projects/*/qa/frozen_candidate.json"
       - "projects/*/qa/proof_approval.json"
 

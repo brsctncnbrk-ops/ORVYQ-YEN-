@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/narration_alignment.schema.json",
+  "title": "Narration Alignment",
+  "description": "Canonical, single-source-of-truth ASR alignment of a real narration recording against the project's voice_script.txt -- the one place per-word timestamps are computed, so full-mode editorial pause resolution, shot timing, and captioning all read the SAME alignment instead of each invoking ASR independently (which would require network access to huggingface.co that this rebuild's sandbox does not have; alignment is produced in CI and committed, like frozen_candidate.json).",
+  "type": "object",
+  "required": ["schema_version", "project_id", "source_audio_sha256", "model", "generated_at", "duration_seconds", "transcript", "words"],
+  "properties": {
+    "schema_version": { "const": "1.0-canonical" },
+    "project_id": { "type": "string" },
+    "source_audio_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "model": { "type": "string" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+    "script_similarity": { "type": "number", "minimum": 0, "maximum": 1 },
+    "transcript": { "type": "string" },
+    "words": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["text", "start", "end", "probability"],
+        "properties": {
+          "text": { "type": "string" },
+          "start": { "type": "number", "minimum": 0 },
+          "end": { "type": "number", "minimum": 0 },
+          "probability": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

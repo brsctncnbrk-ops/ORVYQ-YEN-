@@ -18,6 +18,7 @@
 // validation script must never silently pass a blocking condition.
 
 import path from "node:path";
+import fs from "node:fs";
 import { loadCanonicalAjv, readJson } from "./lib/schema-validate.mjs";
 
 const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
@@ -201,6 +202,26 @@ const fixtureProofApproval = {
   proof_artifact: { workflow_run_id: "29655003486", artifact_name: "orvyq-cinematic-proof-150s-29655003486", duration_seconds: 150, resolution: "1920x1080", fps: 30 }
 };
 check("fixture proof_approval", "proof_approval.schema.json", fixtureProofApproval, { kind: "fixture" });
+
+{
+  const alignmentPath = path.join(PROJECT_DIR, "voice", "narration_alignment.json");
+  if (fs.existsSync(alignmentPath)) {
+    check("voice/narration_alignment.json (real data, committed by CI)", "narration_alignment.schema.json", readJson(alignmentPath), { kind: "real" });
+  } else {
+    const fixtureAlignment = {
+      schema_version: "1.0-canonical",
+      project_id: PROJECT_ID,
+      source_audio_sha256: "0".repeat(64),
+      model: "tiny.en",
+      generated_at: "2026-07-22T00:00:00Z",
+      duration_seconds: 804.362,
+      script_similarity: 0.9818,
+      transcript: "Every major AI lab on Earth believes moving this fast might be dangerous.",
+      words: [{ text: "Every", start: 0, end: 0.48, probability: 0.78 }]
+    };
+    check("fixture narration_alignment (not yet produced by CI in this checkout)", "narration_alignment.schema.json", fixtureAlignment, { kind: "fixture" });
+  }
+}
 
 // ---- Report ----
 
