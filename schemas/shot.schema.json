@@ -32,7 +32,13 @@
     "trim_out_sec": { "type": "number", "minimum": 0 },
     "motion_variant": { "enum": ["hold", "push", "pull", "drift_left", "drift_right"] },
     "graphic": { "type": "object" },
-    "evidence": { "type": "object" }
+    "evidence": { "type": "object" },
+    "section_id": { "type": "string" },
+    "generic_stock": { "type": "boolean" },
+    "hook_footage": { "type": "boolean" },
+    "contextual_footage": { "type": "boolean" },
+    "provenance_mode": { "type": "string" },
+    "motif": { "type": "string" }
   },
   "allOf": [
     {

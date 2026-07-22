@@ -25,8 +25,19 @@
       "description": "Canonical full-timeline duration -- identical value in proof and full mode."
     },
     "audio_mix_asset": { "type": "string" },
+    "captions_asset": { "type": "string" },
     "brand": { "type": "object" },
+    "production_mode": { "type": "string" },
+    "strategy": { "type": "string" },
+    "render_source_sha": { "type": ["string", "null"] },
+    "art_direction": { "type": "object" },
+    "motion_hook": {
+      "type": "object",
+      "description": "Result of auditMotionHook() -- always evaluated for both modes, see scripts/lib/orvyq-motion-hook.mjs."
+    },
     "blacklisted_assets": { "type": "array", "items": { "type": "string" } },
+    "source_usage": { "type": "object" },
+    "evidence_asset_usage": { "type": "object" },
     "shots": { "type": "array", "items": { "$ref": "shot.schema.json" } },
     "quality_policy": {
       "type": "object",

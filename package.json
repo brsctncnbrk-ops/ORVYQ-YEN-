@@ -6,7 +6,14 @@
   "type": "module",
   "engines": { "node": ">=18" },
   "scripts": {
-    "validate:canonical": "node scripts/validate_canonical.mjs"
+    "validate:canonical": "node scripts/validate_canonical.mjs",
+    "orvyq:fetch-evidence": "node scripts/orvyq_fetch_primary_evidence.mjs",
+    "orvyq:fetch-music": "node scripts/orvyq_fetch_music.mjs",
+    "orvyq:audio": "node scripts/orvyq_audio_mix.mjs",
+    "orvyq:edit-plan": "node scripts/orvyq_edit_plan.mjs",
+    "orvyq:captions": "node scripts/orvyq_caption_build.mjs",
+    "orvyq:asset-registry": "node scripts/orvyq_asset_registry.mjs",
+    "orvyq:build-render-project": "node scripts/remotion_build.mjs derive-configs --project-id=001-the-ai-race-no-one-can-afford-to-win && node scripts/remotion_build.mjs build-project --project-id=001-the-ai-race-no-one-can-afford-to-win"
   },
   "dependencies": { "ajv": "^8.17.1", "ajv-formats": "^3.0.1" }
 }

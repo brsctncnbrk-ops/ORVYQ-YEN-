@@ -8,6 +8,7 @@
   "properties": {
     "schema_version": { "const": "1.0-canonical" },
     "project_id": { "type": "string" },
+    "generated_at": { "type": "string", "format": "date-time" },
     "assets": {
       "type": "array",
       "items": { "$ref": "#/$defs/asset" }

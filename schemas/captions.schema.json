@@ -7,6 +7,13 @@
   "required": ["schema_version", "style", "captions"],
   "properties": {
     "schema_version": { "type": "string" },
+    "project_id": { "type": "string" },
+    "fps": { "type": "integer", "minimum": 1 },
+    "duration_frames": { "type": "integer", "minimum": 1 },
+    "source": { "type": "string" },
+    "text_source": { "type": "string" },
+    "alignment_method": { "type": "string" },
+    "timing_policy": { "type": "string" },
     "style": {
       "type": "object",
       "required": ["placement", "line_count", "max_words", "max_chars", "font_size_px", "background"],
@@ -15,8 +22,11 @@
         "line_count": { "const": 1 },
         "max_words": { "type": "integer", "maximum": 7 },
         "max_chars": { "type": "integer", "maximum": 52 },
+        "max_speech_gap_seconds": { "type": "number", "exclusiveMinimum": 0 },
+        "font_family": { "type": "string" },
         "font_size_px": { "type": "integer", "minimum": 1 },
-        "background": { "type": "string" }
+        "background": { "type": "string" },
+        "active_word_effect": { "const": false, "description": "Always false -- no karaoke/active-word-highlight effect, per the golden proof's approved caption style." }
       },
       "additionalProperties": false
     },
@@ -37,7 +47,7 @@
         "required": ["caption_id", "scene_id", "start_frame", "end_frame", "text"],
         "properties": {
           "caption_id": { "type": "string" },
-          "scene_id": { "type": "string" },
+          "scene_id": { "type": ["string", "null"] },
           "start_frame": { "type": "integer", "minimum": 0 },
           "end_frame": { "type": "integer", "minimum": 1 },
           "text": { "type": "string", "maxLength": 52 }
