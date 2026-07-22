@@ -17,6 +17,21 @@ on:
   push:
     branches:
       - "claude/orvyq-rebuild-canonical-udc3rx"
+    # Only re-run the proof for changes that could actually affect it -- this
+    # workflow was re-triggering on every unrelated push (docs, the narration-
+    # validation workflow, qa/ approval records the workflow's own bot commit
+    # created), each costing a full ~30-minute render for no reason. Proof
+    # mode recovers its own narration/footage from the golden reference
+    # during the run (see the steps below), so a newly committed
+    # assets/audio/final_voice.mp3 or the narration-validation workflow don't
+    # affect it either.
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - ".github/workflows/orvyq-narration-validation.yml"
+      - "projects/*/assets/audio/final_voice.mp3"
+      - "projects/*/qa/frozen_candidate.json"
+      - "projects/*/qa/proof_approval.json"
 
 permissions:
   contents: write
