@@ -33,6 +33,16 @@ jobs:
       - name: Validate canonical schemas and data contracts
         run: npm run validate:canonical
 
+      # scripts/orvyq_music_intake.test.mjs generates a real tiny audio
+      # fixture and probes it via ffprobe -- this step has been missing
+      # since the canonical music system landed (commit 33c8f3d), which is
+      # why this job has been failing on every push since then regardless
+      # of the actual change under test.
+      - name: Install ffmpeg (test fixture generation and duration/codec probing)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+
       - name: Run unit tests
         run: npm test
 
