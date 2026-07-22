@@ -51,6 +51,14 @@ orvyq_asset_registry.mjs   buildCanonicalAssetRegistry(projectId)
           research/primary_evidence_manifest.json, assets/audio/final_mix.metadata.json
   writes  assets/asset_registry.json
 
+NOTE: GitHub scans the ENTIRE commit message body, not just a leading tag,
+for skip-ci markers -- a commit whose message merely *mentions* the literal
+text "skip ci" in brackets anywhere (even while describing another commit's
+message, as happened once during this rebuild) silently suppresses every
+push-triggered workflow for that commit, with no run and no error. Avoid
+writing that exact bracketed phrase in a commit message unless you actually
+intend to skip CI for it.
+
 orvyq_frozen_candidate.mjs   buildCanonicalFrozenCandidate(projectId)
   reads   direction/edit_plan.json, remotion/captions.json,
           assets/audio/final_mix.metadata.json, assets/asset_registry.json,
