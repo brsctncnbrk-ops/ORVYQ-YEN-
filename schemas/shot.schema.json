@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/shot.schema.json",
+  "title": "Shot",
+  "description": "A single entry in a canonical edit plan's shots array, matching the discriminated union Video.tsx/Scene.tsx consume (BaseShot & FootageShot|GraphicShot|EvidenceShot). end_frame > start_frame is enforced by the validator script, not expressible in pure JSON Schema.",
+  "type": "object",
+  "required": ["shot_id", "scene_id", "start_frame", "end_frame", "asset_type", "transition_in", "transition_out"],
+  "properties": {
+    "shot_id": { "type": "string", "pattern": "^shot_[0-9]{3,}$" },
+    "scene_id": { "type": "string" },
+    "start_frame": { "type": "integer", "minimum": 0 },
+    "end_frame": { "type": "integer", "minimum": 1 },
+    "asset_type": { "enum": ["footage", "graphic", "evidence", "ai_fallback"] },
+    "transition_in": { "enum": ["cut", "fade", "dissolve"] },
+    "transition_out": { "enum": ["cut", "fade", "dissolve"] },
+    "text_overlay": { "type": ["string", "null"] },
+    "claim_id": { "type": "string" },
+    "visual_role": { "enum": ["evidence", "archive", "context", "metaphor", "graphic"] },
+    "editorial_purpose": { "type": "string", "minLength": 18 },
+    "editorial_overlay": { "type": ["object", "null"] },
+    "emphasis_card": {
+      "type": ["object", "null"],
+      "properties": {
+        "eyebrow": { "type": "string" },
+        "title": { "type": "string" },
+        "accent": { "type": "string" }
+      }
+    },
+    "sound_cue": { "type": ["string", "null"] },
+    "video_asset": { "type": "string" },
+    "trim_in_sec": { "type": "number", "minimum": 0 },
+    "trim_out_sec": { "type": "number", "minimum": 0 },
+    "motion_variant": { "enum": ["hold", "push", "pull", "drift_left", "drift_right"] },
+    "graphic": { "type": "object" },
+    "evidence": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "asset_type": { "const": "footage" } } },
+      "then": { "required": ["video_asset", "trim_in_sec", "trim_out_sec"] }
+    },
+    {
+      "if": { "properties": { "asset_type": { "const": "graphic" } } },
+      "then": { "required": ["graphic"] }
+    },
+    {
+      "if": { "properties": { "asset_type": { "const": "evidence" } } },
+      "then": { "required": ["evidence"] }
+    }
+  ],
+  "additionalProperties": false
+}

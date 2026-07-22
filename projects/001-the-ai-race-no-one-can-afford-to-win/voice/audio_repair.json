@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.1",
+  "operation": "rotate",
+  "rotate_at_seconds": 72.12,
+  "reason": "The supplied narrator file begins with the closing passage and returns to the approved opening near 72 seconds. The splice point includes the complete opening word 'Every' while removing the misplaced closing passage."
+}

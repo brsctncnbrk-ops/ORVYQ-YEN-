@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "approval_status": "user_approved",
+  "approval_scope": "Build a 150-second cinematic proof before applying the grammar to the full film.",
+  "duration_policy": {
+    "minimum_seconds": 660,
+    "maximum_seconds": null,
+    "editorial_pauses_may_extend_duration": true
+  },
+  "proof_targets": {
+    "duration_seconds": 150,
+    "contextual_footage_fraction": {
+      "minimum": 0.25,
+      "maximum": 0.4
+    },
+    "source_backed_visual_fraction_minimum": 0.55,
+    "full_screen_graphic_fraction_maximum": 0.1,
+    "maximum_uninterrupted_evidence_seconds": 15,
+    "minimum_emphasis_beats": 4,
+    "maximum_shot_seconds": 8,
+    "maximum_uses_per_asset": 2
+  },
+  "visual_grammar": [
+    "Keep the approved 11-second motion hook.",
+    "Alternate official evidence and source-derived graphics with semantically relevant licensed footage.",
+    "Use full-screen emphasis cards only at deliberate narration pauses.",
+    "Never present contextual footage as literal proof of a named event, company, laboratory, or government.",
+    "Keep source labels visible on every evidence scene and preserve the controlled-test limitation."
+  ],
+  "sound_grammar": [
+    "Use one continuously licensed cinematic bed with distinct energy states.",
+    "Duck music under speech but let it rise during editorial pauses.",
+    "Use only sparse original synthesized impacts, blooms, and ticks tied to editorial events.",
+    "Do not add random whooshes, glitch effects, meme sounds, or full-audio silence."
+  ],
+  "full_film_sections": [
+    {
+      "section_id": "SEC_01_RACE_PARADOX",
+      "script_lines": "1–9",
+      "visual_balance": "Cinematic context first, then safety frameworks and a present-tense emphasis beat."
+    },
+    {
+      "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+      "script_lines": "11–17",
+      "visual_balance": "Test-condition footage intercut with official screenshots, figures, and a strong limitation beat."
+    },
+    {
+      "section_id": "SEC_03_INCENTIVE_RACE",
+      "script_lines": "19–27",
+      "visual_balance": "Markets, institutions, and competitive movement alternate with the AI Index evidence."
+    },
+    {
+      "section_id": "SEC_04_REAL_WORLD_MISUSE",
+      "script_lines": "29–35",
+      "visual_balance": "Operational cybersecurity and lab context support — but never substitute for — attributed source evidence."
+    },
+    {
+      "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+      "script_lines": "37–39",
+      "visual_balance": "Human work and infrastructure footage break up labour and competition documents."
+    },
+    {
+      "section_id": "SEC_06_REGULATION_PARADOX",
+      "script_lines": "41–47",
+      "visual_balance": "Institutional footage, legal text, and restrained power motifs share the screen rhythm."
+    },
+    {
+      "section_id": "SEC_07_OPEN_CLOSED",
+      "script_lines": "49–55",
+      "visual_balance": "A clear two-sided visual grammar holds openness and centralized control in tension."
+    },
+    {
+      "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+      "script_lines": "57–65",
+      "visual_balance": "Audits, incident response, compute governance, and international verification gain constructive motion."
+    },
+    {
+      "section_id": "SEC_09_FINAL_PARADOX",
+      "script_lines": "67–81",
+      "visual_balance": "Reduce density, lengthen shots, return to people, and allow the music to decay after the final line."
+    }
+  ],
+  "full_narration_dependency": {
+    "status": "regeneration_required_after_proof_approval",
+    "reason": "The narration after the validated 114.2-second prefix predates the current approved script.",
+    "recording_rule": "Generate one continuous narration from voice/voice_script.txt; do not assemble the stale remaining segments."
+  }
+}

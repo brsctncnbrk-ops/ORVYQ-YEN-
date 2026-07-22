@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "purpose": "Open with an 11-second cinematic motion-video hook, then dissolve into primary evidence.",
+  "minimum_seconds": 10,
+  "maximum_seconds": 14,
+  "duration_seconds": 11,
+  "replace_opening_shot_count": 4,
+  "evidence_bridge": [
+    { "source_shot_index": 1, "duration": 5, "transition_in": "dissolve" },
+    { "source_shot_index": 3, "duration": 4, "transition_in": "cut" }
+  ],
+  "shots": [
+    {
+      "duration": 2.5,
+      "asset_type": "footage",
+      "video_asset": "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4",
+      "trim_in_sec": 3.5,
+      "trim_out_sec": 6,
+      "motion_variant": "push",
+      "hook_footage": true,
+      "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+      "visual_role": "metaphor",
+      "generic_stock": true,
+      "editorial_purpose": "Begin inside a moving computational network so the film opens on capability rather than a static title card."
+    },
+    {
+      "duration": 3,
+      "asset_type": "footage",
+      "video_asset": "assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4",
+      "trim_in_sec": 3,
+      "trim_out_sec": 6,
+      "motion_variant": "pull",
+      "hook_footage": true,
+      "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+      "visual_role": "context",
+      "generic_stock": true,
+      "editorial_purpose": "Expand from the system to institutional scale without presenting the location as a named AI laboratory."
+    },
+    {
+      "duration": 2.5,
+      "asset_type": "footage",
+      "video_asset": "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4",
+      "trim_in_sec": 0.5,
+      "trim_out_sec": 3,
+      "motion_variant": "push",
+      "hook_footage": true,
+      "claim_id": "CLM_002_COMPETITIVE_INCENTIVE",
+      "visual_role": "metaphor",
+      "generic_stock": true,
+      "editorial_purpose": "Use accelerated night traffic as a restrained visual metaphor for competitive momentum."
+    },
+    {
+      "duration": 3,
+      "asset_type": "footage",
+      "video_asset": "assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4",
+      "trim_in_sec": 0.5,
+      "trim_out_sec": 3.5,
+      "motion_variant": "drift_right",
+      "hook_footage": true,
+      "claim_id": "CLM_003_GOVERNANCE_LAG",
+      "visual_role": "context",
+      "generic_stock": true,
+      "editorial_purpose": "End the hook on human monitoring and oversight before the film presents the written safety evidence."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/edit_plan.schema.json",
+  "title": "Canonical Edit Plan",
+  "description": "The single edit-plan shape produced by buildCanonicalEditPlan() for BOTH proof and full render modes. This deliberately replaces the golden system's three branching schema_version strings ('7.0-cinematic-proof' / '6.3-motion-hook-evidence-proof' / '5.1-evidence-led-full') with one constant schema_version plus an explicit mode + frame_range pair -- see docs/migration-plan.md section 1-2. duration_frames is always the canonical FULL timeline length in both modes; frame_range.end_frame is what varies (<=duration_frames for proof, ==duration_frames for full).",
+  "type": "object",
+  "required": ["schema_version", "project_id", "mode", "frame_range", "fps", "duration_frames", "audio_mix_asset", "shots", "quality_policy"],
+  "properties": {
+    "schema_version": { "const": "1.0-canonical" },
+    "project_id": { "type": "string" },
+    "mode": { "enum": ["proof", "full"] },
+    "frame_range": {
+      "type": "object",
+      "required": ["start_frame", "end_frame"],
+      "properties": {
+        "start_frame": { "type": "integer", "minimum": 0 },
+        "end_frame": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "fps": { "const": 30 },
+    "duration_frames": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Canonical full-timeline duration -- identical value in proof and full mode."
+    },
+    "audio_mix_asset": { "type": "string" },
+    "brand": { "type": "object" },
+    "blacklisted_assets": { "type": "array", "items": { "type": "string" } },
+    "shots": { "type": "array", "items": { "$ref": "shot.schema.json" } },
+    "quality_policy": {
+      "type": "object",
+      "description": "Editorial policy fractions/flags read from editorial_blueprint.json.global_rules, not hardcoded per-mode duplicates."
+    }
+  },
+  "additionalProperties": false
+}

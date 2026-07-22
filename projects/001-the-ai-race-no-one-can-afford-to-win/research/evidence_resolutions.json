@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.1",
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "note": "Resolves full-script research blockers and narrows biological-risk, information-integrity, labour and AI Act wording to what authoritative sources support. The first two-minute proof narration is unchanged.",
+  "source_additions": [
+    {
+      "source_id": "SRC_STANFORD_AI_INDEX_2025_ECONOMY",
+      "publisher": "Stanford Institute for Human-Centered Artificial Intelligence",
+      "title": "The 2025 AI Index Report — Economy",
+      "publication_date": "2025-04-07",
+      "url": "https://hai.stanford.edu/ai-index/2025-ai-index-report/economy",
+      "source_type": "independent_research_index",
+      "official": true,
+      "visual_evidence_candidates": ["Generative-AI private investment chart", "Global AI investment chart"],
+      "limitation": "Investment levels show the scale of competition; they do not directly prove that every investor rewards speed over caution."
+    },
+    {
+      "source_id": "SRC_STANFORD_AI_INDEX_2025_TECHNICAL",
+      "publisher": "Stanford Institute for Human-Centered Artificial Intelligence",
+      "title": "The 2025 AI Index Report — Technical Performance",
+      "publication_date": "2025-04-07",
+      "url": "https://hai.stanford.edu/ai-index/2025-ai-index-report/technical-performance",
+      "source_type": "independent_research_index",
+      "official": true,
+      "visual_evidence_candidates": ["Frontier performance-convergence chart", "Top-two model gap"],
+      "limitation": "Benchmark proximity is evidence of a crowded frontier, not a complete measure of commercial leadership or safety."
+    },
+    {
+      "source_id": "SRC_CMA_FOUNDATION_MODELS_UPDATE_2024",
+      "publisher": "UK Competition and Markets Authority",
+      "title": "AI Foundation Models: Update paper",
+      "publication_date": "2024-04-11",
+      "url": "https://www.gov.uk/government/publications/ai-foundation-models-update-paper",
+      "source_type": "government_competition_report",
+      "official": true,
+      "visual_evidence_candidates": ["Update-paper cover", "Critical inputs and partnerships risk summary"],
+      "limitation": "The report identifies competition risks and market structures; it does not establish that concentration is inevitable."
+    },
+    {
+      "source_id": "SRC_CMA_CLOUD_MARKET_2025",
+      "publisher": "UK Competition and Markets Authority",
+      "title": "Cloud services market investigation — final decision",
+      "publication_date": "2025-08-01",
+      "url": "https://www.gov.uk/cma-cases/cloud-services-market-investigation",
+      "source_type": "government_market_investigation",
+      "official": true,
+      "visual_evidence_candidates": ["Final-decision cover", "Market structure and concentration appendix"],
+      "limitation": "This investigation concerns cloud infrastructure services broadly, not only frontier AI training."
+    },
+    {
+      "source_id": "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025",
+      "publisher": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
+      "title": "International AI Safety Report 2025",
+      "publication_date": "2025-01-29",
+      "url": "https://www.gov.uk/government/publications/international-ai-safety-report-2025/international-ai-safety-report-2025",
+      "source_type": "international_scientific_report",
+      "official": true,
+      "visual_evidence_candidates": ["Public-opinion manipulation evidence chain", "Evidence-gap figure", "Detection and watermarking limitations"],
+      "limitation": "The report finds strong evidence that AI can generate persuasive content cheaply at scale, but limited evidence and no scientific consensus on broad societal or electoral effects."
+    }
+  ],
+  "claim_additions": [
+    {
+      "claim_id": "CLM_021_INFORMATION_INTEGRITY",
+      "section_id": "SEC_04_REAL_WORLD_MISUSE",
+      "importance": 4,
+      "narration_excerpt": "AI makes convincing synthetic content cheaper to produce at scale, while the broader societal effects remain uncertain.",
+      "status": "verified",
+      "source_ids": ["SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"],
+      "evidence_requirements": ["Show the evidence chain from content generation to distribution to possible societal effect.", "State that evidence becomes weaker at later stages and that election-level effects are not established."],
+      "visual_treatment": {"primary": "evidence_chain", "secondary": "report_frame", "metaphor": "friction_in_shared_reality"}
+    }
+  ],
+  "claim_overrides": [
+    {
+      "claim_id": "CLM_007_MARKET_PRESSURE",
+      "status": "verified",
+      "source_ids": ["SRC_STANFORD_AI_INDEX_2025_ECONOMY", "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"],
+      "narration_excerpt": "Competition is visible in the money and in how narrow the frontier has become.",
+      "evidence_requirements": ["Show 2024 generative-AI investment and frontier-performance convergence with exact source/date.", "Do not state that investment figures prove every actor prioritizes speed over safety."],
+      "visual_treatment": {"primary": "dual_evidence_chart", "secondary": "dated_release_context", "metaphor": "crowded_frontier"}
+    },
+    {
+      "claim_id": "CLM_008_INTERNAL_EMERGENCY_LATE_2025",
+      "status": "removed",
+      "source_ids": [],
+      "narration_excerpt": "Removed: the specific late-2025 internal-emergency anecdote lacked sufficiently authoritative sourcing.",
+      "evidence_requirements": ["Do not restore this anecdote without a direct, attributable primary source."],
+      "recommended_rewrite": "Use verified investment and frontier-convergence evidence instead of a reported internal emergency."
+    },
+    {
+      "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
+      "status": "verified",
+      "source_ids": ["SRC_ANTHROPIC_ASL3_2025"],
+      "narration_excerpt": "Anthropic activated additional ASL-3 safeguards as a precaution while saying it had not definitively determined that its capability threshold had been crossed.",
+      "evidence_requirements": ["Show the precautionary and provisional nature of the ASL-3 activation.", "Do not generalize one laboratory's internal testing into an industry-wide conclusion."],
+      "visual_treatment": {"primary": "safety_level_diagram", "secondary": "policy_document", "metaphor": "graduated_containment"}
+    },
+    {
+      "claim_id": "CLM_012_JOB_FORECAST_DIVERGENCE",
+      "status": "verified",
+      "source_ids": ["SRC_ILO_JOBS_2025", "SRC_ILO_EXPOSURE_LIMITS_2026"],
+      "narration_excerpt": "The evidence measures exposure more reliably than it predicts unemployment.",
+      "evidence_requirements": ["Show one-in-four occupational exposure.", "Show the ILO warning that exposure is not a direct job-loss forecast.", "Remove unsupported unemployment projections."],
+      "visual_treatment": {"primary": "exposure_vs_outcome", "secondary": "occupation_task_matrix", "metaphor": "uncertain_transition"}
+    },
+    {
+      "claim_id": "CLM_014_CONCENTRATION",
+      "status": "verified",
+      "source_ids": ["SRC_CMA_FOUNDATION_MODELS_UPDATE_2024", "SRC_CMA_CLOUD_MARKET_2025"],
+      "narration_excerpt": "Frontier AI depends on costly compute, cloud infrastructure, data and capital.",
+      "evidence_requirements": ["Show the CMA's identified risks around critical inputs, partnerships and routes to market.", "State that the cloud investigation is broader than frontier AI."],
+      "visual_treatment": {"primary": "critical_inputs_map", "secondary": "cloud_market_evidence", "metaphor": "narrowing_gate"}
+    },
+    {
+      "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+      "status": "verified",
+      "source_ids": ["SRC_EU_GPAI_OBLIGATIONS_2025", "SRC_EU_GPAI_GUIDELINES_2025"],
+      "narration_excerpt": "The AI Act separates high-risk system duties from obligations for general-purpose model providers, with additional evaluation, incident-reporting and cybersecurity duties for systemic-risk models.",
+      "evidence_requirements": ["Separate AI-system and GPAI-model obligations visually and verbally.", "Show the 10^25 FLOP presumption as rebuttable and updateable, not an absolute definition."],
+      "visual_treatment": {"primary": "two_track_policy_matrix", "secondary": "systemic_risk_threshold", "metaphor": "different_gates"}
+    }
+  ]
+}

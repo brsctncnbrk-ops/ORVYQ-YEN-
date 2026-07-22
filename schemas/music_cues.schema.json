@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/music_cues.schema.json",
+  "title": "Music Cue Sheet",
+  "description": "Matches direction/music_cue_sheet.json's real shape. proof_score is the realized 0..proof_duration_seconds arc; full_cues describes the eventual full-film arc and may carry status:spec_ready_asset_pending until produced. Section/cue boundaries are always seconds relative to the cue sheet's own duration_seconds, never a literal proof-only constant baked elsewhere -- see docs/source-audit.md section 7 for the code-side bug this schema is designed to prevent recurring.",
+  "type": "object",
+  "required": ["schema_version", "project_id", "duration_seconds", "policy"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "project_id": { "type": "string" },
+    "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "minimum_distinct_music_states": { "type": "integer", "minimum": 1 },
+        "continuous_single_loop_forbidden": { "type": "boolean" },
+        "narration_ducking_required": { "type": "boolean" },
+        "random_whoosh_glitch_boom_forbidden": { "type": "boolean" },
+        "silence_may_be_used_as_an_editorial_cue": { "type": "boolean" },
+        "full_render_requires_all_cues_ready": { "type": "boolean" }
+      }
+    },
+    "proof_score": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string" },
+        "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+        "asset": { "type": "string" },
+        "license": { "type": "string" },
+        "attribution_file": { "type": "string" },
+        "sections": { "type": "array", "items": { "$ref": "#/$defs/section" } }
+      }
+    },
+    "full_cues": { "type": "array", "items": { "$ref": "#/$defs/cue" } }
+  },
+  "$defs": {
+    "section": {
+      "type": "object",
+      "required": ["id", "start", "end", "function"],
+      "properties": {
+        "id": { "type": "string" },
+        "start": { "type": "number", "minimum": 0 },
+        "end": { "type": "number" },
+        "function": { "type": "string" }
+      }
+    },
+    "cue": {
+      "type": "object",
+      "required": ["cue_id", "section_id", "start", "end", "state", "status"],
+      "properties": {
+        "cue_id": { "type": "string" },
+        "section_id": { "type": "string" },
+        "start": { "type": "number", "minimum": 0 },
+        "end": { "type": "number" },
+        "state": { "type": "string" },
+        "energy_start": { "type": "number", "minimum": 0, "maximum": 1 },
+        "energy_end": { "type": "number", "minimum": 0, "maximum": 1 },
+        "function": { "type": "string" },
+        "instrumentation": { "type": "string" },
+        "transition_out": { "type": "string" },
+        "status": { "enum": ["spec_ready_asset_pending", "ready"] }
+      }
+    }
+  },
+  "additionalProperties": false
+}

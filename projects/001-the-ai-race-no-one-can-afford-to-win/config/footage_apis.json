@@ -1,0 +1,14 @@
+{
+  "providers": {
+    "pexels": { "enabled": true, "tier": "free", "env_key": "PEXELS_API_KEY" },
+    "pixabay": { "enabled": true, "tier": "free", "env_key": "PIXABAY_API_KEY" },
+    "coverr": { "enabled": true, "tier": "free", "env_key": "COVERR_API_KEY", "attribution_required_default": true },
+    "mixkit": { "enabled": true, "tier": "manual_curation_only", "note": "No public API - manual curated shortlist only, never scraped or automated." },
+    "artgrid": { "enabled": false, "tier": "paid", "env_key": "ARTGRID_API_KEY" },
+    "storyblocks": { "enabled": false, "tier": "paid", "env_key": "STORYBLOCKS_API_KEY" },
+    "envato": { "enabled": false, "tier": "paid", "env_key": "ENVATO_API_KEY" }
+  },
+  "min_native_duration_headroom_sec": 0,
+  "min_native_resolution_height": 1080,
+  "search_queries_per_scene": { "min": 3, "max": 5 }
+}

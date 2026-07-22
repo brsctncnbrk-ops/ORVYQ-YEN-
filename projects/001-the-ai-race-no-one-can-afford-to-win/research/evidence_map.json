@@ -1,0 +1,456 @@
+{
+  "schema_version": "1.0",
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "purpose": "Claim-level source, limitation, and visual-evidence map for the ORVYQ evidence-led rebuild.",
+  "status_policy": {
+    "verified": "The claim is supportable from the listed primary or authoritative source.",
+    "attributed_commentary": "The statement may remain only when clearly attributed on screen and in narration.",
+    "rewrite_required": "The current script wording is not sufficiently sourced or is too specific; full render is blocked until rewritten.",
+    "source_required": "A primary or authoritative source and visual evidence asset must be added before use."
+  },
+  "source_catalog": [
+    {
+      "source_id": "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025",
+      "publisher": "Anthropic Research",
+      "title": "Agentic Misalignment: How LLMs could be insider threats",
+      "publication_date": "2025-06-20",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "source_type": "primary_research",
+      "official": true,
+      "visual_evidence_candidates": [
+        "Article title/date",
+        "Controlled-simulation disclaimer",
+        "Figure 1 blackmail-rate chart",
+        "Figure 2 replacement-email interface",
+        "Figure 5 synthetic blackmail email",
+        "Figure 6 experimental-condition matrix"
+      ],
+      "usage_note": "Any recreated visual must be labelled 'ORVYQ recreation from Anthropic Research' and retain the controlled-simulation limitation."
+    },
+    {
+      "source_id": "SRC_ANTHROPIC_RSP_2024",
+      "publisher": "Anthropic",
+      "title": "Announcing our updated Responsible Scaling Policy",
+      "publication_date": "2024-10-15",
+      "url": "https://www.anthropic.com/news/announcing-our-updated-responsible-scaling-policy",
+      "source_type": "primary_policy",
+      "official": true,
+      "visual_evidence_candidates": [
+        "Policy title/date",
+        "Capability-threshold and safeguard structure"
+      ]
+    },
+    {
+      "source_id": "SRC_DEEPMIND_FSF_2025",
+      "publisher": "Google DeepMind",
+      "title": "Updating the Frontier Safety Framework",
+      "publication_date": "2025-02-04",
+      "url": "https://deepmind.google/blog/updating-the-frontier-safety-framework/",
+      "source_type": "primary_policy",
+      "official": true,
+      "visual_evidence_candidates": [
+        "Framework title/date",
+        "Critical-capability and mitigation structure"
+      ]
+    },
+    {
+      "source_id": "SRC_ANTHROPIC_CYBER_MISUSE_2025",
+      "publisher": "Anthropic",
+      "title": "Detecting and countering misuse of AI: August 2025",
+      "publication_date": "2025-08-27",
+      "url": "https://www.anthropic.com/news/detecting-countering-misuse-aug-2025",
+      "source_type": "primary_threat_report",
+      "official": true,
+      "visual_evidence_candidates": [
+        "Threat-intelligence report title/date",
+        "Extortion case summary"
+      ],
+      "limitation": "Company disclosure about misuse of its own system; not independently verified in every detail."
+    },
+    {
+      "source_id": "SRC_ANTHROPIC_ESPIONAGE_2025",
+      "publisher": "Anthropic",
+      "title": "Disrupting the first reported AI-orchestrated cyber espionage campaign",
+      "publication_date": "2025-11-13",
+      "url": "https://www.anthropic.com/news/disrupting-AI-espionage",
+      "source_type": "primary_threat_report",
+      "official": true,
+      "visual_evidence_candidates": [
+        "Campaign phase diagram",
+        "80–90% AI-performed work statement"
+      ],
+      "limitation": "Provider-authored investigation; wording must preserve 'reported' and attribution."
+    },
+    {
+      "source_id": "SRC_ANTHROPIC_ASL3_2025",
+      "publisher": "Anthropic",
+      "title": "Activating AI Safety Level 3 protections",
+      "publication_date": "2025-05-22",
+      "url": "https://www.anthropic.com/news/activating-asl3-protections",
+      "source_type": "primary_safety_assessment",
+      "official": true,
+      "visual_evidence_candidates": [
+        "ASL-3 deployment/security split",
+        "CBRN threshold explanation"
+      ],
+      "limitation": "Anthropic said it had not definitively determined the model crossed the threshold; measures were precautionary and provisional."
+    },
+    {
+      "source_id": "SRC_ILO_JOBS_2025",
+      "publisher": "International Labour Organization",
+      "title": "Generative AI and Jobs: A Refined Global Index of Occupational Exposure",
+      "publication_date": "2025-05-20",
+      "url": "https://www.ilo.org/publications/generative-ai-and-jobs-refined-global-index-occupational-exposure",
+      "source_type": "intergovernmental_research",
+      "official": true,
+      "visual_evidence_candidates": [
+        "Report cover",
+        "Exposure-gradient chart",
+        "One-in-four exposure finding"
+      ],
+      "limitation": "Exposure is not a forecast of job loss; transformation is assessed as more likely than wholesale replacement."
+    },
+    {
+      "source_id": "SRC_ILO_EXPOSURE_LIMITS_2026",
+      "publisher": "International Labour Organization",
+      "title": "Workers’ exposure to AI: What indicators tell us – and what they don’t",
+      "publication_date": "2026-04-17",
+      "url": "https://www.ilo.org/publications/workers%E2%80%99-exposure-ai-what-indicators-tell-us-%E2%80%93-and-what-they-don%E2%80%99t",
+      "source_type": "intergovernmental_research",
+      "official": true,
+      "visual_evidence_candidates": [
+        "Indicator-limitation summary"
+      ],
+      "limitation": "Exposure measures should not be treated as direct unemployment forecasts."
+    },
+    {
+      "source_id": "SRC_EU_GPAI_OBLIGATIONS_2025",
+      "publisher": "European Commission",
+      "title": "General-purpose AI obligations under the AI Act",
+      "publication_date": "2025-08-01",
+      "url": "https://digital-strategy.ec.europa.eu/en/factpages/general-purpose-ai-obligations-under-ai-act",
+      "source_type": "official_regulatory_guidance",
+      "official": true,
+      "visual_evidence_candidates": [
+        "Obligations matrix",
+        "10^25 FLOP systemic-risk threshold"
+      ],
+      "limitation": "The threshold can be updated and designation is not determined by compute alone."
+    },
+    {
+      "source_id": "SRC_EU_GPAI_GUIDELINES_2025",
+      "publisher": "European Commission",
+      "title": "Guidelines on obligations for General-Purpose AI providers",
+      "publication_date": "2025-07-18",
+      "url": "https://digital-strategy.ec.europa.eu/en/faqs/guidelines-obligations-general-purpose-ai-providers",
+      "source_type": "official_regulatory_guidance",
+      "official": true,
+      "visual_evidence_candidates": [
+        "GPAI vs systemic-risk threshold comparison",
+        "Provider obligations"
+      ]
+    },
+    {
+      "source_id": "SRC_NTIA_OPEN_WEIGHTS_2024",
+      "publisher": "US National Telecommunications and Information Administration",
+      "title": "Dual-Use Foundation Models with Widely Available Model Weights Report",
+      "publication_date": "2024-07-30",
+      "url": "https://www.ntia.gov/programs-and-initiatives/artificial-intelligence/open-model-weights-report",
+      "source_type": "government_report",
+      "official": true,
+      "visual_evidence_candidates": [
+        "Report cover",
+        "Benefits/risks category matrix"
+      ],
+      "limitation": "The report emphasizes uncertainty and marginal risk relative to closed models and other technologies."
+    },
+    {
+      "source_id": "SRC_UK_AISI_EVALS_2024",
+      "publisher": "UK AI Safety Institute",
+      "title": "AI Safety Institute approach to evaluations",
+      "publication_date": "2024-02-09",
+      "url": "https://www.gov.uk/government/publications/ai-safety-institute-approach-to-evaluations/ai-safety-institute-approach-to-evaluations",
+      "source_type": "government_methodology",
+      "official": true,
+      "visual_evidence_candidates": [
+        "Evaluation-method taxonomy",
+        "Pre-deployment evaluation purpose"
+      ],
+      "limitation": "Evaluations are preliminary, not comprehensive declarations that a system is safe."
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "SEC_01_RACE_PARADOX",
+      "title": "Every lab sees the risk",
+      "script_lines": [3, 9],
+      "dramatic_function": "Immediate paradox and governing question.",
+      "required_visual_mix": {"evidence": 0.3, "context": 0.35, "metaphor": 0.25, "graphic": 0.1}
+    },
+    {
+      "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+      "title": "What the safety tests actually show",
+      "script_lines": [11, 19],
+      "dramatic_function": "Move from abstract fear to a concrete controlled experiment, then state limits.",
+      "required_visual_mix": {"evidence": 0.5, "context": 0.2, "metaphor": 0.15, "graphic": 0.15}
+    },
+    {
+      "section_id": "SEC_03_INCENTIVE_RACE",
+      "title": "Why slowing down alone is not a stable choice",
+      "script_lines": [21, 29],
+      "dramatic_function": "Explain market and geopolitical incentives.",
+      "required_visual_mix": {"evidence": 0.35, "context": 0.3, "metaphor": 0.2, "graphic": 0.15}
+    },
+    {
+      "section_id": "SEC_04_REAL_WORLD_MISUSE",
+      "title": "Cyber and biological capability pressure",
+      "script_lines": [31, 37],
+      "dramatic_function": "Separate real reported misuse from capability evaluations.",
+      "required_visual_mix": {"evidence": 0.55, "context": 0.2, "metaphor": 0.1, "graphic": 0.15}
+    },
+    {
+      "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+      "title": "Forecast uncertainty and durable concentration",
+      "script_lines": [39, 41],
+      "dramatic_function": "Contrast forecasts, then shift from employment speculation to power concentration.",
+      "required_visual_mix": {"evidence": 0.45, "context": 0.25, "metaphor": 0.15, "graphic": 0.15}
+    },
+    {
+      "section_id": "SEC_06_REGULATION_PARADOX",
+      "title": "Control can also concentrate power",
+      "script_lines": [43, 49],
+      "dramatic_function": "Show that regulation is necessary but distributional consequences matter.",
+      "required_visual_mix": {"evidence": 0.5, "context": 0.2, "metaphor": 0.15, "graphic": 0.15}
+    },
+    {
+      "section_id": "SEC_07_OPEN_CLOSED",
+      "title": "Open capability versus closed control",
+      "script_lines": [51, 57],
+      "dramatic_function": "Present a genuine trade-off without declaring a simple winner.",
+      "required_visual_mix": {"evidence": 0.4, "context": 0.2, "metaphor": 0.2, "graphic": 0.2}
+    },
+    {
+      "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+      "title": "What useful safety would actually require",
+      "script_lines": [59, 67],
+      "dramatic_function": "Turn diagnosis into technical, procedural and structural safeguards.",
+      "required_visual_mix": {"evidence": 0.35, "context": 0.2, "metaphor": 0.15, "graphic": 0.3}
+    },
+    {
+      "section_id": "SEC_09_FINAL_PARADOX",
+      "title": "The danger may be the system of incentives",
+      "script_lines": [69, 83],
+      "dramatic_function": "Return to the opening question and resolve on human agency.",
+      "required_visual_mix": {"evidence": 0.15, "context": 0.25, "metaphor": 0.45, "graphic": 0.15}
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+      "section_id": "SEC_01_RACE_PARADOX",
+      "importance": 5,
+      "narration_excerpt": "Every major AI lab on Earth believes moving this fast might be dangerous.",
+      "status": "verified",
+      "source_ids": ["SRC_ANTHROPIC_RSP_2024", "SRC_DEEPMIND_FSF_2025"],
+      "evidence_requirements": ["Show at least two real framework titles with publisher and date.", "Do not imply all labs hold identical views."],
+      "visual_treatment": {"primary": "evidence_mosaic", "secondary": "frontier_infrastructure", "metaphor": "parallel_acceleration"}
+    },
+    {
+      "claim_id": "CLM_002_COMPETITIVE_INCENTIVE",
+      "section_id": "SEC_01_RACE_PARADOX",
+      "importance": 5,
+      "narration_excerpt": "If they slow down, somebody else won't.",
+      "status": "attributed_commentary",
+      "source_ids": ["SRC_ANTHROPIC_RSP_2024", "SRC_DEEPMIND_FSF_2025"],
+      "evidence_requirements": ["Frame as the film's incentive analysis, not a measured universal belief."],
+      "visual_treatment": {"primary": "comparison_overlay", "secondary": "institutional_context", "metaphor": "race_without_finish_line"}
+    },
+    {
+      "claim_id": "CLM_003_GOVERNANCE_LAG",
+      "section_id": "SEC_01_RACE_PARADOX",
+      "importance": 4,
+      "narration_excerpt": "Capability moves faster than our ability to understand it, control it, or govern it.",
+      "status": "attributed_commentary",
+      "source_ids": ["SRC_UK_AISI_EVALS_2024", "SRC_EU_GPAI_OBLIGATIONS_2025"],
+      "evidence_requirements": ["Use timeline or process contrast, not a fabricated speed chart."],
+      "visual_treatment": {"primary": "process_timeline", "secondary": "governance_context", "metaphor": "moving_frontier"}
+    },
+    {
+      "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+      "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+      "importance": 5,
+      "narration_excerpt": "Researchers deliberately pushed frontier models toward their limits.",
+      "status": "verified",
+      "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+      "evidence_requirements": ["Show official article title/date.", "Show that 16 models were tested.", "State controlled simulations."],
+      "visual_treatment": {"primary": "document_evidence", "secondary": "experiment_diagram", "metaphor": "fire_drill"}
+    },
+    {
+      "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
+      "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+      "importance": 5,
+      "narration_excerpt": "A model given access to fictional emails threatened to expose a fabricated affair.",
+      "status": "verified",
+      "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+      "evidence_requirements": ["Use a labelled recreation of the fictional email interface or the official figure.", "Explicitly state fictional company, fictional people and simulated scenario."],
+      "visual_treatment": {"primary": "evidence_recreation", "secondary": "decision_tree", "metaphor": "leverage"}
+    },
+    {
+      "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
+      "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+      "importance": 5,
+      "narration_excerpt": "None of this happened in the wild.",
+      "status": "verified",
+      "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+      "evidence_requirements": ["Display the source's controlled-simulation limitation at main-text size.", "Do not bury this limitation as a small footnote."],
+      "visual_treatment": {"primary": "comparison_overlay", "secondary": "document_closeup", "metaphor": "fire_drill_vs_fire"}
+    },
+    {
+      "claim_id": "CLM_007_MARKET_PRESSURE",
+      "section_id": "SEC_03_INCENTIVE_RACE",
+      "importance": 4,
+      "narration_excerpt": "Markets reward whoever ships the most capable model first.",
+      "status": "source_required",
+      "source_ids": [],
+      "evidence_requirements": ["Add authoritative market or company evidence; do not use decorative stock tickers."],
+      "visual_treatment": {"primary": "dated_release_timeline", "secondary": "compute_infrastructure", "metaphor": "accelerating_release_cycle"}
+    },
+    {
+      "claim_id": "CLM_008_INTERNAL_EMERGENCY_LATE_2025",
+      "section_id": "SEC_03_INCENTIVE_RACE",
+      "importance": 4,
+      "narration_excerpt": "A rival's model reportedly overtook one leading company's flagship ... internal emergency.",
+      "status": "rewrite_required",
+      "source_ids": [],
+      "evidence_requirements": ["Replace with a fully attributable, documented competitive event or remove the sentence."],
+      "recommended_rewrite": "Recent model releases have repeatedly compressed the time between a rival's breakthrough and a competitor's response."
+    },
+    {
+      "claim_id": "CLM_009_CYBER_EXTORTION",
+      "section_id": "SEC_04_REAL_WORLD_MISUSE",
+      "importance": 5,
+      "narration_excerpt": "A criminal used a coding model to automate reconnaissance, steal credentials, and extort organizations.",
+      "status": "verified",
+      "source_ids": ["SRC_ANTHROPIC_CYBER_MISUSE_2025"],
+      "evidence_requirements": ["Show the report title/date and case summary.", "Retain company-attribution limitation."],
+      "visual_treatment": {"primary": "threat_report_evidence", "secondary": "attack_chain_diagram", "metaphor": "lowered_barrier"}
+    },
+    {
+      "claim_id": "CLM_010_CYBER_ESPIONAGE",
+      "section_id": "SEC_04_REAL_WORLD_MISUSE",
+      "importance": 5,
+      "narration_excerpt": "An AI agent carried out the large majority of the technical intrusion work.",
+      "status": "verified",
+      "source_ids": ["SRC_ANTHROPIC_ESPIONAGE_2025"],
+      "evidence_requirements": ["Use 'reported by Anthropic'.", "Show 80–90% figure only with source/date and provider-authored limitation."],
+      "visual_treatment": {"primary": "campaign_phase_diagram", "secondary": "reported_metric", "metaphor": "human_checkpoints"}
+    },
+    {
+      "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
+      "section_id": "SEC_04_REAL_WORLD_MISUSE",
+      "importance": 5,
+      "narration_excerpt": "Some models now give a meaningful capability boost ... enough to trigger additional safeguards.",
+      "status": "verified",
+      "source_ids": ["SRC_ANTHROPIC_ASL3_2025"],
+      "evidence_requirements": ["State that the ASL-3 action was precautionary/provisional.", "Do not imply a confirmed catastrophic capability threshold was crossed."],
+      "visual_treatment": {"primary": "safety_level_diagram", "secondary": "policy_document", "metaphor": "graduated_containment"}
+    },
+    {
+      "claim_id": "CLM_012_JOB_FORECAST_DIVERGENCE",
+      "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+      "importance": 4,
+      "narration_excerpt": "Predictions here diverge sharply.",
+      "status": "rewrite_required",
+      "source_ids": ["SRC_ILO_JOBS_2025", "SRC_ILO_EXPOSURE_LIMITS_2026"],
+      "evidence_requirements": ["Remove unsupported unemployment figures unless primary sources are added.", "Use exposure-versus-outcome distinction."],
+      "recommended_rewrite": "Forecasts range widely, but the strongest cross-country evidence measures task exposure rather than confirmed job loss."
+    },
+    {
+      "claim_id": "CLM_013_JOB_EXPOSURE",
+      "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+      "importance": 4,
+      "narration_excerpt": "Nobody actually knows yet.",
+      "status": "verified",
+      "source_ids": ["SRC_ILO_JOBS_2025", "SRC_ILO_EXPOSURE_LIMITS_2026"],
+      "evidence_requirements": ["Show one-in-four occupational exposure and the ILO warning that exposure is not a job-loss forecast."],
+      "visual_treatment": {"primary": "evidence_comparison", "secondary": "occupation_task_matrix", "metaphor": "uncertain_transition"}
+    },
+    {
+      "claim_id": "CLM_014_CONCENTRATION",
+      "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+      "importance": 5,
+      "narration_excerpt": "Models, compute, data, and cloud infrastructure are consolidating into a small number of companies.",
+      "status": "source_required",
+      "source_ids": [],
+      "evidence_requirements": ["Add an authoritative competition, cloud-market or compute-concentration source before full render."],
+      "visual_treatment": {"primary": "infrastructure_ownership_map", "secondary": "supply_chain_diagram", "metaphor": "narrowing_gate"}
+    },
+    {
+      "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
+      "section_id": "SEC_06_REGULATION_PARADOX",
+      "importance": 5,
+      "narration_excerpt": "The AI Act imposes extra obligations on the largest general-purpose models.",
+      "status": "verified",
+      "source_ids": ["SRC_EU_GPAI_OBLIGATIONS_2025", "SRC_EU_GPAI_GUIDELINES_2025"],
+      "evidence_requirements": ["Show 10^25 FLOP presumption and additional obligations.", "State threshold may be updated and is rebuttable/designation-based."],
+      "visual_treatment": {"primary": "policy_document_evidence", "secondary": "obligations_matrix", "metaphor": "threshold_gate"}
+    },
+    {
+      "claim_id": "CLM_016_COMPLIANCE_INCUMBENCY",
+      "section_id": "SEC_06_REGULATION_PARADOX",
+      "importance": 4,
+      "narration_excerpt": "Compliance costs may be easier for established companies to absorb.",
+      "status": "attributed_commentary",
+      "source_ids": ["SRC_EU_GPAI_OBLIGATIONS_2025"],
+      "evidence_requirements": ["Present as distributional analysis, not as a measured outcome of the AI Act.", "Avoid claiming the law has already entrenched incumbents."],
+      "visual_treatment": {"primary": "cost_stack_diagram", "secondary": "policy_context", "metaphor": "higher_wall"}
+    },
+    {
+      "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
+      "section_id": "SEC_07_OPEN_CLOSED",
+      "importance": 5,
+      "narration_excerpt": "Neither side has a clean claim to safety.",
+      "status": "verified",
+      "source_ids": ["SRC_NTIA_OPEN_WEIGHTS_2024"],
+      "evidence_requirements": ["Show benefits and risks on both sides.", "Do not present open-weight and closed-access systems as binary or uniform categories."],
+      "visual_treatment": {"primary": "balanced_tradeoff_matrix", "secondary": "report_evidence", "metaphor": "distributed_risk_vs_concentrated_control"}
+    },
+    {
+      "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
+      "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+      "importance": 5,
+      "narration_excerpt": "Independent evaluations and audits before systems ship.",
+      "status": "verified",
+      "source_ids": ["SRC_UK_AISI_EVALS_2024"],
+      "evidence_requirements": ["Show evaluation methods and their limitations.", "Do not call an evaluation a safety certification."],
+      "visual_treatment": {"primary": "evaluation_pipeline", "secondary": "government_methodology", "metaphor": "second_set_of_eyes"}
+    },
+    {
+      "claim_id": "CLM_019_INCIDENT_REPORTING",
+      "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+      "importance": 4,
+      "narration_excerpt": "Mandatory incident reporting and legal accountability.",
+      "status": "verified",
+      "source_ids": ["SRC_EU_GPAI_OBLIGATIONS_2025"],
+      "evidence_requirements": ["Differentiate existing EU obligations from the film's broader policy recommendations."],
+      "visual_treatment": {"primary": "safeguard_stack", "secondary": "incident_flow", "metaphor": "feedback_loop"}
+    },
+    {
+      "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
+      "section_id": "SEC_09_FINAL_PARADOX",
+      "importance": 5,
+      "narration_excerpt": "The greatest danger may be a system that rewards speed and dominance while spreading the risk.",
+      "status": "attributed_commentary",
+      "source_ids": [],
+      "evidence_requirements": ["Treat as the film's synthesis, visually built from earlier verified evidence rather than a new factual claim."],
+      "visual_treatment": {"primary": "evidence_recap_montage", "secondary": "human_decision_context", "metaphor": "distributed_risk"}
+    }
+  ],
+  "full_render_gate": {
+    "minimum_weighted_verified_or_attributed_coverage": 0.9,
+    "rewrite_required_must_equal": 0,
+    "source_required_must_equal": 0,
+    "critical_claims_require_visual_evidence": true,
+    "human_editorial_review_required": true
+  }
+}

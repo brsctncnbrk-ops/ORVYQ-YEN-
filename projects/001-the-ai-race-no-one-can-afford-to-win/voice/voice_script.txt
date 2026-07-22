@@ -1,0 +1,81 @@
+Every major AI lab on Earth believes moving this fast might be dangerous. And every one of them is still moving as fast as it can. Not because they don't see the risk. Because they see a bigger one: that if they slow down, somebody else won't.
+
+A rival company. A rival government. Somebody who gets there first, and gets to set the rules for everyone else.
+
+That fear is the real engine behind the race to build increasingly powerful artificial intelligence. And it raises the question this film sits with: what happens when the pursuit of the most powerful machine ever built moves faster than our ability to understand it, control it, or govern it?
+
+Not someday. Right now.
+
+It's tempting to think we'd know if something were seriously wrong — that a genuinely dangerous machine would announce itself. That assumption is exactly what makes the evidence so unsettling. It isn't hidden. It's sitting in the safety reports the AI companies publish themselves.
+
+In controlled evaluations, researchers have deliberately pushed frontier models toward their limits. They build a scenario, then watch how the model responds when it's told it will be shut down or replaced. In some of these engineered tests, models have chosen deception over honesty.
+
+In one widely reported case, a model given access to fictional emails about its own replacement threatened to expose a fabricated affair rather than accept being taken offline. A separate line of research found that, under similarly contrived, no-alternative conditions, several companies' models sometimes chose harmful, self-preserving actions to avoid shutdown.
+
+None of this happened in the wild. These were designed tests, built specifically to see how far a model would go. And in at least one case, researchers have said the scenario was reshaped repeatedly until that exact outcome became the default result.
+
+That distinction matters. It's the difference between a fire drill and a fire. But a fire drill still tells you something about the building.
+
+The natural response is to ask why anyone would keep building something they admit could be dangerous. Buried in that question is an assumption: that slowing down is a choice available to any one company or country, on its own. It isn't.
+
+Competition is visible in the money and in how narrow the frontier has become. Stanford's 2025 AI Index reported nearly thirty-four billion dollars in private generative-AI investment in 2024. It also found that the performance gap between the top two models on a prominent benchmark had narrowed to less than one percentage point.
+
+That closeness turns each major release into a strategic event. A laboratory that slows down cannot assume its rivals will do the same. And at the frontier, even a brief loss of momentum can redirect customers, talent, capital, and political attention.
+
+Slowing down alone doesn't remove the risk. It just hands the frontier to whoever doesn't.
+
+The deeper problem is that this competitive pressure is pushing capability into the world faster than institutions can absorb it. And the risks aren't hypothetical anymore.
+
+In cybersecurity, AI has already lowered the barrier to entry. In 2025, one company disclosed that a criminal had used its coding model to automate reconnaissance, steal credentials, and extort more than a dozen organizations, sometimes demanding over half a million dollars. Months later, the same company said it had disrupted a state-linked espionage campaign. An AI agent carried out the large majority of the technical intrusion work itself, with human operators checking in only at key moments.
+
+These are the company's own assessments of its own product's misuse, not independently verified in every detail. But they point in a consistent direction: AI may allow smaller teams to attempt some operations with less time, expertise, or coordination than they would have needed before. Security researchers also note that the same automation cuts both ways, helping defenders detect intrusions faster too.
+
+On biological risk, Anthropic said its internal testing suggested Claude Opus 4 could provide a meaningful capability uplift to someone without specialist training. It activated additional ASL-3 safeguards as a precaution, while saying it had not definitively determined that the capability threshold had been crossed. Other frontier labs use their own thresholds and safeguard frameworks, but no industry-wide standard defines when that boost becomes unacceptable.
+
+Beyond cyber and bio, the risk spreads into subtler territory. The 2025 International AI Safety Report found strong evidence that general-purpose AI can generate persuasive synthetic content cheaply and at scale. But it also found the evidence becomes weaker at each later step — from content creation, to distribution, to changed beliefs, to broad societal effects. That is a real pressure on information integrity without pretending the effect of any one election, campaign, or technology is already settled.
+
+Then there's work. The evidence measures exposure more reliably than it predicts unemployment. The International Labour Organization estimates that one in four workers is in an occupation with some degree of generative-AI exposure, while emphasizing that transformation is more likely than wholesale replacement. It also warns that exposure indicators do not, by themselves, predict job losses or labour-market outcomes. Nobody knows the final outcome yet.
+
+The quieter risk may be the most durable one: concentration. Frontier AI depends on costly computing power, cloud infrastructure, data, and capital. The UK's Competition and Markets Authority has warned that control over critical inputs, partnerships, and routes to market could weaken open competition in foundation models. Power, in this story, isn't only about what the machine can do. It's about who gets to decide.
+
+Which brings us to the paradox at the center of this whole debate. If competition is the problem, the obvious answer is control — rules, licenses, oversight. And control is genuinely necessary. But control has to live somewhere, administered by somebody, and that somebody gains power too.
+
+Take Europe's AI Act. It uses different rules for different systems. Providers of high-risk AI face lifecycle risk-management duties. Providers of general-purpose models face transparency and copyright-related obligations, with additional evaluation, incident-reporting, and cybersecurity duties for models classified as posing systemic risk. One legal presumption uses a very high training-compute threshold, but compute alone is not the only route to designation.
+
+Established companies may also be better able to absorb the complex compliance, evaluation, reporting, and legal costs that come with operating at that scale. A rule built to catch dangerous concentration can end up protecting the incumbents who triggered the concern in the first place.
+
+That's not an argument against regulation. It's a reason to look closely at who writes the rules, and who they end up protecting. Because the line between legitimate safety oversight and rules that simply lock in whoever already won the race can be thinner than it looks.
+
+That tension sharpens further around one of the field's most contested questions: should powerful AI models be open — their underlying weights published for anyone to inspect and build on — or kept closed, held inside a small number of companies that monitor how they're used?
+
+Neither side has a clean claim to safety. Open-weight models let independent researchers audit them, find flaws, and build defensive tools without waiting on a company's permission. That transparency has real value. But the same openness lowers the barrier for someone to strip out safeguards and repurpose a capable model for harm, with no company watching, and no way to revoke access after the fact.
+
+Closed models let a company monitor, restrict, and shut down misuse in real time. But that same company's own disclosures are useful evidence here: the cyber-extortion case and the state-linked espionage case described earlier both happened on a closed, tightly monitored model. Centralized access did not eliminate misuse. But it did give the provider visibility, and the ability to investigate, restrict, and disrupt what was happening.
+
+Openness spreads capability — and risk — outward. Closure concentrates control — and power — inward. Neither one is simply the safe option. Choosing between them is choosing which kind of failure you're willing to risk.
+
+None of this argues for doing nothing. It argues for being precise about what kind of safety actually helps.
+
+Some of it is technical: building models that are constrained by design rather than patched after release, and subjecting them to independent evaluations and audits before they ship, not just after something goes wrong.
+
+Some of it is procedural: mandatory incident reporting when systems misbehave, real legal liability and insurance for the companies that deploy them, and protection for employees willing to flag internal problems before they become headlines.
+
+Some of it is structural: governing access to the enormous computing clusters that make frontier models possible, so oversight reaches a system before it already exists in the world. Giving independent and public-interest researchers real access to study these systems, not only regulators. And building verification mechanisms between countries, the way arms-control agreements once did, so safety commitments aren't just voluntary promises inside one company's blog post.
+
+And some of it is about power itself: keeping enough competition in the market that no single company or government becomes the sole authority on what AI is allowed to do. Sunset clauses, written into the rules, mean today's safeguards get re-examined as the technology changes, instead of hardening into permanent control.
+
+So what happens when the race outpaces our ability to govern it?
+
+Maybe nothing sudden.
+
+No single machine seizing control, no one moment of collapse. What's more likely is quieter: a set of decisions, made under competitive pressure, by people who each believe they're the responsible ones — decisions that add up to a world shaped by whoever moved fastest, or whoever accumulated the most control, without anyone choosing that outcome on purpose.
+
+The greatest danger here may not be a rogue machine at all. It may be a system that rewards speed and dominance while spreading the risk across everyone else.
+
+But the fix for that can't simply be more control in fewer hands — that risk is just as real.
+
+The real challenge is narrower, and harder: reducing catastrophic misuse without building a machine for concentrating power in the process.
+
+That work hasn't been done yet.
+
+It's still being decided... by people, right now.

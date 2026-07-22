@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/captions.schema.json",
+  "title": "Canonical Captions",
+  "description": "Single-line, no-karaoke, editorial-pause-aware captions produced by buildCanonicalCaptions(). Matches what CaptionLayer.tsx consumes.",
+  "type": "object",
+  "required": ["schema_version", "style", "captions"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "style": {
+      "type": "object",
+      "required": ["placement", "line_count", "max_words", "max_chars", "font_size_px", "background"],
+      "properties": {
+        "placement": { "const": "bottom_safe" },
+        "line_count": { "const": 1 },
+        "max_words": { "type": "integer", "maximum": 7 },
+        "max_chars": { "type": "integer", "maximum": 52 },
+        "font_size_px": { "type": "integer", "minimum": 1 },
+        "background": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "alignment": {
+      "type": "object",
+      "description": "Diagnostics from aligning the approved script text onto ASR word timestamps.",
+      "properties": {
+        "recognized_words": { "type": "integer" },
+        "aligned_script_words": { "type": "integer" },
+        "mapped_words": { "type": "integer" },
+        "score": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "captions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["caption_id", "scene_id", "start_frame", "end_frame", "text"],
+        "properties": {
+          "caption_id": { "type": "string" },
+          "scene_id": { "type": "string" },
+          "start_frame": { "type": "integer", "minimum": 0 },
+          "end_frame": { "type": "integer", "minimum": 1 },
+          "text": { "type": "string", "maxLength": 52 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

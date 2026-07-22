@@ -1,0 +1,25 @@
+node_modules/
+npm-debug.log*
+.DS_Store
+.env
+.env.local
+
+# Generated runtime files
+projects/*/logs/*
+!projects/*/logs/.gitkeep
+projects/*/output/*
+!projects/*/output/.gitkeep
+projects/*/qa/*
+!projects/*/qa/.gitkeep
+
+# Always-regenerate build output -- see docs/golden-renderer-map.md section 5.
+# Never hand-commit this; if it must be inspected, add a CI check that it is
+# byte-identical to a fresh `build-project` run instead.
+projects/*/remotion/render_ready_project/
+
+# Binary media (footage/audio/evidence images) is not yet tracked in this repo.
+# Before Phase 3/5 populate these directories with real assets, set up
+# .gitattributes Git LFS tracking (see docs/source-audit.md section 4) and
+# remove/narrow these two lines -- do not let large binaries land unindexed.
+projects/*/assets/
+projects/*/footage/

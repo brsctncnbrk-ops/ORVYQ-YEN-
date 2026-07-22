@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/evidence_registry.schema.json",
+  "title": "Canonical Evidence Registry",
+  "description": "Unifies research/evidence_map.json (sources + claims), research/evidence_resolutions.json (the delta layered on top), research/primary_evidence_manifest.json and research/evidence_asset_manifest.json (the evidence-asset specs) into one registry. Per docs/file-classification.md section 9, fact_audit/claims.json is a second, differently-schemed claim registry that must be reconciled into this shape during Phase 3 -- not duplicated as a second source of truth.",
+  "type": "object",
+  "required": ["schema_version", "project_id", "sources", "claims", "evidence_assets"],
+  "properties": {
+    "schema_version": { "const": "1.0-canonical" },
+    "project_id": { "type": "string" },
+    "sources": { "type": "array", "items": { "$ref": "#/$defs/source" } },
+    "claims": { "type": "array", "items": { "$ref": "#/$defs/claim" } },
+    "evidence_assets": { "type": "array", "items": { "$ref": "#/$defs/evidence_asset" } }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["source_id", "publisher", "title", "url", "official"],
+      "properties": {
+        "source_id": { "type": "string" },
+        "publisher": { "type": "string" },
+        "title": { "type": "string" },
+        "publication_date": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "source_type": { "type": "string" },
+        "official": { "type": "boolean" }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": ["claim_id", "status", "source_ids"],
+      "properties": {
+        "claim_id": { "type": "string" },
+        "section_id": { "type": "string" },
+        "importance": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "narration_excerpt": { "type": "string" },
+        "status": { "enum": ["verified", "attributed_commentary", "rewrite_required", "source_required", "removed"] },
+        "source_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "evidence_asset": {
+      "type": "object",
+      "required": ["evidence_asset_id", "claim_ids", "source_ids", "mode", "status"],
+      "properties": {
+        "evidence_asset_id": { "type": "string" },
+        "claim_ids": { "type": "array", "items": { "type": "string" } },
+        "source_ids": { "type": "array", "items": { "type": "string" } },
+        "mode": {
+          "enum": [
+            "official_primary_capture", "official_page_capture", "official_figure_capture",
+            "labelled_recreation", "original_source_derived_diagram"
+          ]
+        },
+        "status": { "type": "string" },
+        "required_for_proof": { "type": "boolean" },
+        "required_for_full": { "type": "boolean" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

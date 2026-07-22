@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/timeline.schema.json",
+  "title": "Canonical Timeline",
+  "description": "The full, frame-accurate shot sequence covering the entire canonical film -- the single ground truth that both proof and full render modes select a sub-range of. Never mode-specific itself.",
+  "type": "object",
+  "required": ["fps", "duration_frames", "shots"],
+  "properties": {
+    "fps": { "const": 30 },
+    "duration_frames": { "type": "integer", "minimum": 1 },
+    "blacklisted_assets": { "type": "array", "items": { "type": "string" } },
+    "shots": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "shot.schema.json" }
+    }
+  },
+  "additionalProperties": false
+}

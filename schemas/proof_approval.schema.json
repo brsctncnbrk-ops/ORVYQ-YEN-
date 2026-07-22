@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/proof_approval.schema.json",
+  "title": "Proof Approval",
+  "description": "Human sign-off on a specific frozen_candidate (identified by hashing the frozen_candidate document -- see frozen_candidate.schema.json). Full render is blocked unless a proof_approval exists whose frozen_candidate_hash matches the current frozen candidate exactly.",
+  "type": "object",
+  "required": ["frozen_candidate_hash", "approved", "approved_at"],
+  "properties": {
+    "frozen_candidate_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "approved": { "type": "boolean" },
+    "approved_by": { "type": "string" },
+    "approved_at": { "type": "string", "format": "date-time" },
+    "notes": { "type": "string" },
+    "proof_artifact": {
+      "type": "object",
+      "properties": {
+        "workflow_run_id": { "type": "string" },
+        "artifact_name": { "type": "string" },
+        "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+        "resolution": { "type": "string" },
+        "fps": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

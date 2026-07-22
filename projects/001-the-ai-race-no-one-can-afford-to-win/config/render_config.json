@@ -1,0 +1,5 @@
+{
+  "codec": "h264",
+  "crf": 18,
+  "output_filename": "final_video.mp4"
+}

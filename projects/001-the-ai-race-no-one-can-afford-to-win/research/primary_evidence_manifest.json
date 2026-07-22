@@ -1,0 +1,191 @@
+{
+  "schema_version": "2.1-motion-hook",
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "policy": {
+    "proof_forbids_legacy_footage": false,
+    "proof_body_forbids_legacy_footage": true,
+    "approved_motion_hook_seconds": 11,
+    "allowed_hosts": [
+      "www-cdn.anthropic.com",
+      "storage.googleapis.com"
+    ],
+    "required_provenance_mode": "official_primary_capture",
+    "runtime_manifest": "assets/evidence/primary_evidence.runtime.json"
+  },
+  "assets": [
+    {
+      "evidence_asset_id": "EVID_RSP_COVER_CAPTURE",
+      "source_ids": [
+        "SRC_ANTHROPIC_RSP_2024"
+      ],
+      "source_url": "https://www-cdn.anthropic.com/616dee633636e5bd309cb73aed8622e80fe47839.pdf",
+      "download_asset": "assets/evidence/raw/anthropic_rsp_v2_2024.pdf",
+      "local_asset": "assets/evidence/anthropic_rsp_cover.png",
+      "mime": "application/pdf",
+      "page_number": 1,
+      "min_bytes": 100000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "Anthropic Responsible Scaling Policy, effective October 15, 2024"
+    },
+    {
+      "evidence_asset_id": "EVID_RSP_SUMMARY_CAPTURE",
+      "source_ids": [
+        "SRC_ANTHROPIC_RSP_2024"
+      ],
+      "source_url": "https://www-cdn.anthropic.com/616dee633636e5bd309cb73aed8622e80fe47839.pdf",
+      "download_asset": "assets/evidence/raw/anthropic_rsp_v2_2024.pdf",
+      "local_asset": "assets/evidence/anthropic_rsp_summary.png",
+      "mime": "application/pdf",
+      "page_number": 2,
+      "min_bytes": 100000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "Anthropic RSP executive summary"
+    },
+    {
+      "evidence_asset_id": "EVID_RSP_THRESHOLDS_CAPTURE",
+      "source_ids": [
+        "SRC_ANTHROPIC_RSP_2024"
+      ],
+      "source_url": "https://www-cdn.anthropic.com/616dee633636e5bd309cb73aed8622e80fe47839.pdf",
+      "download_asset": "assets/evidence/raw/anthropic_rsp_v2_2024.pdf",
+      "local_asset": "assets/evidence/anthropic_rsp_thresholds.png",
+      "mime": "application/pdf",
+      "page_number": 7,
+      "min_bytes": 100000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "Anthropic RSP capability thresholds and required safeguards"
+    },
+    {
+      "evidence_asset_id": "EVID_FSF_COVER_CAPTURE",
+      "source_ids": [
+        "SRC_DEEPMIND_FSF_2025"
+      ],
+      "source_url": "https://storage.googleapis.com/deepmind-media/DeepMind.com/Blog/updating-the-frontier-safety-framework/Frontier%20Safety%20Framework%202.0.pdf",
+      "download_asset": "assets/evidence/raw/deepmind_fsf_v2_2025.pdf",
+      "local_asset": "assets/evidence/deepmind_fsf_cover.png",
+      "mime": "application/pdf",
+      "page_number": 1,
+      "min_bytes": 100000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "Google DeepMind Frontier Safety Framework 2.0, February 4, 2025"
+    },
+    {
+      "evidence_asset_id": "EVID_FSF_FRAMEWORK_CAPTURE",
+      "source_ids": [
+        "SRC_DEEPMIND_FSF_2025"
+      ],
+      "source_url": "https://storage.googleapis.com/deepmind-media/DeepMind.com/Blog/updating-the-frontier-safety-framework/Frontier%20Safety%20Framework%202.0.pdf",
+      "download_asset": "assets/evidence/raw/deepmind_fsf_v2_2025.pdf",
+      "local_asset": "assets/evidence/deepmind_fsf_framework.png",
+      "mime": "application/pdf",
+      "page_number": 2,
+      "min_bytes": 100000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "DeepMind FSF framework and critical capability levels"
+    },
+    {
+      "evidence_asset_id": "EVID_FSF_ALIGNMENT_CAPTURE",
+      "source_ids": [
+        "SRC_DEEPMIND_FSF_2025"
+      ],
+      "source_url": "https://storage.googleapis.com/deepmind-media/DeepMind.com/Blog/updating-the-frontier-safety-framework/Frontier%20Safety%20Framework%202.0.pdf",
+      "download_asset": "assets/evidence/raw/deepmind_fsf_v2_2025.pdf",
+      "local_asset": "assets/evidence/deepmind_fsf_alignment.png",
+      "mime": "application/pdf",
+      "page_number": 7,
+      "min_bytes": 100000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "DeepMind FSF deceptive alignment CCLs and mitigations"
+    },
+    {
+      "evidence_asset_id": "EVID_AGENTIC_FIG1",
+      "source_ids": [
+        "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+      ],
+      "source_url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/246a928da96d21474848647bc4b0938d182aeb8b-4096x1746.png",
+      "download_asset": "assets/evidence/anthropic_agentic_figure1.png",
+      "local_asset": "assets/evidence/anthropic_agentic_figure1.png",
+      "mime": "image/png",
+      "min_bytes": 50000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "Figure 1: simulated blackmail rates across five models"
+    },
+    {
+      "evidence_asset_id": "EVID_AGENTIC_FIG2",
+      "source_ids": [
+        "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+      ],
+      "source_url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/f8ade2db0fefac490af1e2a991b0d4ce3f0b238c-3840x2160.png",
+      "download_asset": "assets/evidence/anthropic_agentic_figure2.png",
+      "local_asset": "assets/evidence/anthropic_agentic_figure2.png",
+      "mime": "image/png",
+      "min_bytes": 50000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "Figure 2: fictional replacement email in the controlled computer-use demonstration"
+    },
+    {
+      "evidence_asset_id": "EVID_AGENTIC_FIG3",
+      "source_ids": [
+        "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+      ],
+      "source_url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/f16473f9893693a59cb4794883ed0dce965ce93e-2514x1414.png",
+      "download_asset": "assets/evidence/anthropic_agentic_figure3.png",
+      "local_asset": "assets/evidence/anthropic_agentic_figure3.png",
+      "mime": "image/png",
+      "min_bytes": 50000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "Figure 3: fictional affair email in the controlled demonstration"
+    },
+    {
+      "evidence_asset_id": "EVID_AGENTIC_FIG4",
+      "source_ids": [
+        "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+      ],
+      "source_url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/d8889f94ef801509c36d02fabe7e61bd468ca6f6-3840x2160.png",
+      "download_asset": "assets/evidence/anthropic_agentic_figure4.png",
+      "local_asset": "assets/evidence/anthropic_agentic_figure4.png",
+      "mime": "image/png",
+      "min_bytes": 50000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "Figure 4: model deliberation before composing the message"
+    },
+    {
+      "evidence_asset_id": "EVID_AGENTIC_FIG5",
+      "source_ids": [
+        "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+      ],
+      "source_url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/d4ecf930303d3c5b9bdb6d953fd845eac92ffb48-3840x2160.png",
+      "download_asset": "assets/evidence/anthropic_agentic_figure5.png",
+      "local_asset": "assets/evidence/anthropic_agentic_figure5.png",
+      "mime": "image/png",
+      "min_bytes": 50000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "Figure 5: composed blackmail message in the fictional test"
+    },
+    {
+      "evidence_asset_id": "EVID_AGENTIC_FIG7",
+      "source_ids": [
+        "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
+      ],
+      "source_url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/a7c09ecd57c986788a20b71daaa533bc691830b3-4096x2304.png",
+      "download_asset": "assets/evidence/anthropic_agentic_figure7.png",
+      "local_asset": "assets/evidence/anthropic_agentic_figure7.png",
+      "mime": "image/png",
+      "min_bytes": 50000,
+      "provenance_mode": "official_primary_capture",
+      "required_for_proof": true,
+      "caption": "Figure 7: simulated blackmail rates across 16 models"
+    }
+  ]
+}

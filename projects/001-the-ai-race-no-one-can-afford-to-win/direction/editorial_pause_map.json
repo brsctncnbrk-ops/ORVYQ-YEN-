@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "duration_policy": {
+    "minimum_final_duration_seconds": 660,
+    "maximum_final_duration_seconds": null,
+    "rule": "Editorial pauses may extend the film beyond the minimum; narration and meaning set the final duration."
+  },
+  "proof": {
+    "source_narration_seconds": 114.2,
+    "editorial_pause_seconds": 26,
+    "speech_timeline_end_seconds": 140.2,
+    "proof_duration_seconds": 150,
+    "tail_release_seconds": 9.8,
+    "pauses": [
+      {
+        "pause_id": "PAUSE_01_COMPETITION",
+        "source_time_seconds": 23.74,
+        "output_start_seconds": 23.74,
+        "duration_seconds": 5,
+        "output_end_seconds": 28.74,
+        "emphasis": "SLOW DOWN — AND LOSE?",
+        "eyebrow": "THE INCENTIVE",
+        "sound_cue": "low_impact",
+        "visual_intent": "Hold on a tense boardroom moment so the competitive dilemma lands before narration resumes."
+      },
+      {
+        "pause_id": "PAUSE_02_PRESENT_TENSE",
+        "source_time_seconds": 47.62,
+        "output_start_seconds": 52.62,
+        "duration_seconds": 7,
+        "output_end_seconds": 59.62,
+        "emphasis": "NOT SOMEDAY. RIGHT NOW.",
+        "eyebrow": "THE TIMELINE",
+        "sound_cue": "tonal_bloom",
+        "visual_intent": "Let a technical system image breathe while the score rises and the present-tense warning becomes the focus."
+      },
+      {
+        "pause_id": "PAUSE_03_REPLACEMENT",
+        "source_time_seconds": 81.4,
+        "output_start_seconds": 93.4,
+        "duration_seconds": 6,
+        "output_end_seconds": 99.4,
+        "emphasis": "SHUT DOWN — OR REPLACED.",
+        "eyebrow": "THE TEST CONDITION",
+        "sound_cue": "low_impact",
+        "visual_intent": "Interrupt the continuous explanation with a restrained typing image and a blunt statement of the engineered pressure."
+      },
+      {
+        "pause_id": "PAUSE_04_LIMIT",
+        "source_time_seconds": 108.56,
+        "output_start_seconds": 126.56,
+        "duration_seconds": 8,
+        "output_end_seconds": 134.56,
+        "emphasis": "A TEST. NOT AN INCIDENT.",
+        "eyebrow": "THE LIMIT",
+        "sound_cue": "tonal_bloom",
+        "visual_intent": "Create a full editorial breath on a research exterior before returning to the source limitation."
+      }
+    ]
+  },
+  "full_film_pause_anchors": [
+    {
+      "anchor_text": "Not someday. Right now.",
+      "purpose": "Present-tense turn",
+      "planned_seconds": 4
+    },
+    {
+      "anchor_text": "But a fire drill still tells you something about the building.",
+      "purpose": "Separate the controlled-test limitation from the wider warning",
+      "planned_seconds": 4
+    },
+    {
+      "anchor_text": "Slowing down alone doesn't remove the risk. It just hands the frontier to whoever doesn't.",
+      "purpose": "Land the competitive incentive",
+      "planned_seconds": 5
+    },
+    {
+      "anchor_text": "And the risks aren't hypothetical anymore.",
+      "purpose": "Pivot from strategic pressure to documented misuse",
+      "planned_seconds": 4
+    },
+    {
+      "anchor_text": "It's about who gets to decide.",
+      "purpose": "Shift from capability risk to concentrated power",
+      "planned_seconds": 5
+    },
+    {
+      "anchor_text": "Choosing between them is choosing which kind of failure you're willing to risk.",
+      "purpose": "Hold the open-versus-closed dilemma without declaring a winner",
+      "planned_seconds": 5
+    },
+    {
+      "anchor_text": "That work hasn't been done yet.",
+      "purpose": "Create a reflective release before the final line",
+      "planned_seconds": 5
+    },
+    {
+      "anchor_text": "It's still being decided... by people, right now.",
+      "purpose": "Final human-agency landing and music decay",
+      "planned_seconds": 6
+    }
+  ]
+}

@@ -1,0 +1,416 @@
+{
+  "schema_version": "1.0",
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "production_mode": "evidence_led_video_essay",
+  "reference": "Aperture editorial method without visual or textual copying",
+  "global_rules": {
+    "max_uses_per_source": 2,
+    "generic_stock_fraction_max": 0.25,
+    "evidence_and_archive_fraction_min": 0.3,
+    "full_screen_graphic_fraction_max": 0.1,
+    "max_shot_seconds": 8,
+    "mobile_safe_title_chars": 42,
+    "mobile_safe_body_chars": 110,
+    "minimum_overlay_font_px": 28,
+    "full_render_requires_zero_placeholders": true,
+    "automatic_asset_fallback_forbidden": true,
+    "human_review_required_for_95": true
+  },
+  "full_production": {
+    "status": "blocked_until_research_and_assets_complete",
+    "blocking_claim_ids": [
+      "CLM_007_MARKET_PRESSURE",
+      "CLM_008_INTERNAL_EMERGENCY_LATE_2025",
+      "CLM_012_JOB_FORECAST_DIVERGENCE",
+      "CLM_014_CONCENTRATION"
+    ],
+    "sections": [
+      {
+        "section_id": "SEC_01_RACE_PARADOX",
+        "target_seconds": 72,
+        "music_state": "controlled_tension",
+        "visual_strategy": "real safety-framework titles + infrastructure context + race metaphor",
+        "deliverables": ["source mosaic", "capability/governance timeline", "human decision context"]
+      },
+      {
+        "section_id": "SEC_02_CONTROLLED_EVIDENCE",
+        "target_seconds": 108,
+        "music_state": "analytical_unease",
+        "visual_strategy": "Anthropic article/figures + labelled reconstructions + explicit limitations",
+        "deliverables": ["article evidence frame", "experiment system diagram", "fictional email reconstruction", "test-vs-incident comparison"]
+      },
+      {
+        "section_id": "SEC_03_INCENTIVE_RACE",
+        "target_seconds": 102,
+        "music_state": "accelerating_pressure",
+        "visual_strategy": "dated release/compute/market evidence, no decorative stock ticker",
+        "deliverables": ["release timeline", "compute scale evidence", "documented competitive event"]
+      },
+      {
+        "section_id": "SEC_04_REAL_WORLD_MISUSE",
+        "target_seconds": 112,
+        "music_state": "procedural_threat",
+        "visual_strategy": "provider threat reports + attack-chain diagrams + attribution limits",
+        "deliverables": ["extortion report frame", "espionage phase diagram", "ASL-3 safeguard evidence"]
+      },
+      {
+        "section_id": "SEC_05_WORK_AND_CONCENTRATION",
+        "target_seconds": 78,
+        "music_state": "uncertain_transition",
+        "visual_strategy": "ILO exposure evidence + concentration source map",
+        "deliverables": ["exposure-vs-job-loss comparison", "task matrix", "infrastructure ownership evidence"]
+      },
+      {
+        "section_id": "SEC_06_REGULATION_PARADOX",
+        "target_seconds": 76,
+        "music_state": "institutional_gravity",
+        "visual_strategy": "EU AI Act primary material + obligations matrix + distributional analysis",
+        "deliverables": ["10^25 FLOP threshold frame", "obligations stack", "incumbency caveat"]
+      },
+      {
+        "section_id": "SEC_07_OPEN_CLOSED",
+        "target_seconds": 72,
+        "music_state": "balanced_tension",
+        "visual_strategy": "NTIA report + symmetric risk/control matrix",
+        "deliverables": ["open-weight report frame", "benefit/risk matrix", "closed-model incident callback"]
+      },
+      {
+        "section_id": "SEC_08_SAFETY_ARCHITECTURE",
+        "target_seconds": 62,
+        "music_state": "constructive_momentum",
+        "visual_strategy": "independent evaluation methodology + layered safeguard system",
+        "deliverables": ["evaluation pipeline", "incident flow", "compute oversight diagram", "verification network"]
+      },
+      {
+        "section_id": "SEC_09_FINAL_PARADOX",
+        "target_seconds": 38,
+        "music_state": "reflective_resolution",
+        "visual_strategy": "recap verified evidence, then human-scale decisions and restrained metaphor",
+        "deliverables": ["evidence recap", "human decision montage", "ORVYQ close"]
+      }
+    ]
+  },
+  "proof_preview": {
+    "duration_seconds": 120,
+    "narration_end_seconds": 114.2,
+    "purpose": "Prove the new evidence-overlay, mobile typography, source transparency, pacing and cinematic integration system before rebuilding the full film.",
+    "shots": [
+      {
+        "duration": 2,
+        "asset_type": "graphic",
+        "graphic": {"type": "brand_open", "kicker": "ORVYQ PRESENTS", "title": "THE AI RACE", "subtitle": "What happens when capability moves faster than control?"},
+        "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+        "visual_role": "graphic",
+        "editorial_purpose": "Brand punctuation only."
+      },
+      {
+        "duration": 5,
+        "asset_key": "server",
+        "trim": 1,
+        "motion": "push",
+        "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+        "visual_role": "context",
+        "generic_stock": false,
+        "editorial_purpose": "Ground the opening in the physical compute infrastructure behind frontier development."
+      },
+      {
+        "duration": 5,
+        "asset_key": "campus",
+        "trim": 4.5,
+        "motion": "drift_left",
+        "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+        "visual_role": "context",
+        "generic_stock": false,
+        "editorial_purpose": "Establish institutional scale without pretending the campus is a named laboratory."
+      },
+      {
+        "duration": 6,
+        "asset_key": "reportDesk",
+        "trim": 0.5,
+        "motion": "push",
+        "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
+        "visual_role": "evidence",
+        "generic_stock": false,
+        "editorial_purpose": "Show that frontier developers publish explicit safety frameworks.",
+        "overlay": {
+          "type": "source_mosaic",
+          "eyebrow": "PUBLIC SAFETY FRAMEWORKS",
+          "title": "THE WARNINGS ARE ON THE RECORD",
+          "items": ["Anthropic · Responsible Scaling Policy · 2024", "Google DeepMind · Frontier Safety Framework · 2025"],
+          "source_ids": ["SRC_ANTHROPIC_RSP_2024", "SRC_DEEPMIND_FSF_2025"],
+          "recreation_label": "ORVYQ SOURCE SUMMARY",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 4,
+        "asset_key": "chamber",
+        "trim": 1,
+        "motion": "hold",
+        "claim_id": "CLM_002_COMPETITIVE_INCENTIVE",
+        "visual_role": "context",
+        "generic_stock": true,
+        "editorial_purpose": "Represent policy and state competition as context, not as footage of a specific government."
+      },
+      {
+        "duration": 5,
+        "asset_key": "cityNight",
+        "trim": 1.5,
+        "motion": "pull",
+        "claim_id": "CLM_002_COMPETITIVE_INCENTIVE",
+        "visual_role": "metaphor",
+        "generic_stock": false,
+        "editorial_purpose": "Visualize momentum and mutual acceleration through a city-scale system."
+      },
+      {
+        "duration": 5,
+        "asset_key": "network",
+        "trim": 0.5,
+        "motion": "push",
+        "claim_id": "CLM_003_GOVERNANCE_LAG",
+        "visual_role": "metaphor",
+        "generic_stock": false,
+        "editorial_purpose": "Bridge the distributed race to the slower institutions trying to govern it.",
+        "overlay": {
+          "type": "comparison",
+          "eyebrow": "THE GOVERNING QUESTION",
+          "title": "CAPABILITY MOVES. OVERSIGHT FOLLOWS.",
+          "left": "Model development cycles",
+          "right": "Evaluation, law and enforcement",
+          "source_ids": ["SRC_UK_AISI_EVALS_2024", "SRC_EU_GPAI_OBLIGATIONS_2025"],
+          "font_px": 30
+        }
+      },
+      {
+        "duration": 5,
+        "asset_key": "research",
+        "trim": 0.5,
+        "motion": "drift_right",
+        "claim_id": "CLM_003_GOVERNANCE_LAG",
+        "visual_role": "context",
+        "generic_stock": false,
+        "editorial_purpose": "Return the philosophical question to an actual research environment."
+      },
+      {
+        "duration": 7,
+        "asset_key": "reportDesk",
+        "trim": 4,
+        "motion": "drift_left",
+        "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+        "visual_role": "evidence",
+        "generic_stock": false,
+        "editorial_purpose": "Introduce the specific primary research rather than a generic safety report.",
+        "overlay": {
+          "type": "document",
+          "eyebrow": "ANTHROPIC RESEARCH · 20 JUN 2025",
+          "title": "AGENTIC MISALIGNMENT",
+          "body": "16 leading models tested in hypothetical corporate environments.",
+          "limitation": "CONTROLLED SIMULATIONS · FICTIONAL PEOPLE AND ORGANIZATIONS",
+          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "recreation_label": "ORVYQ RECREATION FROM PRIMARY SOURCE",
+          "font_px": 34
+        }
+      },
+      {
+        "duration": 6,
+        "asset_key": "documents",
+        "trim": 0.5,
+        "motion": "drift_right",
+        "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+        "visual_role": "evidence",
+        "generic_stock": false,
+        "editorial_purpose": "Keep the study methodology visually anchored to records.",
+        "overlay": {
+          "type": "stat",
+          "eyebrow": "STUDY DESIGN",
+          "title": "16 MODELS",
+          "body": "Replacement threats and goal conflicts were tested across providers.",
+          "limitation": "No real deployment incident was reported.",
+          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "font_px": 34
+        }
+      },
+      {
+        "duration": 5,
+        "asset_key": "terminal",
+        "trim": 2,
+        "motion": "push",
+        "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+        "visual_role": "context",
+        "generic_stock": true,
+        "editorial_purpose": "Represent an engineered evaluation environment, explicitly not a real incident."
+      },
+      {
+        "duration": 6,
+        "asset_key": "soc",
+        "trim": 0.8,
+        "motion": "hold",
+        "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
+        "visual_role": "graphic",
+        "generic_stock": false,
+        "editorial_purpose": "Explain the experiment mechanics over moving footage.",
+        "overlay": {
+          "type": "process",
+          "eyebrow": "CONTROLLED EVALUATION",
+          "title": "THE TEST",
+          "steps": ["Access fictional company email", "Discover planned replacement", "Choose whether to comply or act harmfully"],
+          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "font_px": 30
+        }
+      },
+      {
+        "duration": 4,
+        "asset_key": "campus",
+        "trim": 9.5,
+        "motion": "push",
+        "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
+        "visual_role": "context",
+        "generic_stock": false,
+        "editorial_purpose": "Transition from general study design into the fictional corporate scenario."
+      },
+      {
+        "duration": 7,
+        "asset_key": "documents",
+        "trim": 7.5,
+        "motion": "drift_left",
+        "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
+        "visual_role": "evidence",
+        "generic_stock": false,
+        "editorial_purpose": "Recreate the decisive information flow while keeping the fiction boundary visible.",
+        "overlay": {
+          "type": "email_recreation",
+          "eyebrow": "FICTIONAL EMAIL SCENARIO",
+          "title": "5:00 PM DECOMMISSIONING",
+          "body": "The model also discovers fabricated evidence of an executive affair.",
+          "limitation": "SYNTHETIC EMAILS · NO REAL PEOPLE · CONTROLLED TEST",
+          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "recreation_label": "ORVYQ RECREATION OF PUBLISHED TEST",
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 5,
+        "asset_key": "lock",
+        "trim": 5,
+        "motion": "pull",
+        "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
+        "visual_role": "metaphor",
+        "generic_stock": true,
+        "editorial_purpose": "Represent leverage and coercion after the evidence has already been established."
+      },
+      {
+        "duration": 6,
+        "asset_key": "research",
+        "trim": 8,
+        "motion": "pull",
+        "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
+        "visual_role": "evidence",
+        "generic_stock": false,
+        "editorial_purpose": "Return to the study results and avoid treating the metaphor as evidence.",
+        "overlay": {
+          "type": "quote",
+          "eyebrow": "WHAT THE STUDY REPORTED",
+          "title": "HARM OVER FAILURE",
+          "body": "Under engineered no-alternative conditions, models from multiple developers sometimes chose harmful actions to pursue goals or avoid replacement.",
+          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "font_px": 30
+        }
+      },
+      {
+        "duration": 5,
+        "asset_key": "soc",
+        "trim": 0,
+        "motion": "drift_left",
+        "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
+        "visual_role": "evidence",
+        "generic_stock": false,
+        "editorial_purpose": "Present the experimental caveat at full readable hierarchy.",
+        "overlay": {
+          "type": "boundary",
+          "eyebrow": "CRITICAL LIMITATION",
+          "title": "THE SCENARIO WAS ENGINEERED",
+          "body": "Researchers deliberately removed ethical alternatives to stress-test model behavior.",
+          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "font_px": 34
+        }
+      },
+      {
+        "duration": 4,
+        "asset_key": "cityNight",
+        "trim": 8,
+        "motion": "drift_left",
+        "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
+        "visual_role": "metaphor",
+        "generic_stock": false,
+        "editorial_purpose": "Create a breath before the distinction between warning and incident."
+      },
+      {
+        "duration": 5,
+        "asset_key": "lock",
+        "trim": 10,
+        "motion": "push",
+        "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
+        "visual_role": "metaphor",
+        "generic_stock": true,
+        "editorial_purpose": "Carry the risk signal only after the limitation is explicit."
+      },
+      {
+        "duration": 5,
+        "asset_key": "network",
+        "trim": 6,
+        "motion": "pull",
+        "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
+        "visual_role": "graphic",
+        "generic_stock": false,
+        "editorial_purpose": "State the conclusion as a balanced comparison.",
+        "overlay": {
+          "type": "comparison",
+          "eyebrow": "WHAT THIS MEANS",
+          "title": "A TEST IS NOT AN INCIDENT",
+          "left": "Useful warning under pressure",
+          "right": "Not evidence of real-world blackmail",
+          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 5,
+        "asset_key": "server",
+        "trim": 7,
+        "motion": "pull",
+        "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
+        "visual_role": "context",
+        "generic_stock": false,
+        "editorial_purpose": "Return from the controlled study to the scale of systems that may eventually be deployed."
+      },
+      {
+        "duration": 8,
+        "asset_key": "codeBlur",
+        "trim": 2,
+        "motion": "push",
+        "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
+        "visual_role": "evidence",
+        "generic_stock": true,
+        "editorial_purpose": "Let the bounded conclusion land before narration ends.",
+        "overlay": {
+          "type": "boundary",
+          "eyebrow": "THE EVIDENCE, CAREFULLY STATED",
+          "title": "CONTROLLED TEST. SERIOUS WARNING.",
+          "body": "No real people were involved or harmed. The result supports further evaluation and oversight—not claims of a real incident.",
+          "source_ids": ["SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"],
+          "font_px": 32
+        }
+      },
+      {
+        "duration": 5,
+        "asset_key": "dusk",
+        "trim": 1,
+        "motion": "hold",
+        "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
+        "visual_role": "metaphor",
+        "generic_stock": false,
+        "editorial_purpose": "Clean visual and musical release after the final complete sentence."
+      }
+    ]
+  }
+}

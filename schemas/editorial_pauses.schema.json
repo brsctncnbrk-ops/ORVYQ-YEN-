@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/editorial_pauses.schema.json",
+  "title": "Editorial Pause Map",
+  "description": "Matches direction/editorial_pause_map.json's real shape. 'proof' holds the realized, timed pause set for the proof narration prefix; full_film_pause_anchors are narration-text-anchored placeholders for the eventual full film, not yet frame-timed.",
+  "type": "object",
+  "required": ["schema_version", "project_id", "duration_policy", "proof"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "project_id": { "type": "string" },
+    "duration_policy": {
+      "type": "object",
+      "required": ["minimum_final_duration_seconds"],
+      "properties": {
+        "minimum_final_duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+        "maximum_final_duration_seconds": { "type": ["number", "null"] },
+        "rule": { "type": "string" }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": [
+        "source_narration_seconds", "editorial_pause_seconds", "speech_timeline_end_seconds",
+        "proof_duration_seconds", "tail_release_seconds", "pauses"
+      ],
+      "properties": {
+        "source_narration_seconds": { "type": "number", "minimum": 0 },
+        "editorial_pause_seconds": { "type": "number", "minimum": 0 },
+        "speech_timeline_end_seconds": { "type": "number", "minimum": 0 },
+        "proof_duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+        "tail_release_seconds": { "type": "number", "minimum": 0 },
+        "pauses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "pause_id", "source_time_seconds", "output_start_seconds", "duration_seconds",
+              "output_end_seconds", "emphasis", "eyebrow", "sound_cue", "visual_intent"
+            ],
+            "properties": {
+              "pause_id": { "type": "string" },
+              "source_time_seconds": { "type": "number", "minimum": 0 },
+              "output_start_seconds": { "type": "number", "minimum": 0 },
+              "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+              "output_end_seconds": { "type": "number", "minimum": 0 },
+              "emphasis": { "type": "string" },
+              "eyebrow": { "type": "string" },
+              "sound_cue": { "type": "string" },
+              "visual_intent": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "full_film_pause_anchors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "anchor_text": { "type": "string" },
+          "purpose": { "type": "string" },
+          "planned_seconds": { "type": "number", "exclusiveMinimum": 0 }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

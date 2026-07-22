@@ -1,0 +1,36 @@
+{
+  "schema_version": "2.0",
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "project_name": "The AI Race No One Can Afford to Win",
+  "status": "READY_FOR_RENDER",
+  "current_stage": "packaging",
+  "completed_skills": [
+    "research",
+    "research_qa",
+    "script",
+    "fact_audit",
+    "script_qa",
+    "voice_script",
+    "voice_qa",
+    "storyboard",
+    "storyboard_qa",
+    "footage_retrieval",
+    "visual_style_bible",
+    "visual_prompt",
+    "visual_qa",
+    "director",
+    "remotion",
+    "editor",
+    "render_qa"
+  ],
+  "pending_skills": [
+    "packaging",
+    "final_qa"
+  ],
+  "waiting_for": [],
+  "required_files": [],
+  "errors": [],
+  "last_successful_stage": "render_qa",
+  "last_updated": "2026-07-13T23:18:22.523Z",
+  "paused": false
+}

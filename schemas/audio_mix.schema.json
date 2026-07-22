@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/audio_mix.schema.json",
+  "title": "Canonical Audio Mix Metadata",
+  "description": "Written by buildCanonicalAudioMix() alongside the mixed audio file. All timing fields (pause_windows, music_sections, sfx_placements) are seconds RELATIVE TO duration_seconds -- the schema forces the mix builder to compute these from the actual output duration rather than hardcoding literal 150-second-proof breakpoints, which is the concrete bug this replaces (see docs/source-audit.md section 7: orvyq_audio_mix.mjs's musicVolumeExpression()/sfxPlacements did not rescale for non-150s durations).",
+  "type": "object",
+  "required": [
+    "schema_version", "mode", "duration_seconds", "narration_duration_seconds",
+    "pause_windows", "music_sections", "sfx_placements", "measured"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0-canonical" },
+    "mode": { "enum": ["proof", "full"] },
+    "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+    "narration_duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+    "pause_windows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pause_id", "start_seconds", "end_seconds"],
+        "properties": {
+          "pause_id": { "type": "string" },
+          "start_seconds": { "type": "number", "minimum": 0 },
+          "end_seconds": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    "music_sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "start_seconds", "end_seconds"],
+        "properties": {
+          "id": { "type": "string" },
+          "start_seconds": { "type": "number", "minimum": 0 },
+          "end_seconds": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    "sfx_placements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sfx_id", "at_seconds"],
+        "properties": {
+          "sfx_id": { "type": "string" },
+          "at_seconds": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    "narration_ducking": { "type": "object" },
+    "licensing": { "type": "string" },
+    "measured": {
+      "type": "object",
+      "required": ["integrated_lufs", "true_peak_dbtp", "loudness_range"],
+      "properties": {
+        "integrated_lufs": { "type": "number" },
+        "true_peak_dbtp": { "type": "number" },
+        "loudness_range": { "type": "number", "minimum": 0 }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "duration_seconds": 720,
+  "policy": {
+    "minimum_distinct_music_states": 4,
+    "continuous_single_loop_forbidden": true,
+    "narration_ducking_required": true,
+    "random_whoosh_glitch_boom_forbidden": true,
+    "silence_may_be_used_as_an_editorial_cue": true,
+    "full_render_requires_all_cues_ready": true
+  },
+  "proof_score": {
+    "status": "ready",
+    "duration_seconds": 150,
+    "asset": "assets/music/approved_bed.mp3",
+    "license": "CC BY 4.0",
+    "attribution_file": "assets/music/approved_bed.provenance.json",
+    "sections": [
+      {"id":"controlled_tension","start":0,"end":35,"function":"Opening paradox and competitive pressure"},
+      {"id":"present_tense_turn","start":35,"end":59.62,"function":"Safety frameworks, governance lag, and the present-tense emphasis beat"},
+      {"id":"analytical_unease","start":59.62,"end":93.4,"function":"Controlled evaluation evidence and scenario mechanics"},
+      {"id":"engineered_pressure","start":93.4,"end":126.56,"function":"Replacement condition, deliberation, result, and limitation setup"},
+      {"id":"reflective_release","start":126.56,"end":150,"function":"Controlled-test limitation, recap, and clean branded release"}
+    ]
+  },
+  "full_cues": [
+    {
+      "cue_id":"CUE_01_RACE_PARADOX","section_id":"SEC_01_RACE_PARADOX","start":0,"end":72,"state":"controlled_tension","energy_start":0.28,"energy_end":0.58,"function":"Create curiosity, then reveal competitive pressure without sounding like a trailer.","instrumentation":"low tonal pulse, restrained harmonic bed, sparse upper texture","transition_out":"thin to near-silence before the controlled-test evidence","status":"spec_ready_asset_pending"
+    },
+    {
+      "cue_id":"CUE_02_CONTROLLED_EVIDENCE","section_id":"SEC_02_CONTROLLED_EVIDENCE","start":72,"end":180,"state":"analytical_unease","energy_start":0.32,"energy_end":0.62,"function":"Support document reading and make the experiment feel procedural rather than sensational.","instrumentation":"minimal synth interval, dry pulse, low-frequency movement","transition_out":"introduce a faster rhythmic element under the competition pivot","status":"spec_ready_asset_pending"
+    },
+    {
+      "cue_id":"CUE_03_INCENTIVE_RACE","section_id":"SEC_03_INCENTIVE_RACE","start":180,"end":282,"state":"accelerating_pressure","energy_start":0.48,"energy_end":0.76,"function":"Express market and geopolitical acceleration through rhythm rather than loudness.","instrumentation":"measured percussion, arpeggiated pulse, widening harmonic field","transition_out":"hard rhythmic reduction before real-world misuse evidence","status":"spec_ready_asset_pending"
+    },
+    {
+      "cue_id":"CUE_04_REAL_WORLD_MISUSE","section_id":"SEC_04_REAL_WORLD_MISUSE","start":282,"end":394,"state":"procedural_threat","energy_start":0.44,"energy_end":0.72,"function":"Keep cyber and biological evidence tense but factual, with room for attribution caveats.","instrumentation":"low pulse, muted impacts at evidence transitions, no glitch clichés","transition_out":"release tension into uncertainty rather than resolve it","status":"spec_ready_asset_pending"
+    },
+    {
+      "cue_id":"CUE_05_WORK_CONCENTRATION","section_id":"SEC_05_WORK_AND_CONCENTRATION","start":394,"end":472,"state":"uncertain_transition","energy_start":0.3,"energy_end":0.5,"function":"Shift from immediate misuse to slower social and economic uncertainty.","instrumentation":"warmer sustained tones, irregular soft pulse, reduced low end","transition_out":"introduce institutional weight for regulation","status":"spec_ready_asset_pending"
+    },
+    {
+      "cue_id":"CUE_06_REGULATION_PARADOX","section_id":"SEC_06_REGULATION_PARADOX","start":472,"end":548,"state":"institutional_gravity","energy_start":0.4,"energy_end":0.56,"function":"Give legal and governance material weight without presenting regulation as a simple solution.","instrumentation":"measured low strings or synth brass, sparse clockless pulse","transition_out":"split into two balanced tonal voices for open versus closed","status":"spec_ready_asset_pending"
+    },
+    {
+      "cue_id":"CUE_07_OPEN_CLOSED","section_id":"SEC_07_OPEN_CLOSED","start":548,"end":620,"state":"balanced_tension","energy_start":0.46,"energy_end":0.58,"function":"Hold both sides of the trade-off in tension without musically declaring a winner.","instrumentation":"two complementary harmonic motifs, restrained stereo separation","transition_out":"resolve rhythm while preserving harmonic uncertainty","status":"spec_ready_asset_pending"
+    },
+    {
+      "cue_id":"CUE_08_SAFETY_ARCHITECTURE","section_id":"SEC_08_SAFETY_ARCHITECTURE","start":620,"end":682,"state":"constructive_momentum","energy_start":0.42,"energy_end":0.68,"function":"Support a credible path forward and give safeguards forward motion.","instrumentation":"clear pulse, brighter harmonic layer, controlled lift","transition_out":"remove pulse and leave a broad reflective bed","status":"spec_ready_asset_pending"
+    },
+    {
+      "cue_id":"CUE_09_FINAL_PARADOX","section_id":"SEC_09_FINAL_PARADOX","start":682,"end":720,"state":"reflective_resolution","energy_start":0.46,"energy_end":0.08,"function":"Return to human agency and end with thought rather than triumph or catastrophe.","instrumentation":"wide sustained harmony, sparse piano-like tone, long natural decay","transition_out":"four-to-six-second clean release into black","status":"spec_ready_asset_pending"
+    }
+  ]
+}

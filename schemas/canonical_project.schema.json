@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/canonical_project.schema.json",
+  "title": "Canonical Project",
+  "description": "Top-level identity and geometry of a video project. One of these per projects/<project_id>/. duration_frames is the canonical full-film length -- it never changes based on render mode; proof mode selects a sub-range of it (see edit_plan.schema.json frame_range).",
+  "type": "object",
+  "required": ["schema_version", "project_id", "fps", "width", "height", "duration_frames"],
+  "properties": {
+    "schema_version": { "const": "1.0-canonical" },
+    "project_id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "title": { "type": "string" },
+    "fps": { "type": "integer", "minimum": 1 },
+    "width": { "type": "integer", "minimum": 1 },
+    "height": { "type": "integer", "minimum": 1 },
+    "duration_frames": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Canonical full-timeline duration in frames, independent of any proof render range."
+    },
+    "brand": {
+      "type": "object",
+      "required": ["name", "tagline", "palette"],
+      "properties": {
+        "name": { "type": "string" },
+        "tagline": { "type": "string" },
+        "palette": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

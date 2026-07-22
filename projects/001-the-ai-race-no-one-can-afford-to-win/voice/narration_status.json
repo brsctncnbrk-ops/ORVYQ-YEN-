@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "proof_audio_valid": true,
+  "proof_audio_scope_seconds": 120,
+  "proof_script_prefix_unchanged": true,
+  "full_narration_requires_regeneration": true,
+  "full_narration_approved": false,
+  "reason": "The full-film script was revised after the two-minute proof section to remove unsupported claims and use verified Stanford AI Index, ILO and UK CMA evidence.",
+  "required_next_asset": "assets/audio/final_voice.mp3 regenerated from the current full voice_script.txt",
+  "approval_requirements": [
+    "full-duration ASR passes against the current voice_script.txt",
+    "first and final complete sentences are present",
+    "no sentence boundary is clipped",
+    "human listening review passes"
+  ]
+}

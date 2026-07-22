@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/frozen_candidate.schema.json",
+  "title": "Frozen Candidate",
+  "description": "Per the task's canonical freeze model (section 10): a snapshot of exactly what would render, identified by hashes of every canonical input. Proof approval references a frozen_candidate by hash; full render is only permitted from the exact approved frozen_candidate -- any changed hash invalidates the approval.",
+  "type": "object",
+  "required": [
+    "project_id", "source_commit_sha", "renderer_version", "timeline_hash", "edit_plan_hash",
+    "caption_hash", "audio_mix_hash", "asset_registry_hash", "selected_render_range", "mode", "created_at"
+  ],
+  "properties": {
+    "project_id": { "type": "string" },
+    "source_commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "renderer_version": { "type": "string" },
+    "timeline_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "edit_plan_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "caption_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "audio_mix_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "asset_registry_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "selected_render_range": {
+      "type": "object",
+      "required": ["start_frame", "end_frame"],
+      "properties": {
+        "start_frame": { "type": "integer", "minimum": 0 },
+        "end_frame": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "mode": { "enum": ["proof", "full"] },
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

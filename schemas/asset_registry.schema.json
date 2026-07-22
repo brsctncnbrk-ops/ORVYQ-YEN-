@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/asset_registry.schema.json",
+  "title": "Canonical Asset Registry",
+  "description": "Every visual and audio asset that may be referenced by the canonical timeline, per the task's section 9 asset/provenance model. No unregistered asset may render; no missing registered asset may pass preflight. Both proof and full render use the same registry.",
+  "type": "object",
+  "required": ["schema_version", "project_id", "assets"],
+  "properties": {
+    "schema_version": { "const": "1.0-canonical" },
+    "project_id": { "type": "string" },
+    "assets": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/asset" }
+    }
+  },
+  "$defs": {
+    "asset": {
+      "type": "object",
+      "required": ["asset_id", "type", "path", "source", "license", "sha256"],
+      "properties": {
+        "asset_id": { "type": "string" },
+        "type": { "enum": ["footage", "evidence", "graphic", "image", "music", "sfx", "narration"] },
+        "path": { "type": "string", "description": "repository-relative path" },
+        "source": { "type": "string" },
+        "source_url": { "type": "string", "format": "uri" },
+        "license": { "type": "string" },
+        "attribution": { "type": "string" },
+        "duration_seconds": { "type": "number", "minimum": 0 },
+        "width": { "type": "integer", "minimum": 0 },
+        "height": { "type": "integer", "minimum": 0 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "semantic_keywords": { "type": "array", "items": { "type": "string" } },
+        "editorial_roles": { "type": "array", "items": { "type": "string" } },
+        "allowed_reuse_count": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
