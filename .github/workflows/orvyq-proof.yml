@@ -151,6 +151,17 @@ jobs:
       - name: Build canonical asset registry
         run: node scripts/orvyq_asset_registry.mjs --project-id="$PROJECT_ID"
 
+      # Snapshots the real hashes of everything that would render (see
+      # schemas/frozen_candidate.schema.json) so a human reviewing this run's
+      # artifact can approve THIS exact candidate via qa/proof_approval.json.
+      # Printed to the log because this sandbox's egress policy blocks
+      # downloading the uploaded artifact directly from blob storage.
+      - name: Compute frozen candidate
+        run: |
+          node scripts/orvyq_frozen_candidate.mjs --project-id="$PROJECT_ID"
+          echo "--- frozen_candidate.json ---"
+          cat "projects/$PROJECT_ID/qa/frozen_candidate.json"
+
       - name: Run physical evidence, semantic, pacing, mobile and music audits
         run: npm run orvyq:audits
 

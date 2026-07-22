@@ -51,6 +51,16 @@ orvyq_asset_registry.mjs   buildCanonicalAssetRegistry(projectId)
           research/primary_evidence_manifest.json, assets/audio/final_mix.metadata.json
   writes  assets/asset_registry.json
 
+orvyq_frozen_candidate.mjs   buildCanonicalFrozenCandidate(projectId)
+  reads   direction/edit_plan.json, remotion/captions.json,
+          assets/audio/final_mix.metadata.json, assets/asset_registry.json,
+          templates/remotion/package.json (renderer_version)
+  writes  qa/frozen_candidate.json   (schema_version-free; hashes of every
+          canonical input a render depends on -- see
+          schemas/frozen_candidate.schema.json. A qa/proof_approval.json
+          references this document by hashing it; full render is only
+          permitted from the exact frozen_candidate a human approved.)
+
 remotion_build.mjs derive-configs --project-id <id>
   reads   direction/edit_plan.json, config/video_config.json
   writes  remotion/scene_config.json, remotion/asset_map.json
