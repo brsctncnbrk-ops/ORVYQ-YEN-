@@ -1,0 +1,16 @@
+{
+  "project_id": "001-the-ai-race-no-one-can-afford-to-win",
+  "source_commit_sha": "760ef8a67801a986da21ac86d53cf60b2da9638e",
+  "renderer_version": "templates/remotion@1.0.0",
+  "timeline_hash": "499b076a75c33ba09447931fb4815898e46a93e26ac7a2e1741258a8d023652f",
+  "edit_plan_hash": "9f60ec78012e31c472b5881443a9ff819ac574d79c87b70f239246b8b0125ba9",
+  "caption_hash": "7b9246dc88ee3b1a1c3e9236f8c67361d4c0e208822cb609005f2aed522c951f",
+  "audio_mix_hash": "36fc5a468e71f8793ea83054f6b4c572c465e9eed9c0315d194e83b811c3c2c1",
+  "asset_registry_hash": "405ba54b27e2f245986f959d1b0be482a275cc85ce57acb70faa2d690b273737",
+  "selected_render_range": {
+    "start_frame": 0,
+    "end_frame": 4500
+  },
+  "mode": "proof",
+  "created_at": "2026-07-22T13:01:21.176Z"
+}
