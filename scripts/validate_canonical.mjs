@@ -223,6 +223,13 @@ check("fixture proof_approval", "proof_approval.schema.json", fixtureProofApprov
   }
 }
 
+{
+  const registryPath = path.resolve("music_library", "registry.json");
+  if (fs.existsSync(registryPath)) {
+    check("music_library/registry.json (real canonical music registry)", "music_registry.schema.json", readJson(registryPath), { kind: "real" });
+  }
+}
+
 // ---- Report ----
 
 let failed = 0;

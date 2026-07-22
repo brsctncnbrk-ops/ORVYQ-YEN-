@@ -123,8 +123,14 @@ jobs:
       - name: Fetch and verify official primary evidence
         run: node scripts/orvyq_fetch_primary_evidence.mjs
 
-      - name: Fetch licensed proof music
-        run: node scripts/orvyq_fetch_music.mjs --project-id="$PROJECT_ID" --min-duration-seconds=150
+      # Resolves this project's licensed proof music from music_library/
+      # registry.json's local canonical asset -- no third-party host is ever
+      # contacted at render time. Fails before any narration/edit-plan/render
+      # work runs if the track is missing, its hash doesn't match, its
+      # license/attribution metadata is incomplete, or it isn't
+      # approved_for_proof. See scripts/orvyq_music_resolve.mjs.
+      - name: Resolve canonical proof music (no network)
+        run: node scripts/orvyq_music_resolve.mjs --project-id="$PROJECT_ID" --mode=proof
 
       - name: Build paused narration, music and restrained sound design
         run: node scripts/orvyq_audio_mix.mjs --project-id="$PROJECT_ID" --mode=proof --duration-seconds=150 --narration-limit-seconds=114.2

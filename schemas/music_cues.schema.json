@@ -24,6 +24,10 @@
       "type": "object",
       "properties": {
         "status": { "type": "string" },
+        "track_id": {
+          "type": "string",
+          "description": "References an entry in music_library/registry.json. Proof/full render resolve music by this id, never by a remote URL -- see scripts/orvyq_music_resolve.mjs."
+        },
         "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
         "asset": { "type": "string" },
         "license": { "type": "string" },
@@ -50,6 +54,10 @@
       "properties": {
         "cue_id": { "type": "string" },
         "section_id": { "type": "string" },
+        "track_id": {
+          "type": "string",
+          "description": "References an entry in music_library/registry.json. Every full_cues entry must reference the SAME track_id -- the full film uses one continuous licensed bed, not a separate file per cue."
+        },
         "start": { "type": "number", "minimum": 0 },
         "end": { "type": "number" },
         "state": { "type": "string" },

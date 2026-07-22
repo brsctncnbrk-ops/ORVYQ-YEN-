@@ -94,9 +94,29 @@ export async function checkProofFullParity() {
   return { pass: errors.length === 0, findings };
 }
 
+// Render-time scripts (music resolution, the audio mix, and the edit plan)
+// must never fetch from a third-party host -- music_library/registry.json's
+// local canonical assets are the only source. Network fetching is legitimate
+// ONLY in the intake/vendoring scripts, which run before production, never
+// during a proof or full render.
+const RENDER_TIME_SCRIPTS = ["scripts/orvyq_music_resolve.mjs", "scripts/orvyq_audio_mix.mjs", "scripts/orvyq_edit_plan.mjs"];
+
+export async function checkNoRenderTimeNetworkFetch() {
+  const findings = [];
+  for (const relativePath of RENDER_TIME_SCRIPTS) {
+    const source = await fs.readFile(path.resolve(relativePath), "utf8");
+    if (/\bfetch\s*\(/.test(source)) {
+      findings.push({ severity: "error", message: `${relativePath} calls fetch() -- render-time scripts must resolve music/assets from local canonical sources only, never a network call.` });
+    }
+  }
+  const errors = findings.filter((f) => f.severity === "error");
+  return { pass: errors.length === 0, findings };
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
-  checkProofFullParity()
-    .then((result) => {
+  Promise.all([checkProofFullParity(), checkNoRenderTimeNetworkFetch()])
+    .then(([parity, noFetch]) => {
+      const result = { pass: parity.pass && noFetch.pass, findings: [...parity.findings, ...noFetch.findings] };
       printJson(result);
       if (!result.pass) process.exitCode = 1;
     })

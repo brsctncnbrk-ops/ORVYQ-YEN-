@@ -17,6 +17,8 @@
     "orvyq:frozen-candidate": "node scripts/orvyq_frozen_candidate.mjs",
     "orvyq:narration-alignment": "node scripts/orvyq_narration_alignment.mjs",
     "orvyq:full-production-plan": "node scripts/orvyq_full_production_plan.mjs",
+    "orvyq:music-intake": "node scripts/orvyq_music_intake.mjs",
+    "orvyq:music-resolve": "node scripts/orvyq_music_resolve.mjs",
     "orvyq:parity-check": "node scripts/orvyq_parity_check.mjs",
     "orvyq:verify-approval": "node scripts/orvyq_verify_approval.mjs",
     "orvyq:build-render-project": "node scripts/remotion_build.mjs derive-configs --project-id=001-the-ai-race-no-one-can-afford-to-win && node scripts/remotion_build.mjs build-project --project-id=001-the-ai-race-no-one-can-afford-to-win",

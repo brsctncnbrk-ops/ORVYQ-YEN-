@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orvyq.dev/schemas/music_registry.schema.json",
+  "title": "Canonical Music Registry",
+  "description": "The single source of truth for every licensed music track available to ANY ORVYQ project's proof or full render. Proof and full render workflows resolve music by track_id against this registry and the local canonical asset it points to -- never by fetching a third-party URL at render time. New tracks are added only by the music intake workflow (.github/workflows/orvyq-music-intake.yml / scripts/orvyq_music_intake.mjs), never hand-edited into this file directly, so every entry's hash/size/duration always reflects a file that was actually verified at intake time.",
+  "type": "object",
+  "required": ["schema_version", "tracks"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "tracks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/track" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "track": {
+      "type": "object",
+      "required": [
+        "track_id", "title", "artist", "asset_path", "sha256", "bytes", "duration_seconds", "codec",
+        "source_page_url", "license_name", "license_url", "attribution", "date_acquired",
+        "acquisition_provenance", "approved_for_proof", "approved_for_full", "status"
+      ],
+      "properties": {
+        "track_id": { "type": "string", "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$" },
+        "title": { "type": "string", "minLength": 1 },
+        "artist": { "type": "string", "minLength": 1 },
+        "asset_path": {
+          "type": "string",
+          "description": "Path relative to the repository root of the canonical local asset (a Git LFS-tracked file under music_library/tracks/)."
+        },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "bytes": { "type": "integer", "exclusiveMinimum": 0 },
+        "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+        "codec": { "type": "string", "minLength": 1 },
+        "source_page_url": { "type": "string", "format": "uri" },
+        "license_name": { "type": "string", "minLength": 1 },
+        "license_url": { "type": "string", "format": "uri" },
+        "attribution": { "type": "string", "minLength": 1 },
+        "date_acquired": { "type": "string", "format": "date-time" },
+        "acquisition_provenance": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Exactly how this file's bytes were obtained and verified -- e.g. which prior CI run's artifact recovered it, or which intake run downloaded and verified it."
+        },
+        "approved_for_proof": { "type": "boolean" },
+        "approved_for_full": { "type": "boolean" },
+        "status": { "enum": ["approved", "pending_review", "rejected", "deprecated"] },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

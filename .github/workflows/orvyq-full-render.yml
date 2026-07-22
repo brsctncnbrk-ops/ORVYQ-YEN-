@@ -109,6 +109,15 @@ jobs:
       - name: Validate canonical schemas and project data
         run: npm run validate:canonical
 
+      # Same registry-based resolution proof mode uses (scripts/
+      # orvyq_music_resolve.mjs), just for the full-length track_id. This is
+      # expected to fail today: no real full-length licensed music has been
+      # added to music_library/registry.json with approved_for_full: true
+      # yet -- full mode must stay correctly blocked until it is (see
+      # docs/full-production-guide.md).
+      - name: Resolve canonical full music (no network)
+        run: node scripts/orvyq_music_resolve.mjs --project-id="$PROJECT_ID" --mode=full
+
       - name: Build full narration, music and sound design
         run: node scripts/orvyq_audio_mix.mjs --project-id="$PROJECT_ID" --mode=full
 

@@ -6,6 +6,8 @@ export const REPO_ROOT = path.resolve(new URL("../../", import.meta.url).pathnam
 export const PROJECTS_DIR = path.join(REPO_ROOT, "projects");
 export const TEMPLATES_DIR = path.join(REPO_ROOT, "templates");
 export const SCHEMAS_DIR = path.join(REPO_ROOT, "schemas");
+export const MUSIC_LIBRARY_DIR = path.join(REPO_ROOT, "music_library");
+export const MUSIC_REGISTRY_PATH = path.join(MUSIC_LIBRARY_DIR, "registry.json");
 export const INDEX_PATH = path.join(PROJECTS_DIR, "_index.json");
 export const PROJECT_ID_PATTERN = /^[0-9]{3}-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
