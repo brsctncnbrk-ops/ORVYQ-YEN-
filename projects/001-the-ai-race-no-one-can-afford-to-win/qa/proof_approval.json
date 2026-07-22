@@ -1,0 +1,14 @@
+{
+  "frozen_candidate_hash": "cb5346cb60401d26838b96bf942a3841547deea5a882d397be508004e6f4e9ae",
+  "approved": true,
+  "approved_by": "brsctncnbrk@gmail.com",
+  "approved_at": "2026-07-22T13:36:41Z",
+  "notes": "Approves the 150s cinematic proof only, after the user personally reviewed the rendered video from this run. Does NOT unblock full render: projects/001-the-ai-race-no-one-can-afford-to-win/voice/narration_status.json has full_narration_approved=false and editorial_blueprint.json's full_production.status is blocked_until_research_and_assets_complete -- real, unresolved content gaps in the project data, not a permission gate this approval could lift.",
+  "proof_artifact": {
+    "workflow_run_id": "29921936297",
+    "artifact_name": "orvyq-cinematic-proof-150s-29921936297",
+    "duration_seconds": 150,
+    "resolution": "1920x1080",
+    "fps": 30
+  }
+}
