@@ -199,8 +199,20 @@ jobs:
             exit 0
           fi
           git commit -m "Record frozen candidate for proof run ${{ github.run_id }} [skip ci]"
+          # "Stage golden footage and narration into the canonical project"
+          # (above) overwrites the tracked assets/audio/final_voice.mp3 with
+          # the golden reference's short proof-scoped narration so this run
+          # can reproduce the historical 150s proof -- that intentionally
+          # leaves an unstaged diff against the real full-length narration
+          # committed to this branch, which was blocking this step's
+          # `git pull --rebase` ("cannot pull with rebase: you have unstaged
+          # changes"). Stash it (everything already needed downstream was
+          # already built earlier in this job) around the rebase, then
+          # restore it so later steps see the same files they would have.
+          git stash push --include-untracked --message "orvyq-proof-bot: local build artifacts"
           git pull --rebase origin "${{ github.ref_name }}"
           git push origin "HEAD:${{ github.ref_name }}"
+          git stash pop || true
 
       - name: Run physical evidence, semantic, pacing, mobile and music audits
         run: npm run orvyq:audits
