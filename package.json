@@ -7,6 +7,7 @@
   "engines": { "node": ">=18" },
   "scripts": {
     "validate:canonical": "node scripts/validate_canonical.mjs",
+    "test": "node --test scripts/**/*.test.mjs",
     "orvyq:fetch-evidence": "node scripts/orvyq_fetch_primary_evidence.mjs",
     "orvyq:fetch-music": "node scripts/orvyq_fetch_music.mjs",
     "orvyq:audio": "node scripts/orvyq_audio_mix.mjs",

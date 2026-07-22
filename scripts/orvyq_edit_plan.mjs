@@ -236,8 +236,15 @@ async function buildProofPlan(dir, projectId, blueprint) {
 
 // ---- mode: "full" -- reads direction/editorial_blueprint.json's full_production.shots ----
 
+async function fullEvidenceAssetManifest(dir) {
+  const manifest = await readJson(path.join(dir, "research", "evidence_asset_manifest.json"));
+  return new Map((manifest.assets || manifest.evidence_assets || []).map((asset) => [asset.evidence_asset_id, asset]));
+}
+
 async function buildFullPlan(dir, projectId, blueprint) {
   const evidenceMap = await loadResolvedEvidenceMap(dir);
+  const evidenceAssetsById = await fullEvidenceAssetManifest(dir);
+  const validSourceIds = new Set(evidenceMap.source_catalog.map((source) => source.source_id));
   const full = blueprint.full_production;
   const unresolved = evidenceMap.claims.filter((claim) => ["rewrite_required", "source_required"].includes(claim.status));
   const unresolvedIds = new Set(unresolved.map((claim) => claim.claim_id));
@@ -294,7 +301,46 @@ async function buildFullPlan(dir, projectId, blueprint) {
       continue;
     }
 
-    if (spec.asset_type !== "footage" || !spec.asset) throw new Error(`full_production.shots[${index}] must explicitly declare a footage asset or graphic`);
+    if (spec.asset_type === "evidence") {
+      const evidence = spec.evidence;
+      if (!evidence?.kind || (!IMAGE_KINDS.has(evidence.kind) && !NATIVE_KINDS.has(evidence.kind)))
+        throw new Error(`${common.shot_id} has unsupported evidence kind ${evidence?.kind}`);
+      const sourceIds = evidence.source_ids || [];
+      if (!sourceIds.length || !evidence.source_label) throw new Error(`${common.shot_id} lacks visible source attribution`);
+      for (const sourceId of sourceIds) {
+        if (!validSourceIds.has(sourceId)) throw new Error(`${common.shot_id} references unknown source ${sourceId}`);
+      }
+      if ((evidence.font_px || 0) < blueprint.global_rules.minimum_overlay_font_px) throw new Error(`${common.shot_id} evidence typography is too small`);
+
+      if (IMAGE_KINDS.has(evidence.kind)) {
+        const images = evidence.image_assets || [];
+        const ids = evidence.evidence_asset_ids || [];
+        if (!images.length || images.length !== ids.length) throw new Error(`${common.shot_id} image evidence must pair every image with an evidence_asset_id`);
+        for (let assetIndex = 0; assetIndex < ids.length; assetIndex += 1) {
+          const id = ids[assetIndex];
+          const declared = evidenceAssetsById.get(id);
+          if (!declared) throw new Error(`${common.shot_id} references unknown full-production evidence asset ${id}`);
+          if (declared.status !== "ready") throw new Error(`${common.shot_id} evidence asset ${id} is not ready (status=${declared.status}); automatic asset fallback is forbidden`);
+          const image = images[assetIndex];
+          if (!(await pathExists(path.join(dir, image)))) throw new Error(`${common.shot_id} evidence asset file is missing: ${image}`);
+          sourceUsage.set(image, (sourceUsage.get(image) || 0) + 1);
+          if (sourceUsage.get(image) > blueprint.global_rules.max_uses_per_source) throw new Error(`${image} exceeds the ${blueprint.global_rules.max_uses_per_source}-use limit`);
+        }
+      } else if (evidence.image_assets?.length || evidence.evidence_asset_ids?.length) {
+        throw new Error(`${common.shot_id} native source-derived graphic cannot smuggle image assets`);
+      }
+
+      const focus = defaultFocus(evidence);
+      shots.push({
+        ...common,
+        asset_type: "evidence",
+        evidence: { ...evidence, ...(focus ? { focus } : {}), provenance_mode: IMAGE_KINDS.has(evidence.kind) ? "official_primary_capture" : "source_derived_graphic" },
+        motif: spec.motif || evidence.kind
+      });
+      continue;
+    }
+
+    if (spec.asset_type !== "footage" || !spec.asset) throw new Error(`full_production.shots[${index}] must explicitly declare a footage asset, evidence, or graphic`);
     if (!(await pathExists(path.join(dir, spec.asset)))) throw new Error(`Missing full-edit asset: ${spec.asset}`);
     sourceUsage.set(spec.asset, (sourceUsage.get(spec.asset) || 0) + 1);
     if (sourceUsage.get(spec.asset) > blueprint.global_rules.max_uses_per_source) throw new Error(`${spec.asset} exceeds the ${blueprint.global_rules.max_uses_per_source}-use limit`);
