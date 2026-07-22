@@ -40,19 +40,29 @@ composition, or edit-plan schema for full mode.
    150s **proof** specifically (`mode: "proof"`), with the approval's own
    notes explicitly stating it does not unblock full render.
    `orvyq_verify_approval.mjs --mode=full` correctly fails on this today.
-   Separately, hash verification surfaced a **real, pre-existing integrity
-   gap in this repo's own history**: `qa/proof_approval.json`'s
-   `frozen_candidate_hash` (`cb5346cb...`) was recorded against the
-   `qa/frozen_candidate.json` committed by proof run `29921936297` (commit
-   `b448869`), but a *later* proof run (`29924729353`, commit `36540fe`)
-   overwrote `qa/frozen_candidate.json` with a different candidate (different
-   `source_commit_sha`, `edit_plan_hash`, `asset_registry_hash`) without a
-   matching new approval. Under the previous `approved === true`-only gate
-   this would have silently passed; `orvyq_verify_approval.mjs` now correctly
-   fails on it. This does not affect the proof video that was actually
-   reviewed and approved — it means the approval record and the currently
-   committed frozen candidate have drifted apart and a human should either
-   re-approve the current candidate or restore the approved one.
+   Separately, hash verification surfaces a **real, still-current integrity
+   gap in this repo's own history**, re-verified as of this session:
+   `qa/proof_approval.json`'s `frozen_candidate_hash` (`cb5346cb...`) was
+   recorded against the `qa/frozen_candidate.json` committed by proof run
+   `29921936297` (commit `b448869`) — the run the user actually watched and
+   approved. Two later successful proof runs have since overwritten
+   `qa/frozen_candidate.json` with different candidates without a matching
+   re-approval: `29924729353` (commit `36540fe`), and now the run cited as
+   this task's "latest successful proof," `29954982404` (commit `89fb3fa`,
+   current HEAD). Running `node scripts/orvyq_verify_approval.mjs
+   --project-id=001-the-ai-race-no-one-can-afford-to-win --mode=proof
+   --stage=early` against the currently committed files still fails today
+   with exactly this mismatch (committed candidate hash `a5714101c0...` vs.
+   approved hash `cb5346cb...`). Under the previous `approved === true`-only
+   gate this would have silently passed; `orvyq_verify_approval.mjs` now
+   correctly fails on it every time. This does not affect the proof video
+   that was actually reviewed and approved — it means the approval record
+   and the currently committed frozen candidate have drifted apart (twice
+   now) and a human should either re-approve the current candidate after
+   confirming the rendered proof is unchanged in substance, or restore the
+   originally approved one. This is independent of, and does not block on,
+   gap 1 — it concerns proof-mode approval bookkeeping, not full-mode
+   readiness.
 3. **Full-production contextual/hook body footage beyond the shared motion
    hook has not been acquired.** Every claim beat in `full_production.shots`
    is rendered as `asset_type: "evidence"` using a `NATIVE_KINDS` kind
@@ -83,7 +93,28 @@ sandbox's egress policy blocks `git-lfs`, so the real footage binaries can't
 be pulled locally; only GitHub-hosted runners can recover them from the
 golden reference, exactly as `orvyq-proof.yml` already does).
 
-## 4. What a human needs to do next
+## 4. Verified as of this session (no code/architecture change)
+
+Re-verified directly, not assumed from prior docs: `npm test` (55/55, including
+new `scripts/remotion_build.test.mjs` coverage proving `deriveConfigs()` — the
+one function that turns a canonical edit plan into the Remotion composition's
+own `scene_config.json`/`asset_map.json` — takes no mode branch and derives
+identical composition dimensions for a `mode: "proof"` and a `mode: "full"`
+edit plan, differing only in `duration_frames`/`frame_range`), `npm run
+validate:canonical` (15/15), `node scripts/orvyq_parity_check.mjs` (pass, only
+the known gap-4 warning), `npx tsc --noEmit` in `templates/remotion` (clean),
+and `npx remotion compositions src/index.ts` (bundles and lists exactly one
+composition, `FactForgeVideo` — confirms no second, full-only composition
+exists). `voice/narration_status.json` confirms `full_narration_approved:
+true` (real ASR validation, run `29928374281`) — full narration is not a
+blocker. `.github/workflows/orvyq-full-plan-validate.yml` was given the same
+guarded self-referential push-to-index pattern already used by
+`orvyq-music-intake.yml` (a plain push only indexes the workflow with GitHub;
+the actual dry-run steps still require an explicit `workflow_dispatch`), so it
+can now actually be dispatched to prove the full edit plan builds end-to-end
+on a GitHub-hosted runner, exactly as designed in section 3 above.
+
+## 5. What a human needs to do next
 
 1. Compose or license ~840s of music matching `music_cue_sheet.json`'s 9
    `full_cues`, commit it as `assets/music/approved_bed.mp3` +

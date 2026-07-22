@@ -10,6 +10,18 @@ name: ORVYQ Full Edit Plan Validate
 # trigger). Manual dispatch only -- it never runs automatically, so it never
 # competes with or blocks the proof workflow.
 on:
+  # GitHub only allows an API workflow_dispatch call to target a workflow
+  # already indexed by some real event -- this file has never run, so it
+  # isn't dispatchable yet. This self-referential push (scoped to this
+  # file's own path, same guarded pattern as orvyq-music-intake.yml) exists
+  # only to index the workflow the first time; the job itself only runs the
+  # real dry-run checks on workflow_dispatch (see the job-level `if` below),
+  # so a push here never performs the actual validation work.
+  push:
+    branches:
+      - "claude/orvyq-rebuild-canonical-udc3rx"
+    paths:
+      - ".github/workflows/orvyq-full-plan-validate.yml"
   workflow_dispatch:
 
 permissions:
@@ -26,6 +38,7 @@ env:
 
 jobs:
   validate-full-plan:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact source
