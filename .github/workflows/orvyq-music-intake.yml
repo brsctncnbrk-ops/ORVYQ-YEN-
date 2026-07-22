@@ -24,6 +24,18 @@ name: ORVYQ Music Intake
 #    a genuinely NEW track. Never used by proof/full render, and never
 #    invoked automatically.
 on:
+  # GitHub only allows an API workflow_dispatch call to target a workflow
+  # already indexed by some real event -- a brand-new workflow_dispatch-only
+  # file isn't dispatchable until it has run at least once. This self-
+  # referential push (scoped to this file's own path) exists only to index
+  # the workflow the first time; the job itself is a no-op unless the
+  # triggering event actually was workflow_dispatch (see the job-level `if`
+  # below), so a push here never performs real intake work.
+  push:
+    branches:
+      - "claude/orvyq-rebuild-canonical-udc3rx"
+    paths:
+      - ".github/workflows/orvyq-music-intake.yml"
   workflow_dispatch:
     inputs:
       recovery_mode:
@@ -97,6 +109,7 @@ permissions:
 
 jobs:
   intake:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
