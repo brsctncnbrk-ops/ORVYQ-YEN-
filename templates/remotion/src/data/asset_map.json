@@ -1,0 +1,6 @@
+{
+  "audio_asset": "assets/audio/final_voice.mp3",
+  "asset_map": {
+    "scene_001": { "image": "assets/images/scene_001.png", "audio_offset_sec": 0 }
+  }
+}

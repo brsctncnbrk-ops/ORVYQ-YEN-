@@ -1,0 +1,20 @@
+{
+  "name": "factforge-render",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generic FactForge Remotion render project. Per-project scene_config.json and asset_map.json are copied into src/data/ by scripts/remotion_build.mjs; large assets (audio/images) are referenced in place via a public dir pointed at the project root.",
+  "scripts": {
+    "preview": "remotion studio",
+    "compositions": "remotion compositions src/index.ts"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "typescript": "^5.4.0"
+  }
+}

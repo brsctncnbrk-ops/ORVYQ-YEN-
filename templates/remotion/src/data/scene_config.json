@@ -1,0 +1,18 @@
+{
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "duration_frames": 60,
+  "scenes": [
+    {
+      "scene_id": "scene_001",
+      "start_frame": 0,
+      "end_frame": 60,
+      "asset_type": "ai_fallback",
+      "camera_motion": { "type": "static", "params": {} },
+      "text_overlay": "Placeholder - replaced per project by remotion_build.mjs",
+      "transition_in": "fade",
+      "transition_out": "fade"
+    }
+  ]
+}
