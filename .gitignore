@@ -3,6 +3,8 @@ npm-debug.log*
 .DS_Store
 .env
 .env.local
+__pycache__/
+*.pyc
 
 # Generated runtime files
 projects/*/logs/*
@@ -16,6 +18,10 @@ projects/*/qa/*
 # Never hand-commit this; if it must be inspected, add a CI check that it is
 # byte-identical to a fresh `build-project` run instead.
 projects/*/remotion/render_ready_project/
+projects/*/direction/edit_plan.json
+projects/*/remotion/scene_config.json
+projects/*/remotion/asset_map.json
+projects/*/remotion/captions.json
 
 # Binary media (footage/audio/evidence images) is not yet tracked in this repo.
 # Before Phase 3/5 populate these directories with real assets, set up

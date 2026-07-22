@@ -21,8 +21,10 @@ orvyq_audio_mix.mjs   buildCanonicalAudioMix(projectId, {mode, durationSeconds, 
           assets/music/approved_bed.mp3 (if present)
   writes  assets/audio/final_mix.mp3 + final_mix.metadata.json
 
-  (qa/speech_transcript.json is produced by Phase 4's orvyq_speech_qa.py, not by
-   anything in this directory -- it is an ASR/QA step, ported in Phase 4.)
+orvyq_speech_qa.py --project-id <id> [--media <path>] [--max-seconds N]
+  reads   assets/audio/final_mix.mp3 (or --media), voice/voice_script.txt,
+          direction/editorial_blueprint.json (canonical minimum_script_similarity)
+  writes  qa/speech_transcript.json
 
 orvyq_caption_build.mjs   buildCanonicalCaptions(projectId, {frameEnd})
   reads   direction/edit_plan.json, qa/speech_transcript.json,
@@ -63,6 +65,36 @@ remotion_build.mjs build-project --project-id <id>
 Render itself is a Remotion CLI invocation against the assembled `render_ready_project`,
 selecting `direction/edit_plan.json`'s own `frame_range` (proof: `0..N`; full: `0..duration_frames`)
 — see `docs/migration-plan.md` §2 for why this is the one place proof/full genuinely differ.
+
+## QA chain (Phase 4)
+
+Pre-render gates, run after `orvyq_edit_plan.mjs` (`npm run orvyq:audits`):
+`orvyq_evidence_audit.mjs` → `qa/evidence_coverage.json`,
+`orvyq_evidence_asset_audit.mjs` → `qa/evidence_asset_audit.json`,
+`orvyq_semantic_visual_audit.mjs` → `qa/semantic_visual_audit.json`,
+`orvyq_pacing_audit.mjs` → `qa/pacing_audit.json`,
+`orvyq_mobile_legibility_audit.mjs` → `qa/mobile_legibility_audit.json`,
+`orvyq_music_cue_audit.mjs` → `qa/music_cue_audit.json`.
+
+Then (`npm run orvyq:qa` runs `orvyq:audits` plus these three):
+`orvyq_edit_plan_tests.mjs` (whole-pipeline smoke test over the plan + all of the above),
+`orvyq_license_audit.mjs` → `qa/license_audit.json`,
+`orvyq_alignment_score.mjs` → `qa/alignment_readiness.json` (pre-render readiness only, explicitly
+not the final human-reviewed Aperture alignment score).
+
+Post-render gates, run against the rendered MP4 (require `ffmpeg`, CI-only):
+`orvyq_media_qa.mjs --video <path>` → `qa/orvyq_preview_media_qa.json`,
+`orvyq_brightness_repair.mjs --video <path>` → `qa/orvyq_brightness_repair.json` (mutates the
+video in place if it finds and repairs isolated corrupted frames).
+
+Every QA script exits non-zero and sets `pass: false` in its written report on a blocking
+failure — verified for all 12 (see Phase 4 commit). One structural fix vs golden:
+`orvyq_license_audit.mjs` now accumulates into `{pass, failures[]}` like the other 11, instead of
+throwing at the first failed check with no `pass`/`failures` field in the written report (see
+`docs/source-audit.md` §3). Another: the `script_similarity >= 0.85` threshold, previously
+hardcoded independently in three places (`orvyq_speech_qa.py`'s own 0.55 default,
+`orvyq_edit_plan_tests.mjs`, `orvyq_media_qa.mjs`), now reads
+`editorial_blueprint.json.global_rules.minimum_script_similarity` in all three.
 
 ## What changed vs the golden scripts (docs/source-audit.md section 7 / migration-plan.md section 1)
 
@@ -105,3 +137,20 @@ project state, not a bug.
 Not yet run: `orvyq_audio_mix.mjs`'s actual `ffmpeg` execution (no `ffmpeg`/`ffprobe` in this
 sandbox — syntax-checked only) and any step requiring real fetched binary assets. Both require
 the CI environment and arrive with Phase 5.
+
+## Verified in Phase 4
+
+Ran the full pure-JS QA chain end-to-end against the real generated proof plan (real
+`direction/`/`research/`/`voice/` data, realistically-sized stub footage/evidence/audio
+binaries): `orvyq_evidence_audit` (weighted coverage 100%), `orvyq_evidence_asset_audit` (11
+official captures, all SHA-256/byte-size verified), `orvyq_semantic_visual_audit`
+(evidence_archive_fraction 0.579, contextual_body_footage_fraction 0.318, emphasis_beat_count 4,
+maximum_uninterrupted_evidence_seconds 12.73 — all real numbers computed from the actual
+generated shot plan, each correctly inside the required range), `orvyq_pacing_audit`,
+`orvyq_mobile_legibility_audit`, `orvyq_music_cue_audit` (continuous 5-state coverage, confirming
+the `start_seconds`/`end_seconds` field rename is consistent end to end), `orvyq_license_audit`,
+and `orvyq_alignment_score` (readiness 88.06, above the 82 minimum) — all PASS.
+`orvyq_edit_plan_tests.mjs` executed through every check up to the footage-duration
+cross-reference, which needs real `ffprobe` (unavailable in this sandbox — the only remaining
+blocker, not a logic gap). `orvyq_media_qa.mjs`/`orvyq_brightness_repair.mjs`/`orvyq_speech_qa.py`
+need a real rendered video / real ASR and are deferred to Phase 5's CI run.

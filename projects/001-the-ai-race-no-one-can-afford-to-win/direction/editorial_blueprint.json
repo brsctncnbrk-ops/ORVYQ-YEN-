@@ -12,6 +12,7 @@
     "mobile_safe_title_chars": 42,
     "mobile_safe_body_chars": 110,
     "minimum_overlay_font_px": 28,
+    "minimum_script_similarity": 0.85,
     "full_render_requires_zero_placeholders": true,
     "automatic_asset_fallback_forbidden": true,
     "human_review_required_for_95": true

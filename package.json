@@ -13,7 +13,9 @@
     "orvyq:edit-plan": "node scripts/orvyq_edit_plan.mjs",
     "orvyq:captions": "node scripts/orvyq_caption_build.mjs",
     "orvyq:asset-registry": "node scripts/orvyq_asset_registry.mjs",
-    "orvyq:build-render-project": "node scripts/remotion_build.mjs derive-configs --project-id=001-the-ai-race-no-one-can-afford-to-win && node scripts/remotion_build.mjs build-project --project-id=001-the-ai-race-no-one-can-afford-to-win"
+    "orvyq:build-render-project": "node scripts/remotion_build.mjs derive-configs --project-id=001-the-ai-race-no-one-can-afford-to-win && node scripts/remotion_build.mjs build-project --project-id=001-the-ai-race-no-one-can-afford-to-win",
+    "orvyq:audits": "node scripts/orvyq_evidence_audit.mjs && node scripts/orvyq_evidence_asset_audit.mjs && node scripts/orvyq_semantic_visual_audit.mjs && node scripts/orvyq_pacing_audit.mjs && node scripts/orvyq_mobile_legibility_audit.mjs && node scripts/orvyq_music_cue_audit.mjs",
+    "orvyq:qa": "npm run orvyq:audits && node scripts/orvyq_edit_plan_tests.mjs && node scripts/orvyq_license_audit.mjs && node scripts/orvyq_alignment_score.mjs"
   },
   "dependencies": { "ajv": "^8.17.1", "ajv-formats": "^3.0.1" }
 }
