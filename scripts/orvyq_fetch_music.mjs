@@ -29,6 +29,43 @@ const DOWNLOAD_URL = "https://www.scottbuckley.com.au/library/wp-content/uploads
 const LICENSE_URL = "https://creativecommons.org/licenses/by/4.0/";
 const ATTRIBUTION = "'Signal to Noise' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au";
 
+// Retries only the network download itself -- transient failures reaching
+// this one fixed, already-licensed URL (DNS blips, connection resets,
+// timeouts on the CI runner) should not fail the whole proof run on the
+// first hiccup. This does not change WHAT is fetched, WHERE it comes from,
+// or how it's verified afterward: no alternate URL, no unlicensed fallback,
+// no silent success -- if the real track can't be reached after
+// MAX_FETCH_ATTEMPTS, this still throws and the caller still fails exactly
+// as before.
+const MAX_FETCH_ATTEMPTS = 3;
+const RETRY_DELAYS_MS = [5000, 15000];
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function describeFetchError(error) {
+  const cause = error.cause;
+  const causeDescription = cause ? `cause: ${cause.code || cause.message || String(cause)}` : "cause: none reported";
+  return `${error.message} (${causeDescription})`;
+}
+
+export async function downloadWithRetry(url, options, { attempts = MAX_FETCH_ATTEMPTS, delaysMs = RETRY_DELAYS_MS } = {}) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) throw new Error(`Music download failed: HTTP ${response.status}`);
+      return Buffer.from(await response.arrayBuffer());
+    } catch (error) {
+      lastError = error;
+      console.error(JSON.stringify({ attempt, max_attempts: attempts, error: describeFetchError(error) }));
+      if (attempt < attempts) await sleep(delaysMs[attempt - 1]);
+    }
+  }
+  throw new Error(`Music download failed after ${attempts} attempts: ${lastError.message}`, { cause: lastError });
+}
+
 async function durationSeconds(file, minDurationSeconds) {
   const { stdout } = await exec("ffprobe", [
     "-v", "error", "-show_entries", "format=duration",
@@ -46,7 +83,7 @@ export async function fetchApprovedMusic(projectId = PROJECT_ID, { minDurationSe
   const output = path.join(musicDir, "approved_bed.mp3");
   const temporary = `${output}.download`;
   await fs.mkdir(musicDir, { recursive: true });
-  const response = await fetch(DOWNLOAD_URL, {
+  const bytes = await downloadWithRetry(DOWNLOAD_URL, {
     redirect: "follow",
     headers: {
       "User-Agent": "ORVYQ documentary renderer/1.0",
@@ -54,8 +91,6 @@ export async function fetchApprovedMusic(projectId = PROJECT_ID, { minDurationSe
       Accept: "audio/mpeg,audio/*;q=0.9,*/*;q=0.5"
     }
   });
-  if (!response.ok) throw new Error(`Music download failed: HTTP ${response.status}`);
-  const bytes = Buffer.from(await response.arrayBuffer());
   if (bytes.length < 100_000) throw new Error(`Music download is unexpectedly small: ${bytes.length} bytes`);
   const sha256 = createHash("sha256").update(bytes).digest("hex");
   const expectedSha = process.env.ORVYQ_APPROVED_MUSIC_SHA256?.trim().toLowerCase();
