@@ -155,7 +155,11 @@ jobs:
           SRC="recovered-artifact/${{ inputs.source_path_in_artifact }}"
           test -f "$SRC"
           echo "AUTO_SOURCE_PATH=$SRC" >> "$GITHUB_ENV"
-          PROV="${SRC}.provenance.json"
+          # scripts/orvyq_fetch_music.mjs writes the provenance file as a
+          # SIBLING of the audio file (approved_bed.provenance.json next to
+          # approved_bed.mp3), not <filename>.mp3.provenance.json -- replace
+          # the trailing extension rather than appending after it.
+          PROV="$(dirname "$SRC")/$(basename "$SRC" | sed 's/\.[^.]*$/.provenance.json/')"
           if [ -f "$PROV" ]; then
             echo "Found companion provenance.json -- auto-filling metadata from it."
             node -e "
