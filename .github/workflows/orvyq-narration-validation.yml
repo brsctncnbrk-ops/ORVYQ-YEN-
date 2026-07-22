@@ -76,19 +76,18 @@ jobs:
           set -euo pipefail
           REPORT="projects/$PROJECT_ID/qa/full_narration_speech_qa.json"
           if [ -f "$REPORT" ]; then
-            echo "--- full_narration_speech_qa.json (transcript + words omitted from this echo, see artifact) ---"
-            python3 -c "
-import json
-d = json.load(open('$REPORT'))
-summary = {k: d[k] for k in ['source_duration_seconds','analyzed_duration_seconds','word_count','reference_word_count','speech_coverage','average_word_probability','script_similarity','min_similarity','passed','failures']}
-print(json.dumps(summary, indent=2))
-print('--- first 400 chars of transcript ---')
-print(d['transcript'][:400])
-print('--- last 400 chars of transcript ---')
-print(d['transcript'][-400:])
-print('--- first word timestamp:', d['words'][0] if d['words'] else None)
-print('--- last word timestamp:', d['words'][-1] if d['words'] else None)
-"
+            echo "--- summary ---"
+            jq '{source_duration_seconds, analyzed_duration_seconds, word_count, reference_word_count, speech_coverage, average_word_probability, script_similarity, min_similarity, passed, failures}' "$REPORT"
+            echo "--- first 400 chars of transcript ---"
+            jq -r '.transcript' "$REPORT" | head -c 400
+            echo
+            echo "--- last 400 chars of transcript ---"
+            jq -r '.transcript' "$REPORT" | tail -c 400
+            echo
+            echo "--- first word timestamp ---"
+            jq -c '.words[0]' "$REPORT"
+            echo "--- last word timestamp ---"
+            jq -c '.words[-1]' "$REPORT"
           fi
 
       - name: Upload narration validation artifact
