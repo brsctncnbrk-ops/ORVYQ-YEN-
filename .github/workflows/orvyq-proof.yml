@@ -187,7 +187,7 @@ jobs:
       # orvyq-full-render.yml reads qa/proof_approval.json from the checked-
       # out repo rather than from an artifact.
       - name: Commit frozen candidate to the branch
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           set -euo pipefail
           FILE="projects/$PROJECT_ID/qa/frozen_candidate.json"

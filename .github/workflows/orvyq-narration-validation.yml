@@ -85,7 +85,7 @@ jobs:
         run: node scripts/orvyq_narration_alignment.mjs --project-id="$PROJECT_ID"
 
       - name: Commit narration alignment to the branch
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           set -euo pipefail
           FILE="projects/$PROJECT_ID/voice/narration_alignment.json"
