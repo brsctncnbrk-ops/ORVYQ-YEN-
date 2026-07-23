@@ -1,14 +1,14 @@
 {
   "project_id": "001-the-ai-race-no-one-can-afford-to-win",
-  "source_commit_sha": "8e03d2a9dda2234175ac41960e260ebf65c781f5",
+  "source_commit_sha": "c7ea54eeb479b24eb83d342842cfc2f2ed3f94db",
   "renderer_version": "templates/remotion@1.0.0",
-  "timeline_hash": "09230b84d11cb07fbcd4397588d35a32561c0b280121322ff1417a90c3ef43ba",
-  "edit_plan_hash": "10e400358631fb33b33c673e3c8452c23915d6c2afca7110e7d84db4e0af7bc7",
+  "timeline_hash": "63ef8be33fc9bbb76e622f8f0dfffcebd6d3a17f5737bd372d4d318c69931695",
+  "edit_plan_hash": "a3acdd63f939c1aa77a138f0857f6d03b12a9700ece7dc3238352351e0957ccd",
   "caption_hash": "521b525a9d39ce7e0410079a3444eb432370aae11df97c08238d24978624f86f",
   "audio_mix_hash": "0eaecf2d9ac41101668c590db6b16165f642f42df816f5c38952cc2063b2fbf0",
-  "asset_registry_hash": "ecdfb280f6a5c1a801f429df0cf3cd216ca12e769e7a12be04f2cfac3da5bb0a",
+  "asset_registry_hash": "cacf66c90942494331b47fd88e5a7d9676c68bad1191f36499bcdd27758b54eb",
   "approval_version": "2.0-hash-hardened",
-  "renderer_commit_sha": "8e03d2a9dda2234175ac41960e260ebf65c781f5",
+  "renderer_commit_sha": "c7ea54eeb479b24eb83d342842cfc2f2ed3f94db",
   "narration_sha256": "94072f306e79b98fb1a2049daaddb255f6d8e2c67f474742b4ccb797df985dd",
   "pause_map_hash": "297e16717a3916b5e5d87921848b569f5e4c287831c7407cb64f25ecc30fa687",
   "script_hash": "d06c6c923d3026171557ee924c5d74c6cc34bb8d3236fb7cb45f2ccacba66bfc",
@@ -17,5 +17,5 @@
     "end_frame": 7127
   },
   "mode": "proof",
-  "created_at": "2026-07-23T02:20:04.303Z"
+  "created_at": "2026-07-23T02:30:09.907Z"
 }
