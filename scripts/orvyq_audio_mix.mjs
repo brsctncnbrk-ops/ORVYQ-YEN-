@@ -106,14 +106,13 @@ async function prepareEditorialNarration({ dir, audioDir, voice, availableDurati
     if (!anchors.length) throw new Error("Editorial pause mode requires direction/editorial_pause_map.json full_film_pause_anchors");
     let resolved;
     ({ pauses: resolved } = resolveFullFilmPauses({ words: alignment.words, anchors }));
-    // full_film_pause_anchors has no per-pause sound_cue/emphasis authored
-    // yet (unlike proof.pauses, which was hand-timed with both) -- rather
-    // than inventing a cue rotation with no editorial backing, every full-
-    // mode pause uses the same real synthesized "low_impact" cue (an
-    // honest simplification, not a fake pass) and carries its own real,
-    // already-authored `purpose` text through as `emphasis` for the mix
-    // metadata, instead of leaving it silently null.
-    configuredPauses = resolved.map((pause) => ({ ...pause, emphasis: pause.purpose, sound_cue: "low_impact" }));
+    // Each full_film_pause_anchors entry now carries its own authored
+    // sound_cue (direction/editorial_pause_map.json), mirroring the
+    // restrained low_impact/tonal_bloom rotation proof.pauses already used,
+    // instead of collapsing every full-mode pause onto the same cue. Its
+    // real, already-authored `purpose` text carries through as `emphasis`
+    // for the mix metadata.
+    configuredPauses = resolved.map((pause) => ({ ...pause, emphasis: pause.purpose }));
   } else {
     configuredPauses = pauseMap?.proof?.pauses || [];
   }

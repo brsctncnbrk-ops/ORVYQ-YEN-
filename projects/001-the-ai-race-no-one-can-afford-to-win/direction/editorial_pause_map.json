@@ -63,42 +63,50 @@
     {
       "anchor_text": "Not someday. Right now.",
       "purpose": "Present-tense turn",
-      "planned_seconds": 4
+      "planned_seconds": 4,
+      "sound_cue": "tonal_bloom"
     },
     {
       "anchor_text": "But a fire drill still tells you something about the building.",
       "purpose": "Separate the controlled-test limitation from the wider warning",
-      "planned_seconds": 4
+      "planned_seconds": 4,
+      "sound_cue": "low_impact"
     },
     {
       "anchor_text": "Slowing down alone doesn't remove the risk. It just hands the frontier to whoever doesn't.",
       "purpose": "Land the competitive incentive",
-      "planned_seconds": 5
+      "planned_seconds": 5,
+      "sound_cue": "low_impact"
     },
     {
       "anchor_text": "And the risks aren't hypothetical anymore.",
       "purpose": "Pivot from strategic pressure to documented misuse",
-      "planned_seconds": 4
+      "planned_seconds": 4,
+      "sound_cue": "low_impact"
     },
     {
       "anchor_text": "It's about who gets to decide.",
       "purpose": "Shift from capability risk to concentrated power",
-      "planned_seconds": 5
+      "planned_seconds": 5,
+      "sound_cue": "tonal_bloom"
     },
     {
       "anchor_text": "Choosing between them is choosing which kind of failure you're willing to risk.",
       "purpose": "Hold the open-versus-closed dilemma without declaring a winner",
-      "planned_seconds": 5
+      "planned_seconds": 5,
+      "sound_cue": "tonal_bloom"
     },
     {
       "anchor_text": "That work hasn't been done yet.",
       "purpose": "Create a reflective release before the final line",
-      "planned_seconds": 5
+      "planned_seconds": 5,
+      "sound_cue": "tonal_bloom"
     },
     {
       "anchor_text": "It's still being decided... by people, right now.",
       "purpose": "Final human-agency landing and music decay",
-      "planned_seconds": 6
+      "planned_seconds": 6,
+      "sound_cue": "tonal_bloom"
     }
   ]
 }

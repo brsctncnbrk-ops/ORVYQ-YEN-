@@ -11,17 +11,18 @@ function wordsFrom(text, secondsPerWord = 0.5) {
 
 test("resolves a single anchor to the real end timestamp of the matched phrase", () => {
   const words = wordsFrom("Not someday. Right now. Then it continued for a while longer here.");
-  const { pauses } = resolveFullFilmPauses({ words, anchors: [{ anchor_text: "Not someday. Right now.", purpose: "present tense turn", planned_seconds: 4 }] });
+  const { pauses } = resolveFullFilmPauses({ words, anchors: [{ anchor_text: "Not someday. Right now.", purpose: "present tense turn", planned_seconds: 4, sound_cue: "tonal_bloom" }] });
   assert.equal(pauses.length, 1);
   assert.equal(pauses[0].source_time_seconds, words[3].end);
   assert.equal(pauses[0].duration_seconds, 4);
+  assert.equal(pauses[0].sound_cue, "tonal_bloom");
 });
 
 test("multiple similar phrases: matches the first occurrence at or after the previous anchor", () => {
   const words = wordsFrom("Right now is fine. Later we said right now again just to test matching. And then the narration continued on for a good while longer past that point.");
   const anchors = [
-    { anchor_text: "Right now is fine.", purpose: "first", planned_seconds: 3 },
-    { anchor_text: "right now again just to test matching.", purpose: "second", planned_seconds: 3 }
+    { anchor_text: "Right now is fine.", purpose: "first", planned_seconds: 3, sound_cue: "low_impact" },
+    { anchor_text: "right now again just to test matching.", purpose: "second", planned_seconds: 3, sound_cue: "tonal_bloom" }
   ];
   const { pauses } = resolveFullFilmPauses({ words, anchors });
   assert.equal(pauses.length, 2);
@@ -31,7 +32,7 @@ test("multiple similar phrases: matches the first occurrence at or after the pre
 test("throws when an anchor cannot be found in the narration", () => {
   const words = wordsFrom("This narration never mentions the missing phrase at all.");
   assert.throws(
-    () => resolveFullFilmPauses({ words, anchors: [{ anchor_text: "Nothing like this exists here.", purpose: "x", planned_seconds: 3 }] }),
+    () => resolveFullFilmPauses({ words, anchors: [{ anchor_text: "Nothing like this exists here.", purpose: "x", planned_seconds: 3, sound_cue: "low_impact" }] }),
     /was not found/
   );
 });
@@ -43,8 +44,8 @@ test("throws when a later anchor would resolve before or at an earlier pause (ov
   // backwards.
   const words = wordsFrom("Alpha beta gamma. Delta epsilon zeta. Then the recording kept going for quite a while after this point too.");
   const anchors = [
-    { anchor_text: "Delta epsilon zeta.", purpose: "first", planned_seconds: 3 },
-    { anchor_text: "Alpha beta gamma.", purpose: "second, but earlier in the text", planned_seconds: 3 }
+    { anchor_text: "Delta epsilon zeta.", purpose: "first", planned_seconds: 3, sound_cue: "low_impact" },
+    { anchor_text: "Alpha beta gamma.", purpose: "second, but earlier in the text", planned_seconds: 3, sound_cue: "low_impact" }
   ];
   assert.throws(() => resolveFullFilmPauses({ words, anchors }), /was not found/);
 });
@@ -52,7 +53,7 @@ test("throws when a later anchor would resolve before or at an earlier pause (ov
 test("throws when a pause resolves too close to the end of the narration", () => {
   const words = wordsFrom("It is still being decided by people right now.");
   assert.throws(
-    () => resolveFullFilmPauses({ words, anchors: [{ anchor_text: "right now.", purpose: "final", planned_seconds: 4 }], minSecondsFromNarrationEnd: 3 }),
+    () => resolveFullFilmPauses({ words, anchors: [{ anchor_text: "right now.", purpose: "final", planned_seconds: 4, sound_cue: "low_impact" }], minSecondsFromNarrationEnd: 3 }),
     /closer than the required/
   );
 });
@@ -60,7 +61,7 @@ test("throws when a pause resolves too close to the end of the narration", () =>
 test("throws when an anchor does not end at a sentence boundary", () => {
   const words = wordsFrom("Not someday right now continues without punctuation here");
   assert.throws(
-    () => resolveFullFilmPauses({ words, anchors: [{ anchor_text: "Not someday right now", purpose: "x", planned_seconds: 3 }] }),
+    () => resolveFullFilmPauses({ words, anchors: [{ anchor_text: "Not someday right now", purpose: "x", planned_seconds: 3, sound_cue: "low_impact" }] }),
     /sentence boundary/
   );
 });
@@ -68,8 +69,8 @@ test("throws when an anchor does not end at a sentence boundary", () => {
 test("allows the final anchor in a multi-anchor list to resolve at the very end of the narration (closing hold)", () => {
   const words = wordsFrom("Not someday. Right now. It is still being decided by people right now.");
   const anchors = [
-    { anchor_text: "Not someday. Right now.", purpose: "present tense turn", planned_seconds: 4 },
-    { anchor_text: "It is still being decided by people right now.", purpose: "final human-agency landing and music decay", planned_seconds: 6 }
+    { anchor_text: "Not someday. Right now.", purpose: "present tense turn", planned_seconds: 4, sound_cue: "tonal_bloom" },
+    { anchor_text: "It is still being decided by people right now.", purpose: "final human-agency landing and music decay", planned_seconds: 6, sound_cue: "tonal_bloom" }
   ];
   const { pauses } = resolveFullFilmPauses({ words, anchors });
   assert.equal(pauses.length, 2);
@@ -79,7 +80,15 @@ test("allows the final anchor in a multi-anchor list to resolve at the very end 
 test("throws when planned_seconds is outside the allowed pause duration range", () => {
   const words = wordsFrom("Not someday. Right now. It kept going for a while after that point.");
   assert.throws(
-    () => resolveFullFilmPauses({ words, anchors: [{ anchor_text: "Not someday. Right now.", purpose: "x", planned_seconds: 0.1 }] }),
+    () => resolveFullFilmPauses({ words, anchors: [{ anchor_text: "Not someday. Right now.", purpose: "x", planned_seconds: 0.1, sound_cue: "low_impact" }] }),
     /invalid planned_seconds/
+  );
+});
+
+test("throws when an anchor has no authored sound_cue", () => {
+  const words = wordsFrom("Not someday. Right now. It kept going for a while after that point.");
+  assert.throws(
+    () => resolveFullFilmPauses({ words, anchors: [{ anchor_text: "Not someday. Right now.", purpose: "x", planned_seconds: 4 }] }),
+    /no authored sound_cue/
   );
 });

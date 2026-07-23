@@ -57,11 +57,14 @@
       "type": "array",
       "items": {
         "type": "object",
+        "required": ["anchor_text", "purpose", "planned_seconds", "sound_cue"],
         "properties": {
           "anchor_text": { "type": "string" },
           "purpose": { "type": "string" },
-          "planned_seconds": { "type": "number", "exclusiveMinimum": 0 }
-        }
+          "planned_seconds": { "type": "number", "exclusiveMinimum": 0 },
+          "sound_cue": { "type": "string" }
+        },
+        "additionalProperties": false
       }
     }
   },
