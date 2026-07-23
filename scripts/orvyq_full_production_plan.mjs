@@ -695,7 +695,21 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
       editorial_purpose: shot.emphasis
         ? `Editorial pause beat: ${shot.emphasis.purpose || "emphasis hold"}.`.slice(0, 200)
         : `Present ${shot.claim_id.replace(/^CLM_\d+_/, "").replace(/_/g, " ").toLowerCase()} evidence for this section.`,
-      ...(shot.emphasis ? { emphasis_card: { eyebrow: (shot.emphasis.purpose || "EMPHASIS").toUpperCase().slice(0, 60), title: shot.emphasis.anchor_text, accent: null } } : {}),
+      ...(shot.emphasis
+        ? {
+            emphasis_card: { eyebrow: (shot.emphasis.purpose || "EMPHASIS").toUpperCase().slice(0, 60), title: shot.emphasis.anchor_text, accent: null },
+            // The real, authored sound cue for this exact pause anchor
+            // (direction/editorial_pause_map.json's full_film_pause_anchors,
+            // threaded through by resolveFullFilmPauses) -- not previously
+            // carried from here into the blueprint shot spec at all, which
+            // is why buildCanonicalEditPlan (scripts/orvyq_edit_plan.mjs)
+            // had nothing to read and hardcoded sound_cue to null for every
+            // shot, including emphasis beats that scripts/orvyq_edit_plan_
+            // tests.mjs requires to carry a real "low_impact"/"tonal_bloom"
+            // cue.
+            sound_cue: shot.emphasis.sound_cue
+          }
+        : {}),
       ...(shot.dissolveIn ? { transition_in: "dissolve" } : {})
     };
     if (shot.kind === "graphic") {
@@ -810,6 +824,54 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
   const evidenceShotCountByClaim = new Map();
   for (const shot of shots) {
     if (shot.asset_type === "evidence") evidenceShotCountByClaim.set(shot.claim_id, (evidenceShotCountByClaim.get(shot.claim_id) || 0) + 1);
+  }
+
+  // ---- editorial pause holds must land on footage, not an evidence card ----
+  // A pause anchor's real narration timestamp can fall inside an
+  // "evidence"-kind slice just as easily as a "footage"-kind one --
+  // narration timing (resolveFullFilmPauses) and visual-kind rotation
+  // (sliceClaimWindow) are entirely independent, and the pause-insertion
+  // pass above deliberately excludes only "graphic" (title card) slices,
+  // not "evidence" ones. But a narration pause is a moment for the picture
+  // to hold still and breathe, not for an information-dense evidence card
+  // to suddenly appear mid-beat -- scripts/orvyq_edit_plan_tests.mjs
+  // enforces this (every shot carrying an emphasis_card must be asset_type
+  // "footage"). Convert any surviving non-footage emphasis-card shot to
+  // real licensed contextual footage here, from the same pool the
+  // run-length-breaking pass below draws from -- and, unlike that pass's
+  // own conversion (which never needs to carry a shot's emphasis_card
+  // forward, since it only ever touches shots that don't have one),
+  // explicitly preserve it. Uses the same critical-claim protection as the
+  // pass below and keeps evidenceShotCountByClaim in sync so that pass
+  // sees the updated counts.
+  for (let i = 0; i < shots.length; i += 1) {
+    const shot = shots[i];
+    if (!shot.emphasis_card || shot.asset_type === "footage") continue;
+    const isLastCriticalEvidence =
+      shot.asset_type === "evidence" && criticalClaimIds.has(shot.claim_id) && (evidenceShotCountByClaim.get(shot.claim_id) || 0) <= 1;
+    if (isLastCriticalEvidence) continue;
+    const footage = pickFootageFor(shot.duration);
+    if (!footage) continue; // pool truly exhausted; left as-is, the editorial check will correctly report it
+    if (shot.asset_type === "evidence") evidenceShotCountByClaim.set(shot.claim_id, (evidenceShotCountByClaim.get(shot.claim_id) || 0) - 1);
+    shots[i] = {
+      duration: shot.duration,
+      claim_id: shot.claim_id,
+      section_id: shot.section_id,
+      scene_id: shot.scene_id,
+      visual_role: shot.visual_role === "evidence" ? "context" : shot.visual_role,
+      editorial_purpose: shot.editorial_purpose,
+      asset_type: "footage",
+      asset: footage.asset,
+      trim_in_sec: footage.trimIn,
+      trim_out_sec: footage.trimOut,
+      motion: "hold",
+      hook_footage: false,
+      contextual_footage: true,
+      generic_stock: true,
+      emphasis_card: shot.emphasis_card,
+      sound_cue: shot.sound_cue,
+      ...(shot.transition_in ? { transition_in: shot.transition_in } : {})
+    };
   }
 
   let runSeconds = 0;

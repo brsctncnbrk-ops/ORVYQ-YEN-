@@ -144,7 +144,14 @@ async function buildFullPlan(dir, projectId, blueprint) {
       transition_in: transitionIn,
       transition_out: transitionOut,
       text_overlay: null,
-      sound_cue: null,
+      // The real, authored sound cue for this exact pause anchor
+      // (direction/editorial_pause_map.json's full_film_pause_anchors),
+      // threaded through by scripts/orvyq_full_production_plan.mjs onto
+      // every emphasis-bearing shot spec -- previously hardcoded to null
+      // for every shot regardless of emphasis_card, which
+      // scripts/orvyq_edit_plan_tests.mjs requires to be a real
+      // "low_impact"/"tonal_bloom" cue whenever emphasis_card is set.
+      sound_cue: spec.sound_cue || null,
       // Full mode has its own real editorial pauses now (8, vs proof's 4)
       // and needs the same emphasis-card overlay buildProofPlan already
       // carries through for them.
