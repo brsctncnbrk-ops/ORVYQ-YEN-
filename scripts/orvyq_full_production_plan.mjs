@@ -887,16 +887,40 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
     runStartIndex = bestIndex + 1;
   }
 
+  // Quantized BEFORE the duration-variety correction pass below, not after:
+  // that pass's own "identical duration" check compares exact float
+  // equality, and two durations it correctly judged distinct (e.g. two
+  // sliceClaimWindow interior slices a few milliseconds apart) can round to
+  // the SAME frame count once quantized -- silently re-merging a triplet
+  // the correction pass had just broken up. Quantizing first means the
+  // correction pass's own equality check, and the ±0.2s (6-frame) delta it
+  // applies, both operate on the real frame-granularity values that will
+  // actually reach scripts/orvyq_pacing_audit.mjs, so nothing downstream of
+  // this pass can undo its fix. See quantizeShotsToFrames' own docstring
+  // for why quantizing doesn't need to know the shots' eventual cumulative
+  // frame offset (hookDuration, computed later below) to be correct.
+  quantizeShotsToFrames(shots);
+
   // ---- final duration-variety correction ----
   // scripts/orvyq_pacing_audit.mjs fails any 3 consecutive shots (of any
   // asset_type) sharing the exact same duration. sliceClaimWindow's own
-  // alternating +/-delta already prevents this within one claim's own
-  // slices, but a claim boundary (or a claim whose slices were left at
-  // plain equal division because canVary was false) can still produce a
-  // rare leftover triplet. This pass nudges one shot of any such triplet by
-  // -0.2s and transfers that 0.2s to an adjacent shot within the same
-  // triplet, so the total duration of the two (and the whole timeline) is
-  // unchanged -- a duration-only adjustment, not a content or visual change.
+  // alternating +/-delta only varies INTERIOR slices when canVary is true;
+  // a claim sliced into many near-max-length pieces (canVary false because
+  // sliceSeconds itself is already close to max_shot_seconds) gets NO
+  // variation at all, so every one of its slices -- and, since the
+  // run-length-breaking pass above converts a shot to footage/graphic AT
+  // THE SAME duration, every shot derived from them too -- can share one
+  // literally identical duration across an arbitrarily long run, not just
+  // an isolated triplet. A single local nudge per triplet can't fully
+  // de-duplicate a run longer than 3: this instead walks every maximal run
+  // of consecutive equal durations and applies a period-3 alternating
+  // pattern (0, +DELTA, -DELTA, +DELTA, -DELTA, ...) starting from the
+  // run's second element -- any 3 consecutive positions inside the run
+  // always land on 3 different pattern values, so no 3-in-a-row survives
+  // regardless of run length, and every +DELTA is applied together with a
+  // matching -DELTA at the very next position, so the run's total duration
+  // (and the whole timeline's) is unchanged -- a duration-only adjustment,
+  // not a content or visual change.
   //
   // Footage shots CAN be nudged too, but only when doing so cannot silently
   // desynchronize a contiguous pause-continuation pair (two shots on the
@@ -935,23 +959,39 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
     if (shot.asset_type === "footage") updated.trim_out_sec = Math.round((shot.trim_out_sec + delta) * 1000) / 1000;
     shots[index] = updated;
   };
-  for (let i = 2; i < shots.length; i += 1) {
-    if (shots[i].duration !== shots[i - 1].duration || shots[i - 1].duration !== shots[i - 2].duration) continue;
-    if (canDonate(i - 1, 0.2) && canReceive(i, 0.2)) {
-      applyDelta(i - 1, -0.2);
-      applyDelta(i, 0.2);
-    } else if (canDonate(i - 2, 0.2) && canReceive(i - 1, 0.2)) {
-      applyDelta(i - 2, -0.2);
-      applyDelta(i - 1, 0.2);
-    } else if (canDonate(i, 0.2) && canReceive(i - 1, 0.2)) {
-      applyDelta(i, -0.2);
-      applyDelta(i - 1, 0.2);
+  // A shot in a long identical-duration run (see above) can already sit
+  // close to max_shot_seconds -- sliceClaimWindow only produces such a run
+  // in the first place when sliceSeconds itself is close to the cap -- so
+  // a fixed 0.2s (6-frame) receiver delta can fail canReceive's own
+  // max_shot_seconds check even when a smaller delta would fit
+  // comfortably. Shrinking the delta to the real available headroom (still
+  // in whole frames, so both shots stay frame-exact after
+  // quantizeShotsToFrames above) keeps the pair genuinely distinguishable
+  // without ever exceeding the cap.
+  const RUN_CORRECTION_DELTA_FRAMES = 6;
+  let runStart = 0;
+  while (runStart < shots.length) {
+    let runEnd = runStart + 1;
+    while (runEnd < shots.length && shots[runEnd].duration === shots[runStart].duration) runEnd += 1;
+    const runLength = runEnd - runStart;
+    for (let offset = 1; offset + 1 < runLength; offset += 2) {
+      const donorIndex = runStart + offset;
+      const receiverIndex = runStart + offset + 1;
+      const receiverHeadroomFrames = Math.floor((maxShotSeconds - shots[receiverIndex].duration) * FPS + 1e-6);
+      const deltaFrames = Math.min(RUN_CORRECTION_DELTA_FRAMES, receiverHeadroomFrames);
+      const delta = deltaFrames / FPS;
+      if (deltaFrames >= 1 && canDonate(donorIndex, delta) && canReceive(receiverIndex, delta)) {
+        applyDelta(donorIndex, -delta);
+        applyDelta(receiverIndex, delta);
+      }
+      // If this pair can't safely take the delta (e.g. a footage clip too
+      // short to grow, or part of a contiguous pause-continuation pair),
+      // it's left unadjusted and scripts/orvyq_pacing_audit.mjs will
+      // correctly fail the build rather than silently ship an unfixed run
+      // -- this has not been observed against this project's real shot
+      // data.
     }
-    // Every remaining possibility is exhausted (donor/receiver checked on
-    // all three adjacent pairs within the triplet); if none qualifies, this
-    // triplet is left as-is and scripts/orvyq_pacing_audit.mjs will
-    // correctly fail the build rather than silently ship an unfixed run --
-    // this has not been observed against this project's real shot data.
+    runStart = runEnd;
   }
 
   // ---- opening motion hook: the same real, licensed footage proof mode
@@ -979,8 +1019,6 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
   const hookDuration = hookShots.reduce((sum, hookShot) => sum + hookShot.duration, 0);
   if (hookDuration < motionHook.minimum_seconds || hookDuration > motionHook.maximum_seconds)
     throw new Error(`direction/motion_hook.json's own shots sum to ${hookDuration}s, outside its declared ${motionHook.minimum_seconds}-${motionHook.maximum_seconds}s range`);
-
-  quantizeShotsToFrames(shots);
 
   // ---- terminal end card: a fixed hold after the narration-derived
   // timeline ends, not carved out of it (see END_CARD_SECONDS above).
