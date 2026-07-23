@@ -319,6 +319,7 @@ export async function buildCanonicalEditPlan(projectId = PROJECT_ID, { mode = "p
       // docs/full-production-guide.md for why this is no longer
       // proof-only.
       cinematic_body_footage: true,
+      proof_body_stock_assets_forbidden: false,
       contextual_footage_must_not_claim_literal_evidence: true,
       ...quality_policy_overrides,
       ...fractionSummary(shots, durationFrames)
