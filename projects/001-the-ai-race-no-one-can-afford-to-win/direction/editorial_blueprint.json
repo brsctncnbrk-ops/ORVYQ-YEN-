@@ -687,7 +687,7 @@
         }
       },
       {
-        "duration": 7.708,
+        "duration": 7.508,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -696,14 +696,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 7.708,
+        "trim_out_sec": 7.508,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.708,
+        "duration": 7.908,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -712,14 +712,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4",
         "trim_in_sec": 2.97,
-        "trim_out_sec": 10.678,
+        "trim_out_sec": 10.878,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.708,
+        "duration": 7.508,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -736,7 +736,7 @@
         }
       },
       {
-        "duration": 7.708,
+        "duration": 7.908,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -745,7 +745,7 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_016_e324304f99b3502cad464d69.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 7.708,
+        "trim_out_sec": 7.908,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
@@ -2386,7 +2386,7 @@
         "transition_in": "fade"
       }
     ],
-    "generated_at": "2026-07-22T23:42:30.892Z",
+    "generated_at": "2026-07-23T02:25:31.126Z",
     "generated_total_duration_seconds": 857.29
   },
   "proof_preview": {
