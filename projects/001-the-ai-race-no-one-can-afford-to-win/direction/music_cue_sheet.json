@@ -54,7 +54,7 @@
     {
       "cue_id": "CUE_01_RACE_PARADOX",
       "section_id": "SEC_01_RACE_PARADOX",
-      "start": 0.0,
+      "start": 0,
       "end": 58.97,
       "state": "controlled_tension",
       "energy_start": 0.28,
@@ -62,7 +62,7 @@
       "function": "Create curiosity, then reveal competitive pressure without sounding like a trailer.",
       "instrumentation": "low tonal pulse, restrained harmonic bed, sparse upper texture",
       "transition_out": "thin to near-silence before the controlled-test evidence",
-      "status": "spec_ready_asset_pending",
+      "status": "ready",
       "track_id": "sb_intervention_nomelody"
     },
     {
@@ -76,7 +76,7 @@
       "function": "Support document reading and make the experiment feel procedural rather than sensational.",
       "instrumentation": "minimal synth interval, dry pulse, low-frequency movement",
       "transition_out": "introduce a faster rhythmic element under the competition pivot",
-      "status": "spec_ready_asset_pending",
+      "status": "ready",
       "track_id": "sb_signal_to_noise_nomelody"
     },
     {
@@ -90,7 +90,7 @@
       "function": "Express market and geopolitical acceleration through rhythm rather than loudness.",
       "instrumentation": "measured percussion, arpeggiated pulse, widening harmonic field",
       "transition_out": "hard rhythmic reduction before real-world misuse evidence",
-      "status": "spec_ready_asset_pending",
+      "status": "ready",
       "track_id": "sb_catalyst"
     },
     {
@@ -102,9 +102,9 @@
       "energy_start": 0.44,
       "energy_end": 0.72,
       "function": "Keep cyber and biological evidence tense but factual, with room for attribution caveats.",
-      "instrumentation": "low pulse, muted impacts at evidence transitions, no glitch clich\u00e9s",
+      "instrumentation": "low pulse, muted impacts at evidence transitions, no glitch clichés",
       "transition_out": "release tension into uncertainty rather than resolve it",
-      "status": "spec_ready_asset_pending",
+      "status": "ready",
       "track_id": "sb_emergent"
     },
     {
@@ -118,7 +118,7 @@
       "function": "Shift from immediate misuse to slower social and economic uncertainty.",
       "instrumentation": "warmer sustained tones, irregular soft pulse, reduced low end",
       "transition_out": "introduce institutional weight for regulation",
-      "status": "spec_ready_asset_pending",
+      "status": "ready",
       "track_id": "sb_undertow"
     },
     {
@@ -146,7 +146,7 @@
       "function": "Hold both sides of the trade-off in tension without musically declaring a winner.",
       "instrumentation": "two complementary harmonic motifs, restrained stereo separation",
       "transition_out": "resolve rhythm while preserving harmonic uncertainty",
-      "status": "spec_ready_asset_pending",
+      "status": "ready",
       "track_id": "sb_ephemera"
     },
     {
@@ -160,7 +160,7 @@
       "function": "Support a credible path forward and give safeguards forward motion.",
       "instrumentation": "clear pulse, brighter harmonic layer, controlled lift",
       "transition_out": "remove pulse and leave a broad reflective bed",
-      "status": "spec_ready_asset_pending",
+      "status": "ready",
       "track_id": "sb_horizons"
     },
     {
@@ -174,7 +174,7 @@
       "function": "Return to human agency and end with thought rather than triumph or catastrophe.",
       "instrumentation": "wide sustained harmony, sparse piano-like tone, long natural decay",
       "transition_out": "four-to-six-second clean release into black",
-      "status": "spec_ready_asset_pending",
+      "status": "ready",
       "track_id": "sb_solace"
     }
   ]
