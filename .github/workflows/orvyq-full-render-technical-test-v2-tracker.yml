@@ -1,5 +1,6 @@
 name: Track ORVYQ Full Render Technical Test v2
 
+# Manual refresh marker: 2026-07-23T20:20Z
 on:
   push:
     branches:
