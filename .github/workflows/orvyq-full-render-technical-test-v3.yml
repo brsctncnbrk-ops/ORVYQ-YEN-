@@ -141,10 +141,7 @@ jobs:
         working-directory: projects/${{ env.PROJECT_ID }}/remotion/render_ready_project
         run: npx remotion render src/index.ts FactForgeVideo out/final_video.mp4 --codec=h264
 
-      - name: Run post-render media QA
-        run: node scripts/orvyq_media_qa.mjs --project-id "$PROJECT_ID" --video "projects/$PROJECT_ID/remotion/render_ready_project/out/final_video.mp4" --report "projects/$PROJECT_ID/qa/orvyq_full_media_qa.json"
-
-      - name: Prepare technical-test output
+      - name: Prepare reviewable render before QA
         run: |
           set -euo pipefail
           mkdir -p "projects/$PROJECT_ID/output"
@@ -155,9 +152,22 @@ jobs:
             echo "Workflow run: $GITHUB_RUN_ID"
             echo "Source ref: $SOURCE_REF"
             echo "Source commit: $(git rev-parse HEAD)"
+            echo "Media QA status: not yet run"
           } > "projects/$PROJECT_ID/output/full_render_technical_test_log.txt"
 
-      - name: Upload full-render technical-test artifact
+      - name: Upload reviewable full render before QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: orvyq-full-render-review-${{ github.run_id }}
+          retention-days: 7
+          path: |
+            projects/${{ env.PROJECT_ID }}/output/full_render_technical_test.mp4
+            projects/${{ env.PROJECT_ID }}/output/full_render_technical_test_log.txt
+
+      - name: Run post-render media QA
+        run: node scripts/orvyq_media_qa.mjs --project-id "$PROJECT_ID" --video "projects/$PROJECT_ID/remotion/render_ready_project/out/final_video.mp4" --report "projects/$PROJECT_ID/qa/orvyq_full_media_qa.json"
+
+      - name: Upload successful full-render package
         uses: actions/upload-artifact@v4
         with:
           name: orvyq-full-render-technical-test-v3-${{ github.run_id }}
