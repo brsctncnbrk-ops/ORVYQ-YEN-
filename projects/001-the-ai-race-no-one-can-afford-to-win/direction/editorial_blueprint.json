@@ -181,7 +181,7 @@
         "hook_footage": true
       },
       {
-        "duration": 2.16,
+        "duration": 2.1666666666666665,
         "claim_id": "CLM_001_LABS_PUBLISH_SAFETY_FRAMEWORKS",
         "section_id": "SEC_01_RACE_PARADOX",
         "scene_id": "scene_001",
@@ -223,7 +223,7 @@
         }
       },
       {
-        "duration": 6.37,
+        "duration": 6.366666666666666,
         "claim_id": "CLM_002_COMPETITIVE_INCENTIVE",
         "section_id": "SEC_01_RACE_PARADOX",
         "scene_id": "scene_001",
@@ -248,7 +248,7 @@
         }
       },
       {
-        "duration": 6.37,
+        "duration": 6.366666666666666,
         "claim_id": "CLM_002_COMPETITIVE_INCENTIVE",
         "section_id": "SEC_01_RACE_PARADOX",
         "scene_id": "scene_001",
@@ -257,14 +257,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 6.37,
+        "trim_out_sec": 6.367,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.942,
+        "duration": 7.933333333333334,
         "claim_id": "CLM_003_GOVERNANCE_LAG",
         "section_id": "SEC_01_RACE_PARADOX",
         "scene_id": "scene_001",
@@ -305,7 +305,7 @@
         }
       },
       {
-        "duration": 7.342,
+        "duration": 7.333333333333333,
         "claim_id": "CLM_003_GOVERNANCE_LAG",
         "section_id": "SEC_01_RACE_PARADOX",
         "scene_id": "scene_001",
@@ -314,14 +314,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_005_e98a421f0d9c432e4d2036fb.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 7.342,
+        "trim_out_sec": 7.333,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.642,
+        "duration": 7.633333333333334,
         "claim_id": "CLM_003_GOVERNANCE_LAG",
         "section_id": "SEC_01_RACE_PARADOX",
         "scene_id": "scene_001",
@@ -330,14 +330,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4",
         "trim_in_sec": 2.854,
-        "trim_out_sec": 10.496,
+        "trim_out_sec": 10.487,
         "motion": "drift_right",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.643,
+        "duration": 7.633333333333334,
         "claim_id": "CLM_003_GOVERNANCE_LAG",
         "section_id": "SEC_01_RACE_PARADOX",
         "scene_id": "scene_001",
@@ -392,7 +392,7 @@
         }
       },
       {
-        "duration": 6.935,
+        "duration": 6.933333333333334,
         "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "scene_id": "scene_002",
@@ -474,7 +474,7 @@
         }
       },
       {
-        "duration": 6.335,
+        "duration": 6.333333333333333,
         "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "scene_id": "scene_002",
@@ -483,14 +483,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 6.335,
+        "trim_out_sec": 6.333,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 6.635,
+        "duration": 6.633333333333334,
         "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "scene_id": "scene_002",
@@ -499,14 +499,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_022_740741da33e14d6a45468490.mp4",
         "trim_in_sec": 2.588,
-        "trim_out_sec": 9.223,
+        "trim_out_sec": 9.221,
         "motion": "push",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 6.635,
+        "duration": 6.633333333333334,
         "claim_id": "CLM_004_AGENTIC_MISALIGNMENT_TEST",
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "scene_id": "scene_002",
@@ -545,7 +545,7 @@
         }
       },
       {
-        "duration": 7.82,
+        "duration": 7.833333333333333,
         "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "scene_id": "scene_002",
@@ -554,14 +554,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_008_42946788405d61ee3a28fa31.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 7.82,
+        "trim_out_sec": 7.833,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.22,
+        "duration": 7.233333333333333,
         "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "scene_id": "scene_002",
@@ -588,7 +588,7 @@
         }
       },
       {
-        "duration": 7.52,
+        "duration": 7.533333333333333,
         "claim_id": "CLM_005_BLACKMAIL_SCENARIO",
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "scene_id": "scene_002",
@@ -597,14 +597,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4",
         "trim_in_sec": 5.477,
-        "trim_out_sec": 12.997,
+        "trim_out_sec": 13.01,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.227,
+        "duration": 7.233333333333333,
         "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "scene_id": "scene_002",
@@ -628,7 +628,7 @@
         }
       },
       {
-        "duration": 6.627,
+        "duration": 6.633333333333334,
         "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "scene_id": "scene_002",
@@ -667,7 +667,7 @@
         }
       },
       {
-        "duration": 6.927,
+        "duration": 6.933333333333334,
         "claim_id": "CLM_006_NO_REAL_WORLD_INCIDENT",
         "section_id": "SEC_02_CONTROLLED_EVIDENCE",
         "scene_id": "scene_002",
@@ -676,7 +676,7 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4",
         "trim_in_sec": 3.003,
-        "trim_out_sec": 9.93,
+        "trim_out_sec": 9.936,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
@@ -697,7 +697,7 @@
         }
       },
       {
-        "duration": 7.297,
+        "duration": 7.3,
         "claim_id": "CLM_007_MARKET_PRESSURE",
         "section_id": "SEC_03_INCENTIVE_RACE",
         "scene_id": "scene_003",
@@ -722,7 +722,7 @@
         }
       },
       {
-        "duration": 6.697,
+        "duration": 6.7,
         "claim_id": "CLM_007_MARKET_PRESSURE",
         "section_id": "SEC_03_INCENTIVE_RACE",
         "scene_id": "scene_003",
@@ -762,7 +762,7 @@
         }
       },
       {
-        "duration": 7.297,
+        "duration": 7.3,
         "claim_id": "CLM_007_MARKET_PRESSURE",
         "section_id": "SEC_03_INCENTIVE_RACE",
         "scene_id": "scene_003",
@@ -771,7 +771,7 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4",
         "trim_in_sec": 4.555,
-        "trim_out_sec": 11.852,
+        "trim_out_sec": 11.855,
         "motion": "push",
         "hook_footage": false,
         "contextual_footage": true,
@@ -799,7 +799,7 @@
         "generic_stock": true
       },
       {
-        "duration": 6.697,
+        "duration": 6.7,
         "claim_id": "CLM_007_MARKET_PRESSURE",
         "section_id": "SEC_03_INCENTIVE_RACE",
         "scene_id": "scene_003",
@@ -824,7 +824,7 @@
         }
       },
       {
-        "duration": 6.997,
+        "duration": 7,
         "claim_id": "CLM_007_MARKET_PRESSURE",
         "section_id": "SEC_03_INCENTIVE_RACE",
         "scene_id": "scene_003",
@@ -864,7 +864,7 @@
         }
       },
       {
-        "duration": 6.997,
+        "duration": 7,
         "claim_id": "CLM_007_MARKET_PRESSURE",
         "section_id": "SEC_03_INCENTIVE_RACE",
         "scene_id": "scene_003",
@@ -873,7 +873,7 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4",
         "trim_in_sec": 20.878,
-        "trim_out_sec": 27.875,
+        "trim_out_sec": 27.878,
         "motion": "pull",
         "hook_footage": false,
         "contextual_footage": true,
@@ -894,7 +894,7 @@
         }
       },
       {
-        "duration": 7.708,
+        "duration": 7.7,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -933,7 +933,7 @@
         }
       },
       {
-        "duration": 7.508,
+        "duration": 7.5,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -942,14 +942,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 7.508,
+        "trim_out_sec": 7.5,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.908,
+        "duration": 7.9,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -958,14 +958,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4",
         "trim_in_sec": 2.97,
-        "trim_out_sec": 10.878,
+        "trim_out_sec": 10.87,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.508,
+        "duration": 7.5,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1004,7 +1004,7 @@
         }
       },
       {
-        "duration": 7.908,
+        "duration": 7.9,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1013,14 +1013,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_016_e324304f99b3502cad464d69.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 7.908,
+        "trim_out_sec": 7.9,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.708,
+        "duration": 7.7,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1029,7 +1029,7 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4",
         "trim_in_sec": 6.406,
-        "trim_out_sec": 14.114,
+        "trim_out_sec": 14.106,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
@@ -1057,7 +1057,7 @@
         "generic_stock": true
       },
       {
-        "duration": 7.708,
+        "duration": 7.7,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1097,7 +1097,7 @@
         }
       },
       {
-        "duration": 7.708,
+        "duration": 7.7,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1106,7 +1106,7 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_023_dbe758e1473aee29a155377a.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 7.708,
+        "trim_out_sec": 7.7,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
@@ -1145,7 +1145,7 @@
         }
       },
       {
-        "duration": 7.708,
+        "duration": 7.7,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1154,14 +1154,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4",
         "trim_in_sec": 4.98,
-        "trim_out_sec": 12.688,
+        "trim_out_sec": 12.68,
         "motion": "drift_left",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.708,
+        "duration": 7.7,
         "claim_id": "CLM_009_CYBER_EXTORTION",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1201,7 +1201,7 @@
         }
       },
       {
-        "duration": 7.63,
+        "duration": 7.633333333333334,
         "claim_id": "CLM_010_CYBER_ESPIONAGE",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1210,14 +1210,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 7.63,
+        "trim_out_sec": 7.633,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.63,
+        "duration": 7.633333333333334,
         "claim_id": "CLM_010_CYBER_ESPIONAGE",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1241,7 +1241,7 @@
         }
       },
       {
-        "duration": 7.363,
+        "duration": 7.366666666666666,
         "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1250,14 +1250,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4",
         "trim_in_sec": 0,
-        "trim_out_sec": 7.363,
+        "trim_out_sec": 7.367,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 6.762,
+        "duration": 6.766666666666667,
         "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1296,7 +1296,7 @@
         }
       },
       {
-        "duration": 7.363,
+        "duration": 7.366666666666666,
         "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1305,14 +1305,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4",
         "trim_in_sec": 16.517,
-        "trim_out_sec": 23.88,
+        "trim_out_sec": 23.884,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 6.762,
+        "duration": 6.766666666666667,
         "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1339,7 +1339,7 @@
         }
       },
       {
-        "duration": 7.363,
+        "duration": 7.366666666666666,
         "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1348,14 +1348,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4",
         "trim_in_sec": 2.427,
-        "trim_out_sec": 9.79,
+        "trim_out_sec": 9.794,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 6.762,
+        "duration": 6.766666666666667,
         "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1364,14 +1364,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4",
         "trim_in_sec": 9.84,
-        "trim_out_sec": 16.602,
+        "trim_out_sec": 16.607,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.063,
+        "duration": 7.066666666666666,
         "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1398,7 +1398,7 @@
         }
       },
       {
-        "duration": 7.063,
+        "duration": 7.066666666666666,
         "claim_id": "CLM_011_BIO_SAFEGUARD_THRESHOLD",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1407,14 +1407,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_005_e98a421f0d9c432e4d2036fb.mp4",
         "trim_in_sec": 4.317,
-        "trim_out_sec": 11.38,
+        "trim_out_sec": 11.384,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.137,
+        "duration": 7.133333333333334,
         "claim_id": "CLM_021_INFORMATION_INTEGRITY",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1441,7 +1441,7 @@
         }
       },
       {
-        "duration": 6.537,
+        "duration": 6.533333333333333,
         "claim_id": "CLM_021_INFORMATION_INTEGRITY",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1480,7 +1480,7 @@
         }
       },
       {
-        "duration": 7.137,
+        "duration": 7.133333333333334,
         "claim_id": "CLM_021_INFORMATION_INTEGRITY",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1489,14 +1489,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4",
         "trim_in_sec": 2.362,
-        "trim_out_sec": 9.499,
+        "trim_out_sec": 9.495,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 6.537,
+        "duration": 6.533333333333333,
         "claim_id": "CLM_021_INFORMATION_INTEGRITY",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1523,7 +1523,7 @@
         }
       },
       {
-        "duration": 6.837,
+        "duration": 6.833333333333333,
         "claim_id": "CLM_021_INFORMATION_INTEGRITY",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1563,7 +1563,7 @@
         }
       },
       {
-        "duration": 6.837,
+        "duration": 6.833333333333333,
         "claim_id": "CLM_021_INFORMATION_INTEGRITY",
         "section_id": "SEC_04_REAL_WORLD_MISUSE",
         "scene_id": "scene_004",
@@ -1572,7 +1572,7 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4",
         "trim_in_sec": 17.496,
-        "trim_out_sec": 24.333,
+        "trim_out_sec": 24.329,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
@@ -1634,7 +1634,7 @@
         "generic_stock": true
       },
       {
-        "duration": 6.78,
+        "duration": 6.766666666666667,
         "claim_id": "CLM_013_JOB_EXPOSURE",
         "section_id": "SEC_05_WORK_AND_CONCENTRATION",
         "scene_id": "scene_005",
@@ -1659,7 +1659,7 @@
         }
       },
       {
-        "duration": 6.18,
+        "duration": 6.166666666666667,
         "claim_id": "CLM_013_JOB_EXPOSURE",
         "section_id": "SEC_05_WORK_AND_CONCENTRATION",
         "scene_id": "scene_005",
@@ -1684,7 +1684,7 @@
         }
       },
       {
-        "duration": 6.48,
+        "duration": 6.466666666666667,
         "claim_id": "CLM_013_JOB_EXPOSURE",
         "section_id": "SEC_05_WORK_AND_CONCENTRATION",
         "scene_id": "scene_005",
@@ -1693,14 +1693,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4",
         "trim_in_sec": 1.872,
-        "trim_out_sec": 8.352,
+        "trim_out_sec": 8.339,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 6.48,
+        "duration": 6.466666666666667,
         "claim_id": "CLM_013_JOB_EXPOSURE",
         "section_id": "SEC_05_WORK_AND_CONCENTRATION",
         "scene_id": "scene_005",
@@ -1725,7 +1725,7 @@
         }
       },
       {
-        "duration": 6.61,
+        "duration": 6.6,
         "claim_id": "CLM_014_CONCENTRATION",
         "section_id": "SEC_05_WORK_AND_CONCENTRATION",
         "scene_id": "scene_005",
@@ -1753,7 +1753,7 @@
         }
       },
       {
-        "duration": 6.61,
+        "duration": 6.6,
         "claim_id": "CLM_014_CONCENTRATION",
         "section_id": "SEC_05_WORK_AND_CONCENTRATION",
         "scene_id": "scene_005",
@@ -1762,7 +1762,7 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_008_42946788405d61ee3a28fa31.mp4",
         "trim_in_sec": 3.13,
-        "trim_out_sec": 9.74,
+        "trim_out_sec": 9.73,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
@@ -1783,7 +1783,7 @@
         }
       },
       {
-        "duration": 7.756,
+        "duration": 7.766666666666667,
         "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -1808,7 +1808,7 @@
         }
       },
       {
-        "duration": 7.156,
+        "duration": 7.166666666666667,
         "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -1817,14 +1817,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4",
         "trim_in_sec": 13.056,
-        "trim_out_sec": 20.212,
+        "trim_out_sec": 20.223,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.756,
+        "duration": 7.766666666666667,
         "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -1833,7 +1833,7 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4",
         "trim_in_sec": 1.248,
-        "trim_out_sec": 9.004,
+        "trim_out_sec": 9.015,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
@@ -1861,7 +1861,7 @@
         "generic_stock": true
       },
       {
-        "duration": 7.156,
+        "duration": 7.166666666666667,
         "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -1886,7 +1886,7 @@
         }
       },
       {
-        "duration": 7.756,
+        "duration": 7.766666666666667,
         "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -1900,7 +1900,7 @@
         }
       },
       {
-        "duration": 7.156,
+        "duration": 7.166666666666667,
         "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -1909,14 +1909,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4",
         "trim_in_sec": 1.856,
-        "trim_out_sec": 9.012,
+        "trim_out_sec": 9.023,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.756,
+        "duration": 7.766666666666667,
         "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -1941,7 +1941,7 @@
         }
       },
       {
-        "duration": 7.156,
+        "duration": 7.166666666666667,
         "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -1955,7 +1955,7 @@
         }
       },
       {
-        "duration": 7.456,
+        "duration": 7.466666666666667,
         "claim_id": "CLM_015_EU_SYSTEMIC_RISK_THRESHOLD",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -1964,14 +1964,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4",
         "trim_in_sec": 3.904,
-        "trim_out_sec": 11.36,
+        "trim_out_sec": 11.371,
         "motion": "drift_left",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.147,
+        "duration": 7.133333333333334,
         "claim_id": "CLM_016_COMPLIANCE_INCUMBENCY",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -1998,7 +1998,7 @@
         }
       },
       {
-        "duration": 6.547,
+        "duration": 6.533333333333333,
         "claim_id": "CLM_016_COMPLIANCE_INCUMBENCY",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -2037,7 +2037,7 @@
         }
       },
       {
-        "duration": 6.847,
+        "duration": 6.833333333333333,
         "claim_id": "CLM_016_COMPLIANCE_INCUMBENCY",
         "section_id": "SEC_06_REGULATION_PARADOX",
         "scene_id": "scene_006",
@@ -2046,7 +2046,7 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_018_f681c3057e36f147005d2652.mp4",
         "trim_in_sec": 2.04,
-        "trim_out_sec": 8.887,
+        "trim_out_sec": 8.873,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
@@ -2067,7 +2067,7 @@
         }
       },
       {
-        "duration": 7.54,
+        "duration": 7.533333333333333,
         "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
         "section_id": "SEC_07_OPEN_CLOSED",
         "scene_id": "scene_007",
@@ -2091,7 +2091,7 @@
         }
       },
       {
-        "duration": 6.94,
+        "duration": 6.933333333333334,
         "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
         "section_id": "SEC_07_OPEN_CLOSED",
         "scene_id": "scene_007",
@@ -2105,7 +2105,7 @@
         }
       },
       {
-        "duration": 7.54,
+        "duration": 7.533333333333333,
         "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
         "section_id": "SEC_07_OPEN_CLOSED",
         "scene_id": "scene_007",
@@ -2114,14 +2114,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4",
         "trim_in_sec": 25.102,
-        "trim_out_sec": 32.642,
+        "trim_out_sec": 32.635,
         "motion": "pull",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 6.94,
+        "duration": 6.933333333333334,
         "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
         "section_id": "SEC_07_OPEN_CLOSED",
         "scene_id": "scene_007",
@@ -2145,7 +2145,7 @@
         }
       },
       {
-        "duration": 7.54,
+        "duration": 7.533333333333333,
         "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
         "section_id": "SEC_07_OPEN_CLOSED",
         "scene_id": "scene_007",
@@ -2159,7 +2159,7 @@
         }
       },
       {
-        "duration": 6.94,
+        "duration": 6.933333333333334,
         "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
         "section_id": "SEC_07_OPEN_CLOSED",
         "scene_id": "scene_007",
@@ -2168,14 +2168,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4",
         "trim_in_sec": 2.141,
-        "trim_out_sec": 9.081,
+        "trim_out_sec": 9.074,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.24,
+        "duration": 7.233333333333333,
         "claim_id": "CLM_017_OPEN_CLOSED_TRADEOFF",
         "section_id": "SEC_07_OPEN_CLOSED",
         "scene_id": "scene_007",
@@ -2213,7 +2213,7 @@
         }
       },
       {
-        "duration": 7.915,
+        "duration": 7.9,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2240,7 +2240,7 @@
         }
       },
       {
-        "duration": 7.315,
+        "duration": 7.3,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2254,7 +2254,7 @@
         }
       },
       {
-        "duration": 7.915,
+        "duration": 7.9,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2263,14 +2263,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4",
         "trim_in_sec": 3.499,
-        "trim_out_sec": 11.414,
+        "trim_out_sec": 11.399,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.315,
+        "duration": 7.3,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2297,7 +2297,7 @@
         }
       },
       {
-        "duration": 7.915,
+        "duration": 7.9,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2311,7 +2311,7 @@
         }
       },
       {
-        "duration": 7.315,
+        "duration": 7.3,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2320,14 +2320,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4",
         "trim_in_sec": 0.57,
-        "trim_out_sec": 7.885,
+        "trim_out_sec": 7.87,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.915,
+        "duration": 7.9,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2354,7 +2354,7 @@
         }
       },
       {
-        "duration": 7.315,
+        "duration": 7.3,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2368,7 +2368,7 @@
         }
       },
       {
-        "duration": 7.915,
+        "duration": 7.9,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2377,14 +2377,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4",
         "trim_in_sec": 2.562,
-        "trim_out_sec": 10.477,
+        "trim_out_sec": 10.462,
         "motion": "drift_right",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.315,
+        "duration": 7.3,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2411,7 +2411,7 @@
         }
       },
       {
-        "duration": 7.915,
+        "duration": 7.9,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2469,7 +2469,7 @@
         }
       },
       {
-        "duration": 7.315,
+        "duration": 7.3,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2478,14 +2478,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4",
         "trim_in_sec": 9.812,
-        "trim_out_sec": 17.127,
+        "trim_out_sec": 17.112,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.615,
+        "duration": 7.6,
         "claim_id": "CLM_018_INDEPENDENT_EVALUATIONS",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2512,7 +2512,7 @@
         }
       },
       {
-        "duration": 4.87,
+        "duration": 4.866666666666666,
         "claim_id": "CLM_019_INCIDENT_REPORTING",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2538,7 +2538,7 @@
         }
       },
       {
-        "duration": 4.87,
+        "duration": 4.866666666666666,
         "claim_id": "CLM_019_INCIDENT_REPORTING",
         "section_id": "SEC_08_SAFETY_ARCHITECTURE",
         "scene_id": "scene_008",
@@ -2566,7 +2566,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2624,7 +2624,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2638,7 +2638,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2647,14 +2647,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4",
         "trim_in_sec": 17.893,
-        "trim_out_sec": 25.775,
+        "trim_out_sec": 25.76,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2712,7 +2712,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2726,7 +2726,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2735,14 +2735,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_018_f681c3057e36f147005d2652.mp4",
         "trim_in_sec": 8.818,
-        "trim_out_sec": 16.7,
+        "trim_out_sec": 16.685,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2800,7 +2800,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2814,7 +2814,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2823,14 +2823,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_022_740741da33e14d6a45468490.mp4",
         "trim_in_sec": 14.234,
-        "trim_out_sec": 22.116,
+        "trim_out_sec": 22.101,
         "motion": "push",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2888,7 +2888,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2902,7 +2902,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2911,14 +2911,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4",
         "trim_in_sec": 7.284,
-        "trim_out_sec": 15.166,
+        "trim_out_sec": 15.151,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2976,7 +2976,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2990,7 +2990,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -3004,7 +3004,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -3062,7 +3062,7 @@
         }
       },
       {
-        "duration": 7.882,
+        "duration": 7.866666666666666,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -3187,7 +3187,7 @@
         "transition_in": "fade"
       }
     ],
-    "generated_at": "2026-07-23T14:52:06.860Z",
+    "generated_at": "2026-07-23T15:17:50.825Z",
     "generated_total_duration_seconds": 857.29
   },
   "proof_preview": {
