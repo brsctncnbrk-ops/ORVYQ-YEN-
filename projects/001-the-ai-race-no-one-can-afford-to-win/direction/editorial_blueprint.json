@@ -196,7 +196,16 @@
             "SRC_DEEPMIND_FSF_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "ANTHROPIC — PRIMARY EVIDENCE",
+          "title": "Anthropic: Announcing our updated Responsible Scaling Policy",
+          "steps": [
+            "Anthropic (Oct 15, 2024): Announcing our updated Responsible Scaling Policy",
+            "Google DeepMind (Feb 4, 2025): Updating the Frontier Safety Framework",
+            "Show at least two real framework titles with publisher and date.",
+            "Do not imply all labs hold identical views.",
+            "Every major AI lab on Earth believes moving this fast might be dangerous."
+          ]
         }
       },
       {
@@ -228,7 +237,14 @@
             "SRC_DEEPMIND_FSF_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "ANTHROPIC — PRIMARY EVIDENCE",
+          "title": "Anthropic: Announcing our updated Responsible Scaling Policy",
+          "limitation": "Attributed commentary, not a measured or universal industry finding.",
+          "left": "If they slow down, somebody else won't.",
+          "left_detail": "Per Anthropic, Oct 15, 2024.",
+          "right": "Frame as the film's incentive analysis, not a measured universal…",
+          "right_detail": "Attributed commentary, not a measured or universal industry finding."
         }
       },
       {
@@ -262,7 +278,30 @@
             "SRC_EU_GPAI_OBLIGATIONS_2025"
           ],
           "source_label": "UK AI Safety Institute",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "UK AI SAFETY INSTITUTE — PRIMARY EVIDENCE",
+          "title": "UK AI Safety Institute: AI Safety Institute approach to evaluations",
+          "limitation": "Evaluations are preliminary, not comprehensive declarations that a system is safe.",
+          "items": [
+            {
+              "label": "UK AI SAFETY INSTITUTE",
+              "value": "Feb 9, 2024",
+              "detail": "AI Safety Institute approach to evaluations"
+            },
+            {
+              "label": "EUROPEAN COMMISSION",
+              "value": "Aug 1, 2025",
+              "detail": "General-purpose AI obligations under the AI Act"
+            },
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "Use timeline or process contrast, not a fabricated speed chart."
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "Capability moves faster than our ability to understand it, control…"
+            }
+          ]
         }
       },
       {
@@ -312,7 +351,30 @@
             "SRC_EU_GPAI_OBLIGATIONS_2025"
           ],
           "source_label": "UK AI Safety Institute",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EUROPEAN COMMISSION — PRIMARY EVIDENCE",
+          "title": "European Commission: General-purpose AI obligations under the AI Act",
+          "limitation": "Evaluations are preliminary, not comprehensive declarations that a system is safe.",
+          "items": [
+            {
+              "label": "EUROPEAN COMMISSION",
+              "value": "Aug 1, 2025",
+              "detail": "General-purpose AI obligations under the AI Act"
+            },
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "Use timeline or process contrast, not a fabricated speed chart."
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "Capability moves faster than our ability to understand it, control…"
+            },
+            {
+              "label": "SECTION",
+              "value": "Every lab sees the risk",
+              "detail": "Immediate paradox and governing question."
+            }
+          ]
         }
       },
       {
@@ -343,7 +405,29 @@
             "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
           ],
           "source_label": "Anthropic Research",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "ANTHROPIC RESEARCH — PRIMARY EVIDENCE",
+          "title": "Anthropic Research: Agentic Misalignment: How LLMs could be insider threats",
+          "limitation": "Controlled simulation, not a documented real-world incident.",
+          "items": [
+            {
+              "label": "ANTHROPIC RESEARCH",
+              "value": "Jun 20, 2025",
+              "detail": "Agentic Misalignment: How LLMs could be insider threats"
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show official article title/date."
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show that 16 models were tested."
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "State controlled simulations."
+            }
+          ]
         }
       },
       {
@@ -365,7 +449,28 @@
             "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
           ],
           "source_label": "Anthropic Research",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — PRIMARY EVIDENCE",
+          "title": "Show official article title/date.",
+          "limitation": "Controlled simulation, not a documented real-world incident.",
+          "items": [
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show official article title/date."
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show that 16 models were tested."
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "State controlled simulations."
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "Researchers deliberately pushed frontier models toward their limits."
+            }
+          ]
         }
       },
       {
@@ -414,7 +519,29 @@
             "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
           ],
           "source_label": "Anthropic Research",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — PRIMARY EVIDENCE",
+          "title": "Show that 16 models were tested.",
+          "limitation": "Controlled simulation, not a documented real-world incident.",
+          "items": [
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show that 16 models were tested."
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "State controlled simulations."
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "Researchers deliberately pushed frontier models toward their limits."
+            },
+            {
+              "label": "SECTION",
+              "value": "What the safety tests actually show",
+              "detail": "Move from abstract fear to a concrete controlled experiment, then state limits."
+            }
+          ]
         }
       },
       {
@@ -447,7 +574,17 @@
             "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
           ],
           "source_label": "Anthropic Research",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — VERIFIED CONTEXT",
+          "title": "Explicitly state fictional company, fictional people and simulated scenario.",
+          "limitation": "Controlled simulation, not a documented real-world incident.",
+          "steps": [
+            "Explicitly state fictional company, fictional people and simulated scenario.",
+            "A model given access to fictional emails threatened to expose a fabricated affair.",
+            "What the safety tests actually show: Move from abstract fear to a concrete controlled…",
+            "Anthropic Research (Jun 20, 2025): Agentic Misalignment: How LLMs could be insider threats",
+            "Use a labelled recreation of the fictional email interface or the official figure."
+          ]
         }
       },
       {
@@ -480,7 +617,14 @@
             "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
           ],
           "source_label": "Anthropic Research",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "ANTHROPIC RESEARCH — PRIMARY EVIDENCE",
+          "title": "Anthropic Research: Agentic Misalignment: How LLMs could be insider threats",
+          "limitation": "Controlled simulation, not a documented real-world incident.",
+          "left": "Display the source's controlled-simulation limitation at main-text…",
+          "left_detail": "Per Anthropic Research, Jun 20, 2025.",
+          "right": "Do not bury this limitation as a small footnote.",
+          "right_detail": "Controlled simulation, not a documented real-world incident."
         }
       },
       {
@@ -497,7 +641,29 @@
             "SRC_ANTHROPIC_AGENTIC_MISALIGNMENT_2025"
           ],
           "source_label": "Anthropic Research",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — VERIFIED CONTEXT",
+          "title": "Display the source's controlled-simulation limitation at main-text size.",
+          "limitation": "Controlled simulation, not a documented real-world incident.",
+          "items": [
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Display the source's controlled-simulation limitation at main-text…"
+            },
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "Do not bury this limitation as a small footnote."
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "None of this happened in the wild."
+            },
+            {
+              "label": "SECTION",
+              "value": "What the safety tests actually show",
+              "detail": "Move from abstract fear to a concrete controlled experiment, then state limits."
+            }
+          ]
         }
       },
       {
@@ -545,7 +711,14 @@
             "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
           ],
           "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "STANFORD INSTITUTE FOR HUMAN-CENTERED ARTIFICIAL…",
+          "title": "Stanford Institute for Human-Centered Artificial…: The 2025 AI Index Report — Economy",
+          "limitation": "Investment levels show the scale of competition; they do not directly prove that every investor rewards speed over caution.",
+          "left": "Show 2024 generative-AI investment and frontier-performance…",
+          "left_detail": "Per Stanford Institute for Human-Centered Artificial Intelligence, Apr 7, 2025.",
+          "right": "Do not state that investment figures prove every actor prioritizes…",
+          "right_detail": "Investment levels show the scale of competition; they do not directly prove that every investor rewards speed over…"
         }
       },
       {
@@ -563,7 +736,29 @@
             "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
           ],
           "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "STANFORD INSTITUTE FOR HUMAN-CENTERED ARTIFICIAL…",
+          "title": "Stanford Institute for Human-Centered…: The 2025 AI Index Report — Technical Performance",
+          "limitation": "Investment levels show the scale of competition; they do not directly prove that every investor rewards speed over caution.",
+          "items": [
+            {
+              "label": "STANFORD INSTITUTE FOR…",
+              "value": "Apr 7, 2025",
+              "detail": "The 2025 AI Index Report — Technical Performance"
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show 2024 generative-AI investment and frontier-performance…"
+            },
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "Do not state that investment figures prove every actor prioritizes…"
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "Competition is visible in the money and in how narrow the frontier…"
+            }
+          ]
         }
       },
       {
@@ -618,7 +813,14 @@
             "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
           ],
           "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "STANFORD INSTITUTE FOR HUMAN-CENTERED ARTIFICIAL…",
+          "title": "Stanford Institute for Human-Centered…: The 2025 AI Index Report — Technical Performance",
+          "limitation": "Investment levels show the scale of competition; they do not directly prove that every investor rewards speed over caution.",
+          "left": "Show 2024 generative-AI investment and frontier-performance…",
+          "left_detail": "Per Stanford Institute for Human-Centered Artificial Intelligence, Apr 7, 2025.",
+          "right": "Do not state that investment figures prove every actor prioritizes…",
+          "right_detail": "Investment levels show the scale of competition; they do not directly prove that every investor rewards speed over…"
         }
       },
       {
@@ -636,7 +838,29 @@
             "SRC_STANFORD_AI_INDEX_2025_TECHNICAL"
           ],
           "source_label": "Stanford Institute for Human-Centered Artificial Intelligence",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — VERIFIED CONTEXT",
+          "title": "Show 2024 generative-AI investment and frontier-performance convergence with exact…",
+          "limitation": "Investment levels show the scale of competition; they do not directly prove that every investor rewards speed over caution.",
+          "items": [
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show 2024 generative-AI investment and frontier-performance…"
+            },
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "Do not state that investment figures prove every actor prioritizes…"
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "Competition is visible in the money and in how narrow the frontier…"
+            },
+            {
+              "label": "SECTION",
+              "value": "Why slowing down alone is not a stable…",
+              "detail": "Explain market and geopolitical incentives."
+            }
+          ]
         }
       },
       {
@@ -683,7 +907,29 @@
             "SRC_ANTHROPIC_CYBER_MISUSE_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "ANTHROPIC — PRIMARY EVIDENCE",
+          "title": "Anthropic: Detecting and countering misuse of AI: August 2025",
+          "limitation": "Company disclosure about misuse of its own system; not independently verified in every detail.",
+          "items": [
+            {
+              "label": "ANTHROPIC",
+              "value": "Aug 27, 2025",
+              "detail": "Detecting and countering misuse of AI: August 2025"
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show the report title/date and case summary."
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Retain company-attribution limitation."
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "A criminal used a coding model to automate reconnaissance, steal…"
+            }
+          ]
         }
       },
       {
@@ -732,7 +978,29 @@
             "SRC_ANTHROPIC_CYBER_MISUSE_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — PRIMARY EVIDENCE",
+          "title": "Show the report title/date and case summary.",
+          "limitation": "Company disclosure about misuse of its own system; not independently verified in every detail.",
+          "items": [
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show the report title/date and case summary."
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Retain company-attribution limitation."
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "A criminal used a coding model to automate reconnaissance, steal…"
+            },
+            {
+              "label": "SECTION",
+              "value": "Cyber and biological capability pressure",
+              "detail": "Separate real reported misuse from capability evaluations."
+            }
+          ]
         }
       },
       {
@@ -802,7 +1070,30 @@
             "SRC_ANTHROPIC_CYBER_MISUSE_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — PRIMARY EVIDENCE",
+          "title": "Retain company-attribution limitation.",
+          "limitation": "Company disclosure about misuse of its own system; not independently verified in every detail.",
+          "items": [
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Retain company-attribution limitation."
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "A criminal used a coding model to automate reconnaissance, steal…"
+            },
+            {
+              "label": "SECTION",
+              "value": "Cyber and biological capability pressure",
+              "detail": "Separate real reported misuse from capability evaluations."
+            },
+            {
+              "label": "ANTHROPIC",
+              "value": "Aug 27, 2025",
+              "detail": "Detecting and countering misuse of AI: August 2025"
+            }
+          ]
         }
       },
       {
@@ -840,7 +1131,17 @@
             "SRC_ANTHROPIC_CYBER_MISUSE_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "SECTION CONTEXT — VERIFIED CONTEXT",
+          "title": "Cyber and biological capability pressure: A criminal used a coding model to automate…",
+          "limitation": "Company disclosure about misuse of its own system; not independently verified in every detail.",
+          "steps": [
+            "Cyber and biological capability pressure: Separate real reported misuse from capability…",
+            "Anthropic (Aug 27, 2025): Detecting and countering misuse of AI: August 2025",
+            "Show the report title/date and case summary.",
+            "Retain company-attribution limitation.",
+            "A criminal used a coding model to automate reconnaissance, steal credentials, and extort…"
+          ]
         }
       },
       {
@@ -873,7 +1174,30 @@
             "SRC_ANTHROPIC_CYBER_MISUSE_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "FILM CLAIM — PRIMARY EVIDENCE",
+          "title": "A criminal used a coding model to automate reconnaissance, steal credentials, and extort…",
+          "limitation": "Company disclosure about misuse of its own system; not independently verified in every detail.",
+          "items": [
+            {
+              "label": "FILM CLAIM",
+              "value": "A criminal used a coding model to automate reconnaissance, steal…"
+            },
+            {
+              "label": "SECTION",
+              "value": "Cyber and biological capability pressure",
+              "detail": "Separate real reported misuse from capability evaluations."
+            },
+            {
+              "label": "ANTHROPIC",
+              "value": "Aug 27, 2025",
+              "detail": "Detecting and countering misuse of AI: August 2025"
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show the report title/date and case summary."
+            }
+          ]
         }
       },
       {
@@ -906,7 +1230,14 @@
             "SRC_ANTHROPIC_ESPIONAGE_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — VERIFIED CONTEXT",
+          "title": "Use 'reported by Anthropic'.",
+          "limitation": "Provider-authored investigation; wording must preserve 'reported' and attribution.",
+          "left": "Use 'reported by Anthropic'.",
+          "left_detail": "Per Anthropic, Nov 13, 2025.",
+          "right": "Provider-authored investigation; wording must preserve 'reported'…",
+          "right_detail": ""
         }
       },
       {
@@ -939,7 +1270,29 @@
             "SRC_ANTHROPIC_ASL3_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — VERIFIED CONTEXT",
+          "title": "Show the precautionary and provisional nature of the ASL-3 activation.",
+          "limitation": "Anthropic said it had not definitively determined the model crossed the threshold; measures were precautionary and provisional.",
+          "items": [
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show the precautionary and provisional nature of the ASL-3 activation."
+            },
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "Do not generalize one laboratory's internal testing into an…"
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "Anthropic activated additional ASL-3 safeguards as a precaution…"
+            },
+            {
+              "label": "SECTION",
+              "value": "Cyber and biological capability pressure",
+              "detail": "Separate real reported misuse from capability evaluations."
+            }
+          ]
         }
       },
       {
@@ -972,7 +1325,17 @@
             "SRC_ANTHROPIC_ASL3_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — PRIMARY EVIDENCE",
+          "title": "Show the precautionary and provisional nature of the ASL-3 activation.",
+          "limitation": "Anthropic said it had not definitively determined the model crossed the threshold; measures were precautionary and provisional.",
+          "steps": [
+            "Show the precautionary and provisional nature of the ASL-3 activation.",
+            "Do not generalize one laboratory's internal testing into an industry-wide conclusion.",
+            "Anthropic activated additional ASL-3 safeguards as a precaution while saying it had not…",
+            "Cyber and biological capability pressure: Separate real reported misuse from capability…",
+            "Anthropic (May 22, 2025): Activating AI Safety Level 3 protections"
+          ]
         }
       },
       {
@@ -1021,7 +1384,17 @@
             "SRC_ANTHROPIC_ASL3_2025"
           ],
           "source_label": "Anthropic",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EVIDENCE BOUNDARY — PRIMARY EVIDENCE",
+          "title": "Do not generalize one laboratory's internal testing into an industry-wide conclusion.",
+          "limitation": "Anthropic said it had not definitively determined the model crossed the threshold; measures were precautionary and provisional.",
+          "steps": [
+            "Do not generalize one laboratory's internal testing into an industry-wide conclusion.",
+            "Anthropic activated additional ASL-3 safeguards as a precaution while saying it had not…",
+            "Cyber and biological capability pressure: Separate real reported misuse from capability…",
+            "Anthropic (May 22, 2025): Activating AI Safety Level 3 protections",
+            "Show the precautionary and provisional nature of the ASL-3 activation."
+          ]
         }
       },
       {
@@ -1054,7 +1427,17 @@
             "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"
           ],
           "source_label": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "INTERNATIONAL SCIENTIFIC REPORT ON THE SAFETY OF ADVANCED…",
+          "title": "International Scientific Report on the Safety of…: International AI Safety Report 2025",
+          "limitation": "The report finds strong evidence that AI can generate persuasive content cheaply at scale, but limited evidence and no scientific consensus on broad societal or electoral effects.",
+          "steps": [
+            "International Scientific Report on the Safety of Advanced AI / UK Department for…",
+            "Show the evidence chain from content generation to distribution to possible societal…",
+            "State that evidence becomes weaker at later stages and that election-level effects are…",
+            "AI makes convincing synthetic content cheaper to produce at scale, while the broader…",
+            "Cyber and biological capability pressure: Separate real reported misuse from capability…"
+          ]
         }
       },
       {
@@ -1071,7 +1454,29 @@
             "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"
           ],
           "source_label": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — VERIFIED CONTEXT",
+          "title": "Show the evidence chain from content generation to distribution to possible societal…",
+          "limitation": "The report finds strong evidence that AI can generate persuasive content cheaply at scale, but limited evidence and no scientific consensus on broad societal or electoral effects.",
+          "items": [
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show the evidence chain from content generation to distribution to…"
+            },
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "State that evidence becomes weaker at later stages and that…"
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "AI makes convincing synthetic content cheaper to produce at scale,…"
+            },
+            {
+              "label": "SECTION",
+              "value": "Cyber and biological capability pressure",
+              "detail": "Separate real reported misuse from capability evaluations."
+            }
+          ]
         }
       },
       {
@@ -1104,7 +1509,17 @@
             "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"
           ],
           "source_label": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — PRIMARY EVIDENCE",
+          "title": "Show the evidence chain from content generation to distribution to possible societal…",
+          "limitation": "The report finds strong evidence that AI can generate persuasive content cheaply at scale, but limited evidence and no scientific consensus on broad societal or electoral effects.",
+          "steps": [
+            "Show the evidence chain from content generation to distribution to possible societal…",
+            "State that evidence becomes weaker at later stages and that election-level effects are…",
+            "AI makes convincing synthetic content cheaper to produce at scale, while the broader…",
+            "Cyber and biological capability pressure: Separate real reported misuse from capability…",
+            "International Scientific Report on the Safety of Advanced AI / UK Department for…"
+          ]
         }
       },
       {
@@ -1121,7 +1536,30 @@
             "SRC_INTERNATIONAL_AI_SAFETY_REPORT_2025"
           ],
           "source_label": "International Scientific Report on the Safety of Advanced AI / UK Department for Science, Innovation and Technology",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EVIDENCE BOUNDARY — VERIFIED CONTEXT",
+          "title": "State that evidence becomes weaker at later stages and that election-level effects are…",
+          "limitation": "The report finds strong evidence that AI can generate persuasive content cheaply at scale, but limited evidence and no scientific consensus on broad societal or electoral effects.",
+          "items": [
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "State that evidence becomes weaker at later stages and that…"
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "AI makes convincing synthetic content cheaper to produce at scale,…"
+            },
+            {
+              "label": "SECTION",
+              "value": "Cyber and biological capability pressure",
+              "detail": "Separate real reported misuse from capability evaluations."
+            },
+            {
+              "label": "INTERNATIONAL SCIENTIFIC…",
+              "value": "Jan 29, 2025",
+              "detail": "International AI Safety Report 2025"
+            }
+          ]
         }
       },
       {
@@ -1169,7 +1607,14 @@
             "SRC_ILO_EXPOSURE_LIMITS_2026"
           ],
           "source_label": "International Labour Organization",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "INTERNATIONAL LABOUR ORGANIZATION — PRIMARY EVIDENCE",
+          "title": "International Labour Organization: Generative AI and Jobs: A Refined Global Index of…",
+          "limitation": "Exposure is not a forecast of job loss; transformation is assessed as more likely than wholesale replacement.",
+          "left": "Show one-in-four occupational exposure.",
+          "left_detail": "Per International Labour Organization, May 20, 2025.",
+          "right": "Show the ILO warning that exposure is not a direct job-loss forecast.",
+          "right_detail": "Exposure is not a forecast of job loss; transformation is assessed as more likely than wholesale replacement."
         }
       },
       {
@@ -1203,7 +1648,14 @@
             "SRC_ILO_EXPOSURE_LIMITS_2026"
           ],
           "source_label": "International Labour Organization",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "INTERNATIONAL LABOUR ORGANIZATION — PRIMARY EVIDENCE",
+          "title": "International Labour Organization: Generative AI and Jobs: A Refined Global Index of…",
+          "limitation": "Exposure is not a forecast of job loss; transformation is assessed as more likely than wholesale replacement.",
+          "left": "Nobody actually knows yet.",
+          "left_detail": "Per International Labour Organization, May 20, 2025.",
+          "right": "Show one-in-four occupational exposure and the ILO warning that…",
+          "right_detail": "Exposure is not a forecast of job loss; transformation is assessed as more likely than wholesale replacement."
         }
       },
       {
@@ -1221,7 +1673,14 @@
             "SRC_ILO_EXPOSURE_LIMITS_2026"
           ],
           "source_label": "International Labour Organization",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EVIDENCE BOUNDARY — VERIFIED CONTEXT",
+          "title": "Show one-in-four occupational exposure and the ILO warning that exposure is not a…",
+          "limitation": "Exposure is not a forecast of job loss; transformation is assessed as more likely than wholesale replacement.",
+          "left": "Nobody actually knows yet.",
+          "left_detail": "Per International Labour Organization, May 20, 2025.",
+          "right": "Show one-in-four occupational exposure and the ILO warning that…",
+          "right_detail": "Exposure is not a forecast of job loss; transformation is assessed as more likely than wholesale replacement."
         }
       },
       {
@@ -1255,7 +1714,14 @@
             "SRC_ILO_EXPOSURE_LIMITS_2026"
           ],
           "source_label": "International Labour Organization",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EVIDENCE BOUNDARY — PRIMARY EVIDENCE",
+          "title": "Show one-in-four occupational exposure and the ILO warning that exposure is not a…",
+          "limitation": "Exposure is not a forecast of job loss; transformation is assessed as more likely than wholesale replacement.",
+          "left": "Nobody actually knows yet.",
+          "left_detail": "Per International Labour Organization, May 20, 2025.",
+          "right": "Show one-in-four occupational exposure and the ILO warning that…",
+          "right_detail": "Exposure is not a forecast of job loss; transformation is assessed as more likely than wholesale replacement."
         }
       },
       {
@@ -1273,7 +1739,17 @@
             "SRC_CMA_CLOUD_MARKET_2025"
           ],
           "source_label": "UK Competition and Markets Authority",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "UK COMPETITION AND MARKETS AUTHORITY — PRIMARY EVIDENCE",
+          "title": "UK Competition and Markets Authority: AI Foundation Models: Update paper",
+          "limitation": "The report identifies competition risks and market structures; it does not establish that concentration is inevitable.",
+          "steps": [
+            "UK Competition and Markets Authority (Apr 11, 2024): AI Foundation Models: Update paper",
+            "UK Competition and Markets Authority (Aug 1, 2025): Cloud services market investigation…",
+            "Show the CMA's identified risks around critical inputs, partnerships and routes to market.",
+            "State that the cloud investigation is broader than frontier AI.",
+            "Frontier AI depends on costly compute, cloud infrastructure, data and capital."
+          ]
         }
       },
       {
@@ -1321,7 +1797,14 @@
             "SRC_EU_GPAI_GUIDELINES_2025"
           ],
           "source_label": "European Commission",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EUROPEAN COMMISSION — PRIMARY EVIDENCE",
+          "title": "European Commission: General-purpose AI obligations under the AI Act",
+          "limitation": "The threshold can be updated and designation is not determined by compute alone.",
+          "left": "Separate AI-system and GPAI-model obligations visually and verbally.",
+          "left_detail": "Per European Commission, Aug 1, 2025.",
+          "right": "Show the 10^25 FLOP presumption as rebuttable and updateable, not an…",
+          "right_detail": "The threshold can be updated and designation is not determined by compute alone."
         }
       },
       {
@@ -1392,7 +1875,14 @@
             "SRC_EU_GPAI_GUIDELINES_2025"
           ],
           "source_label": "European Commission",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EUROPEAN COMMISSION — PRIMARY EVIDENCE",
+          "title": "European Commission: Guidelines on obligations for General-Purpose AI…",
+          "limitation": "The threshold can be updated and designation is not determined by compute alone.",
+          "left": "Separate AI-system and GPAI-model obligations visually and verbally.",
+          "left_detail": "Per European Commission, Jul 18, 2025.",
+          "right": "Show the 10^25 FLOP presumption as rebuttable and updateable, not an…",
+          "right_detail": "The threshold can be updated and designation is not determined by compute alone."
         }
       },
       {
@@ -1440,7 +1930,14 @@
             "SRC_EU_GPAI_GUIDELINES_2025"
           ],
           "source_label": "European Commission",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — PRIMARY EVIDENCE",
+          "title": "Separate AI-system and GPAI-model obligations visually and verbally.",
+          "limitation": "The threshold can be updated and designation is not determined by compute alone.",
+          "left": "Separate AI-system and GPAI-model obligations visually and verbally.",
+          "left_detail": "Per European Commission, Aug 1, 2025.",
+          "right": "Show the 10^25 FLOP presumption as rebuttable and updateable, not an…",
+          "right_detail": "The threshold can be updated and designation is not determined by compute alone."
         }
       },
       {
@@ -1487,7 +1984,17 @@
             "SRC_EU_GPAI_OBLIGATIONS_2025"
           ],
           "source_label": "European Commission",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EUROPEAN COMMISSION — PRIMARY EVIDENCE",
+          "title": "European Commission: General-purpose AI obligations under the AI Act",
+          "limitation": "The threshold can be updated and designation is not determined by compute alone.",
+          "steps": [
+            "European Commission (Aug 1, 2025): General-purpose AI obligations under the AI Act",
+            "Present as distributional analysis, not as a measured outcome of the AI Act.",
+            "Avoid claiming the law has already entrenched incumbents.",
+            "Compliance costs may be easier for established companies to absorb.",
+            "Control can also concentrate power: Show that regulation is necessary but distributional…"
+          ]
         }
       },
       {
@@ -1504,7 +2011,29 @@
             "SRC_EU_GPAI_OBLIGATIONS_2025"
           ],
           "source_label": "European Commission",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EVIDENCE BOUNDARY — VERIFIED CONTEXT",
+          "title": "Present as distributional analysis, not as a measured outcome of the AI Act.",
+          "limitation": "The threshold can be updated and designation is not determined by compute alone.",
+          "items": [
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "Present as distributional analysis, not as a measured outcome of the…"
+            },
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "Avoid claiming the law has already entrenched incumbents."
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "Compliance costs may be easier for established companies to absorb."
+            },
+            {
+              "label": "SECTION",
+              "value": "Control can also concentrate power",
+              "detail": "Show that regulation is necessary but distributional consequences matter."
+            }
+          ]
         }
       },
       {
@@ -1551,7 +2080,14 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "US National Telecommunications and Information Administration",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "US NATIONAL TELECOMMUNICATIONS AND INFORMATION…",
+          "title": "US National Telecommunications…: Dual-Use Foundation Models with Widely Available Model…",
+          "limitation": "The report emphasizes uncertainty and marginal risk relative to closed models and other technologies.",
+          "left": "Show benefits and risks on both sides.",
+          "left_detail": "Per US National Telecommunications and Information Administration, Jul 30, 2024.",
+          "right": "Do not present open-weight and closed-access systems as binary or…",
+          "right_detail": "The report emphasizes uncertainty and marginal risk relative to closed models and other technologies."
         }
       },
       {
@@ -1598,7 +2134,14 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "US National Telecommunications and Information Administration",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — PRIMARY EVIDENCE",
+          "title": "Show benefits and risks on both sides.",
+          "limitation": "The report emphasizes uncertainty and marginal risk relative to closed models and other technologies.",
+          "left": "Show benefits and risks on both sides.",
+          "left_detail": "Per US National Telecommunications and Information Administration, Jul 30, 2024.",
+          "right": "Do not present open-weight and closed-access systems as binary or…",
+          "right_detail": "The report emphasizes uncertainty and marginal risk relative to closed models and other technologies."
         }
       },
       {
@@ -1645,7 +2188,14 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "US National Telecommunications and Information Administration",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EVIDENCE BOUNDARY — PRIMARY EVIDENCE",
+          "title": "Do not present open-weight and closed-access systems as binary or uniform categories.",
+          "limitation": "The report emphasizes uncertainty and marginal risk relative to closed models and other technologies.",
+          "left": "Show benefits and risks on both sides.",
+          "left_detail": "Per US National Telecommunications and Information Administration, Jul 30, 2024.",
+          "right": "Do not present open-weight and closed-access systems as binary or…",
+          "right_detail": "The report emphasizes uncertainty and marginal risk relative to closed models and other technologies."
         }
       },
       {
@@ -1676,7 +2226,17 @@
             "SRC_UK_AISI_EVALS_2024"
           ],
           "source_label": "UK AI Safety Institute",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "UK AI SAFETY INSTITUTE — PRIMARY EVIDENCE",
+          "title": "UK AI Safety Institute: AI Safety Institute approach to evaluations",
+          "limitation": "Evaluations are preliminary, not comprehensive declarations that a system is safe.",
+          "steps": [
+            "UK AI Safety Institute (Feb 9, 2024): AI Safety Institute approach to evaluations",
+            "Show evaluation methods and their limitations.",
+            "Do not call an evaluation a safety certification.",
+            "Independent evaluations and audits before systems ship.",
+            "What useful safety would actually require: Turn diagnosis into technical, procedural and…"
+          ]
         }
       },
       {
@@ -1723,7 +2283,17 @@
             "SRC_UK_AISI_EVALS_2024"
           ],
           "source_label": "UK AI Safety Institute",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "WHAT THIS ESTABLISHES — PRIMARY EVIDENCE",
+          "title": "Show evaluation methods and their limitations.",
+          "limitation": "Evaluations are preliminary, not comprehensive declarations that a system is safe.",
+          "steps": [
+            "Show evaluation methods and their limitations.",
+            "Do not call an evaluation a safety certification.",
+            "Independent evaluations and audits before systems ship.",
+            "What useful safety would actually require: Turn diagnosis into technical, procedural and…",
+            "UK AI Safety Institute (Feb 9, 2024): AI Safety Institute approach to evaluations"
+          ]
         }
       },
       {
@@ -1770,7 +2340,17 @@
             "SRC_UK_AISI_EVALS_2024"
           ],
           "source_label": "UK AI Safety Institute",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EVIDENCE BOUNDARY — PRIMARY EVIDENCE",
+          "title": "Do not call an evaluation a safety certification.",
+          "limitation": "Evaluations are preliminary, not comprehensive declarations that a system is safe.",
+          "steps": [
+            "Do not call an evaluation a safety certification.",
+            "Independent evaluations and audits before systems ship.",
+            "What useful safety would actually require: Turn diagnosis into technical, procedural and…",
+            "UK AI Safety Institute (Feb 9, 2024): AI Safety Institute approach to evaluations",
+            "Show evaluation methods and their limitations."
+          ]
         }
       },
       {
@@ -1817,7 +2397,17 @@
             "SRC_UK_AISI_EVALS_2024"
           ],
           "source_label": "UK AI Safety Institute",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "FILM CLAIM — PRIMARY EVIDENCE",
+          "title": "Independent evaluations and audits before systems ship.",
+          "limitation": "Evaluations are preliminary, not comprehensive declarations that a system is safe.",
+          "steps": [
+            "Independent evaluations and audits before systems ship.",
+            "What useful safety would actually require: Turn diagnosis into technical, procedural and…",
+            "UK AI Safety Institute (Feb 9, 2024): AI Safety Institute approach to evaluations",
+            "Show evaluation methods and their limitations.",
+            "Do not call an evaluation a safety certification."
+          ]
         }
       },
       {
@@ -1853,7 +2443,29 @@
             "SRC_UK_AISI_EVALS_2024"
           ],
           "source_label": "UK AI Safety Institute",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "UK AI SAFETY INSTITUTE — VERIFIED CONTEXT",
+          "title": "UK AI Safety Institute: AI Safety Institute approach to evaluations",
+          "limitation": "Evaluations are preliminary, not comprehensive declarations that a system is safe.",
+          "items": [
+            {
+              "label": "UK AI SAFETY INSTITUTE",
+              "value": "Feb 9, 2024",
+              "detail": "AI Safety Institute approach to evaluations"
+            },
+            {
+              "label": "WHAT THIS ESTABLISHES",
+              "value": "Show evaluation methods and their limitations."
+            },
+            {
+              "label": "EVIDENCE BOUNDARY",
+              "value": "Do not call an evaluation a safety certification."
+            },
+            {
+              "label": "FILM CLAIM",
+              "value": "Independent evaluations and audits before systems ship."
+            }
+          ]
         }
       },
       {
@@ -1886,7 +2498,17 @@
             "SRC_UK_AISI_EVALS_2024"
           ],
           "source_label": "UK AI Safety Institute",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "SECTION CONTEXT — PRIMARY EVIDENCE",
+          "title": "What useful safety would…: Independent evaluations and audits before systems ship.",
+          "limitation": "Evaluations are preliminary, not comprehensive declarations that a system is safe.",
+          "steps": [
+            "What useful safety would actually require: Turn diagnosis into technical, procedural and…",
+            "UK AI Safety Institute (Feb 9, 2024): AI Safety Institute approach to evaluations",
+            "Show evaluation methods and their limitations.",
+            "Do not call an evaluation a safety certification.",
+            "Independent evaluations and audits before systems ship."
+          ]
         }
       },
       {
@@ -1903,7 +2525,16 @@
             "SRC_EU_GPAI_OBLIGATIONS_2025"
           ],
           "source_label": "European Commission",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EUROPEAN COMMISSION — PRIMARY EVIDENCE",
+          "title": "European Commission: General-purpose AI obligations under the AI Act",
+          "limitation": "The threshold can be updated and designation is not determined by compute alone.",
+          "steps": [
+            "European Commission (Aug 1, 2025): General-purpose AI obligations under the AI Act",
+            "Differentiate existing EU obligations from the film's broader policy recommendations.",
+            "Mandatory incident reporting and legal accountability.",
+            "What useful safety would actually require: Turn diagnosis into technical, procedural and…"
+          ]
         }
       },
       {
@@ -1964,7 +2595,32 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "Multiple verified sources (recap)",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "ANTHROPIC — PRIMARY EVIDENCE",
+          "title": "Anthropic: Announcing our updated Responsible Scaling Policy",
+          "limitation": "Attributed commentary, not a measured or universal industry finding.",
+          "items": [
+            {
+              "label": "ANTHROPIC",
+              "value": "Oct 15, 2024",
+              "detail": "Announcing our updated Responsible Scaling Policy"
+            },
+            {
+              "label": "GOOGLE DEEPMIND",
+              "value": "Feb 4, 2025",
+              "detail": "Updating the Frontier Safety Framework"
+            },
+            {
+              "label": "UK AI SAFETY INSTITUTE",
+              "value": "Feb 9, 2024",
+              "detail": "AI Safety Institute approach to evaluations"
+            },
+            {
+              "label": "EUROPEAN COMMISSION",
+              "value": "Aug 1, 2025",
+              "detail": "General-purpose AI obligations under the AI Act"
+            }
+          ]
         }
       },
       {
@@ -2027,7 +2683,32 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "Multiple verified sources (recap)",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "GOOGLE DEEPMIND — PRIMARY EVIDENCE",
+          "title": "Google DeepMind: Updating the Frontier Safety Framework",
+          "limitation": "Attributed commentary, not a measured or universal industry finding.",
+          "items": [
+            {
+              "label": "GOOGLE DEEPMIND",
+              "value": "Feb 4, 2025",
+              "detail": "Updating the Frontier Safety Framework"
+            },
+            {
+              "label": "UK AI SAFETY INSTITUTE",
+              "value": "Feb 9, 2024",
+              "detail": "AI Safety Institute approach to evaluations"
+            },
+            {
+              "label": "EUROPEAN COMMISSION",
+              "value": "Aug 1, 2025",
+              "detail": "General-purpose AI obligations under the AI Act"
+            },
+            {
+              "label": "ANTHROPIC RESEARCH",
+              "value": "Jun 20, 2025",
+              "detail": "Agentic Misalignment: How LLMs could be insider threats"
+            }
+          ]
         }
       },
       {
@@ -2090,7 +2771,32 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "Multiple verified sources (recap)",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "UK AI SAFETY INSTITUTE — PRIMARY EVIDENCE",
+          "title": "UK AI Safety Institute: AI Safety Institute approach to evaluations",
+          "limitation": "Attributed commentary, not a measured or universal industry finding.",
+          "items": [
+            {
+              "label": "UK AI SAFETY INSTITUTE",
+              "value": "Feb 9, 2024",
+              "detail": "AI Safety Institute approach to evaluations"
+            },
+            {
+              "label": "EUROPEAN COMMISSION",
+              "value": "Aug 1, 2025",
+              "detail": "General-purpose AI obligations under the AI Act"
+            },
+            {
+              "label": "ANTHROPIC RESEARCH",
+              "value": "Jun 20, 2025",
+              "detail": "Agentic Misalignment: How LLMs could be insider threats"
+            },
+            {
+              "label": "STANFORD INSTITUTE FOR…",
+              "value": "Apr 7, 2025",
+              "detail": "The 2025 AI Index Report — Economy"
+            }
+          ]
         }
       },
       {
@@ -2153,7 +2859,32 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "Multiple verified sources (recap)",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "EUROPEAN COMMISSION — PRIMARY EVIDENCE",
+          "title": "European Commission: General-purpose AI obligations under the AI Act",
+          "limitation": "Attributed commentary, not a measured or universal industry finding.",
+          "items": [
+            {
+              "label": "EUROPEAN COMMISSION",
+              "value": "Aug 1, 2025",
+              "detail": "General-purpose AI obligations under the AI Act"
+            },
+            {
+              "label": "ANTHROPIC RESEARCH",
+              "value": "Jun 20, 2025",
+              "detail": "Agentic Misalignment: How LLMs could be insider threats"
+            },
+            {
+              "label": "STANFORD INSTITUTE FOR…",
+              "value": "Apr 7, 2025",
+              "detail": "The 2025 AI Index Report — Economy"
+            },
+            {
+              "label": "ANTHROPIC",
+              "value": "Aug 27, 2025",
+              "detail": "Detecting and countering misuse of AI: August 2025"
+            }
+          ]
         }
       },
       {
@@ -2216,7 +2947,32 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "Multiple verified sources (recap)",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "ANTHROPIC RESEARCH — PRIMARY EVIDENCE",
+          "title": "Anthropic Research: Agentic Misalignment: How LLMs could be insider threats",
+          "limitation": "Attributed commentary, not a measured or universal industry finding.",
+          "items": [
+            {
+              "label": "ANTHROPIC RESEARCH",
+              "value": "Jun 20, 2025",
+              "detail": "Agentic Misalignment: How LLMs could be insider threats"
+            },
+            {
+              "label": "STANFORD INSTITUTE FOR…",
+              "value": "Apr 7, 2025",
+              "detail": "The 2025 AI Index Report — Economy"
+            },
+            {
+              "label": "ANTHROPIC",
+              "value": "Aug 27, 2025",
+              "detail": "Detecting and countering misuse of AI: August 2025"
+            },
+            {
+              "label": "ANTHROPIC",
+              "value": "Nov 13, 2025",
+              "detail": "Disrupting the first reported AI-orchestrated cyber espionage campaign"
+            }
+          ]
         }
       },
       {
@@ -2277,7 +3033,32 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "Multiple verified sources (recap)",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "STANFORD INSTITUTE FOR HUMAN-CENTERED ARTIFICIAL…",
+          "title": "Stanford Institute for Human-Centered Artificial…: The 2025 AI Index Report — Economy",
+          "limitation": "Attributed commentary, not a measured or universal industry finding.",
+          "items": [
+            {
+              "label": "STANFORD INSTITUTE FOR…",
+              "value": "Apr 7, 2025",
+              "detail": "The 2025 AI Index Report — Economy"
+            },
+            {
+              "label": "ANTHROPIC",
+              "value": "Aug 27, 2025",
+              "detail": "Detecting and countering misuse of AI: August 2025"
+            },
+            {
+              "label": "ANTHROPIC",
+              "value": "Nov 13, 2025",
+              "detail": "Disrupting the first reported AI-orchestrated cyber espionage campaign"
+            },
+            {
+              "label": "ANTHROPIC",
+              "value": "May 22, 2025",
+              "detail": "Activating AI Safety Level 3 protections"
+            }
+          ]
         }
       },
       {
@@ -2329,7 +3110,17 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "Multiple verified sources (recap)",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "ANTHROPIC — VERIFIED CONTEXT",
+          "title": "Anthropic: Detecting and countering misuse of AI: August 2025",
+          "limitation": "Attributed commentary, not a measured or universal industry finding.",
+          "steps": [
+            "Anthropic (Aug 27, 2025): Detecting and countering misuse of AI: August 2025",
+            "Anthropic (Nov 13, 2025): Disrupting the first reported AI-orchestrated cyber espionage…",
+            "Anthropic (May 22, 2025): Activating AI Safety Level 3 protections",
+            "International Scientific Report on the Safety of Advanced AI / UK Department for…",
+            "International Labour Organization (May 20, 2025): Generative AI and Jobs: A Refined…"
+          ]
         }
       },
       {
@@ -2367,7 +3158,17 @@
             "SRC_NTIA_OPEN_WEIGHTS_2024"
           ],
           "source_label": "Multiple verified sources (recap)",
-          "font_px": 32
+          "font_px": 32,
+          "eyebrow": "ANTHROPIC — VERIFIED CONTEXT",
+          "title": "Anthropic: Disrupting the first reported AI-orchestrated cyber…",
+          "limitation": "Attributed commentary, not a measured or universal industry finding.",
+          "steps": [
+            "Anthropic (Nov 13, 2025): Disrupting the first reported AI-orchestrated cyber espionage…",
+            "Anthropic (May 22, 2025): Activating AI Safety Level 3 protections",
+            "International Scientific Report on the Safety of Advanced AI / UK Department for…",
+            "International Labour Organization (May 20, 2025): Generative AI and Jobs: A Refined…",
+            "International Labour Organization (Apr 17, 2026): Workers’ exposure to AI: What…"
+          ]
         }
       },
       {
@@ -2386,7 +3187,7 @@
         "transition_in": "fade"
       }
     ],
-    "generated_at": "2026-07-23T02:25:31.126Z",
+    "generated_at": "2026-07-23T14:52:06.860Z",
     "generated_total_duration_seconds": 857.29
   },
   "proof_preview": {
