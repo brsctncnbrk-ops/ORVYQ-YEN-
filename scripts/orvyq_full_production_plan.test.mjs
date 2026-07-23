@@ -1,7 +1,21 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { kindFor, titleCase, locateClaimWindow, sliceClaimWindow } from "./orvyq_full_production_plan.mjs";
+import { kindFor, titleCase, locateClaimWindow, sliceClaimWindow, quantizeShotsToFrames } from "./orvyq_full_production_plan.mjs";
 import { tokenizeWords } from "./lib/orvyq-pause-resolver.mjs";
+
+// Mirrors buildCanonicalEditPlan's own cumulative frame assignment
+// (scripts/orvyq_edit_plan.mjs) exactly: a single running float cursor,
+// start/end frame read off it via Math.round(cursor * fps) at each shot
+// boundary, never reset or corrected between shots.
+function assignFrames(shots, fps, startCursor = 0) {
+  let cursor = startCursor;
+  return shots.map((shot) => {
+    const start_frame = Math.round(cursor * fps);
+    cursor += shot.duration;
+    const end_frame = Math.round(cursor * fps);
+    return { ...shot, start_frame, end_frame };
+  });
+}
 
 function wordsFrom(text, secondsPerWord = 0.5) {
   return text.split(/\s+/).map((w, i) => ({ text: w, start: i * secondsPerWord, end: (i + 1) * secondsPerWord - 0.05 }));
@@ -60,4 +74,40 @@ test("sliceClaimWindow returns a single slice when the window already fits withi
   assert.equal(slices.length, 1);
   assert.equal(slices[0].start, 10);
   assert.equal(slices[0].end, 14);
+});
+
+// Regression test for the "shot_XXX lacks evidence hierarchy"-adjacent proof
+// failure: scripts/orvyq_edit_plan_tests.mjs asserts a footage shot's
+// trim_out_sec - trim_in_sec matches its real frame-quantized on-screen
+// length within 0.02s. Before quantizeShotsToFrames, a shot's own float
+// `duration` could drift from that frame-quantized length by up to a full
+// frame once cumulative Math.round(cursor * fps) rounding compounds across
+// 100+ shots -- reproduced here with irregular real-world-shaped floats
+// deliberately chosen to land near a frame boundary.
+test("quantizeShotsToFrames: footage trims match their real frame-quantized on-screen length, even after 100+ shots of cumulative drift", () => {
+  const fps = 30;
+  const durations = [];
+  for (let i = 0; i < 120; i += 1) durations.push(6.1 + ((i * 37) % 23) / 100);
+  const shots = durations.map((duration, i) => ({
+    asset_type: i % 3 === 2 ? "footage" : "evidence",
+    duration,
+    ...(i % 3 === 2 ? { trim_in_sec: (i * 1.7) % 40, trim_out_sec: (i * 1.7) % 40 + duration } : {})
+  }));
+
+  quantizeShotsToFrames(shots, fps);
+  const withFrames = assignFrames(shots, fps, 11.3 /* a non-frame-exact starting cursor, like a real hookDuration */);
+
+  for (const shot of withFrames) {
+    if (shot.asset_type !== "footage") continue;
+    const seconds = (shot.end_frame - shot.start_frame) / fps;
+    const diff = Math.abs(shot.trim_out_sec - shot.trim_in_sec - seconds);
+    assert.ok(diff < 0.001, `footage trim drifted ${diff}s from its real on-screen length`);
+  }
+});
+
+test("quantizeShotsToFrames: leaves an already frame-exact duration and its footage trim unchanged (beyond millisecond rounding)", () => {
+  const shots = [{ asset_type: "footage", duration: 6, trim_in_sec: 2, trim_out_sec: 8 }];
+  quantizeShotsToFrames(shots, 30);
+  assert.equal(shots[0].duration, 6);
+  assert.equal(shots[0].trim_out_sec, 8);
 });

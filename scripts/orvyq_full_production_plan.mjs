@@ -39,6 +39,10 @@ const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
 const TARGET_SHOT_SECONDS = 6;
 const TITLE_CARD_SECONDS = 2.5;
 const DEFAULT_FONT_PX = 32;
+// Must match scripts/orvyq_edit_plan.mjs's own FPS constant -- used below
+// only to replicate buildCanonicalEditPlan's cumulative frame rounding when
+// quantizing footage trims, not to compute any rendered frame number here.
+const FPS = 30;
 // A short closing hold after the last narrated word and its final editorial
 // pause: a terminal title card, not a claim beat, so it is added on top of
 // the narration-derived timeline rather than carved out of it. Mirrors the
@@ -393,6 +397,42 @@ export function sliceClaimWindow(claim, coverStart, coverEnd, maxShotSeconds) {
     slices.push({ start, end, kind: kindRotation[i % kindRotation.length], role: roleRotation[i % roleRotation.length] });
   }
   return slices;
+}
+
+// Snaps every shot's duration to an exact frame boundary, and footage
+// trims to match -- mutates `shots` in place and returns it.
+//
+// buildCanonicalEditPlan (scripts/orvyq_edit_plan.mjs) assigns every shot's
+// start_frame/end_frame from a single cumulative Math.round(cursor * FPS)
+// walk across the WHOLE film -- cursor itself is a running float, never
+// itself rounded, only the frame numbers read off it are. A shot's own
+// float `duration` can therefore drift from its real on-screen
+// (frame-quantized) length by up to half a frame at each of its two
+// boundaries, and those two independent roundings can combine to exceed
+// scripts/orvyq_edit_plan_tests.mjs's 0.02s footage trim-vs-actual-length
+// tolerance even when buildCanonicalEditPlan's own single-shot check (trim
+// vs. the float duration alone, same 0.02s tolerance) already passed --
+// both checks cannot be satisfied at once while `duration` itself carries
+// sub-frame drift.
+//
+// The real fix is upstream of trims: round(x + n) = round(x) + n for any
+// integer n, so once a shot's OWN `duration` is itself an exact whole
+// number of frames, its contribution to ANY later cumulative
+// Math.round(cursor * FPS) boundary is exactly that many frames --
+// regardless of the cursor's value when this shot starts, including
+// sub-frame drift already carried in from any untouched shots earlier in
+// the same film (e.g. the real, separately-curated motion_hook.json
+// footage that precedes `shots` in the final full_production.shots array).
+// Using the exact float frames/fps here (not rounded to milliseconds)
+// matters: rounding `duration` itself to 3 decimals would reintroduce a
+// smaller version of the same cumulative-drift problem across 100+ shots.
+export function quantizeShotsToFrames(shots, fps = FPS) {
+  for (const shot of shots) {
+    const frames = Math.round(shot.duration * fps);
+    shot.duration = frames / fps;
+    if (shot.asset_type === "footage") shot.trim_out_sec = Math.round((shot.trim_in_sec + frames / fps) * 1000) / 1000;
+  }
+  return shots;
 }
 
 export async function buildFullProductionPlan(projectId = PROJECT_ID) {
@@ -939,6 +979,8 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
   const hookDuration = hookShots.reduce((sum, hookShot) => sum + hookShot.duration, 0);
   if (hookDuration < motionHook.minimum_seconds || hookDuration > motionHook.maximum_seconds)
     throw new Error(`direction/motion_hook.json's own shots sum to ${hookDuration}s, outside its declared ${motionHook.minimum_seconds}-${motionHook.maximum_seconds}s range`);
+
+  quantizeShotsToFrames(shots);
 
   // ---- terminal end card: a fixed hold after the narration-derived
   // timeline ends, not carved out of it (see END_CARD_SECONDS above).
