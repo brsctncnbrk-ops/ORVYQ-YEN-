@@ -2624,7 +2624,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 7.733,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2638,7 +2638,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 8,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2647,14 +2647,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4",
         "trim_in_sec": 17.893,
-        "trim_out_sec": 25.76,
+        "trim_out_sec": 25.893,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 7.733,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2712,7 +2712,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 8,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2726,7 +2726,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 7.733,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2735,14 +2735,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_018_f681c3057e36f147005d2652.mp4",
         "trim_in_sec": 8.818,
-        "trim_out_sec": 16.685,
+        "trim_out_sec": 16.552,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 8,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2800,7 +2800,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 7.733,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2814,7 +2814,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 8,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2823,14 +2823,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_022_740741da33e14d6a45468490.mp4",
         "trim_in_sec": 14.234,
-        "trim_out_sec": 22.101,
+        "trim_out_sec": 22.234,
         "motion": "push",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 7.733,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2888,7 +2888,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 8,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2902,7 +2902,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 7.733,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2911,14 +2911,14 @@
         "asset_type": "footage",
         "asset": "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4",
         "trim_in_sec": 7.284,
-        "trim_out_sec": 15.151,
+        "trim_out_sec": 15.018,
         "motion": "hold",
         "hook_footage": false,
         "contextual_footage": true,
         "generic_stock": true
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 8,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2976,7 +2976,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 7.733,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -2990,7 +2990,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 8,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -3004,7 +3004,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 7.733,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -3062,7 +3062,7 @@
         }
       },
       {
-        "duration": 7.866666666666666,
+        "duration": 8,
         "claim_id": "CLM_020_SYSTEMIC_INCENTIVE_FINAL",
         "section_id": "SEC_09_FINAL_PARADOX",
         "scene_id": "scene_009",
@@ -3187,7 +3187,7 @@
         "transition_in": "fade"
       }
     ],
-    "generated_at": "2026-07-23T15:17:50.825Z",
+    "generated_at": "2026-07-23T15:41:18.140Z",
     "generated_total_duration_seconds": 857.29
   },
   "proof_preview": {
