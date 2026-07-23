@@ -33,6 +33,7 @@ import path from "node:path";
 import { projectDir, readJson, readJsonSafe, writeJsonAtomic, parseArgs, printJson } from "./lib/fs-utils.mjs";
 import { loadResolvedEvidenceMap } from "./lib/orvyq-evidence.mjs";
 import { resolveFullFilmPauses, tokenizeWords, tokenizeAnchorText, findAnchorMatch } from "./lib/orvyq-pause-resolver.mjs";
+import { buildEvidenceContent } from "./lib/orvyq-evidence-authoring.mjs";
 
 const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
 const TARGET_SHOT_SECONDS = 6;
@@ -631,6 +632,18 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
   const recapSourceIds = [...new Set(usableClaims.flatMap((c) => c.source_ids || []).filter((id) => validSourceIds.has(id)))];
 
   // ---- assemble full_production.shots specs (buildCanonicalEditPlan's input shape) ----
+  // research/evidence_map.json's own sections[] (title + dramatic_function),
+  // NOT blueprint.full_production.sections (which only carries
+  // target_seconds/music_state/visual_strategy/deliverables) -- the two
+  // arrays share section_id keys but not shape.
+  const sectionById = new Map(evidenceMap.sections.map((s) => [s.section_id, s]));
+  const sourceById = new Map(evidenceMap.source_catalog.map((s) => [s.source_id, s]));
+  // Counts how many shots have already been built for one (claim_id, kind)
+  // pair so buildEvidenceContent can rotate which real fact leads each
+  // repeat shot's eyebrow/title/body -- see scripts/lib/orvyq-evidence-
+  // authoring.mjs. Keyed on the pair, not just claim_id, since a claim's
+  // primary/secondary kinds are authored independently of each other.
+  const evidenceOccurrenceByClaimKind = new Map();
   const shots = finalShots.map((shot, index) => {
     const duration = Math.round((shot.outputEnd - shot.outputStart) * 1000) / 1000;
     const base = {
@@ -665,6 +678,18 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
     const ownSourceIds = (claim.source_ids || []).filter((id) => validSourceIds.has(id));
     const isRecap = ownSourceIds.length === 0;
     const sourceIds = isRecap ? recapSourceIds : ownSourceIds;
+    const occurrenceKey = `${shot.claim_id}:${shot.evidenceKind}`;
+    const occurrence = evidenceOccurrenceByClaimKind.get(occurrenceKey) || 0;
+    evidenceOccurrenceByClaimKind.set(occurrenceKey, occurrence + 1);
+    const content = buildEvidenceContent({
+      claim,
+      kind: shot.evidenceKind,
+      role: shot.role,
+      displaySources: sourceIds.map((id) => sourceById.get(id)).filter(Boolean),
+      ownSources: ownSourceIds.map((id) => sourceById.get(id)).filter(Boolean),
+      section: sectionById.get(shot.section_id),
+      occurrence
+    });
     return {
       ...base,
       asset_type: "evidence",
@@ -672,7 +697,8 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
         kind: shot.evidenceKind,
         source_ids: sourceIds,
         source_label: isRecap ? "Multiple verified sources (recap)" : evidenceMap.source_catalog.find((s) => s.source_id === ownSourceIds[0])?.publisher || "Source",
-        font_px: DEFAULT_FONT_PX
+        font_px: DEFAULT_FONT_PX,
+        ...content
       }
     };
   });

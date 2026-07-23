@@ -94,8 +94,47 @@ jobs:
           sudo apt-get install -y --no-install-recommends ffmpeg poppler-utils
           python -m pip install --disable-pip-version-check faster-whisper==1.2.0 requests==2.32.5
 
+      # Regenerates direction/editorial_blueprint.json's full_production.shots
+      # from the exact same real data buildCanonicalEditPlan itself reads
+      # (research/evidence_map.json + evidence_resolutions.json, voice/
+      # narration_alignment.json, direction/editorial_pause_map.json) plus
+      # the real, just-materialized footage clip durations above -- see
+      # scripts/orvyq_full_production_plan.mjs. This is the only place in
+      # either render mode that authors each evidence shot's real
+      # eyebrow/title/items/steps/left-right content
+      # (scripts/lib/orvyq-evidence-authoring.mjs); proof mode's own edit
+      # plan (built two steps below) reads full_production.shots directly
+      # and does not regenerate it, so this step -- not the render itself --
+      # is what keeps the committed blueprint's evidence content in sync
+      # with the generator whenever either changes.
+      - name: Regenerate the full production shot list from real data
+        run: node scripts/orvyq_full_production_plan.mjs --project-id="$PROJECT_ID"
+
       - name: Validate canonical schemas and recovered project data
         run: npm run validate:canonical
+
+      # editorial_blueprint.json (and editorial_pause_map.json's mirrored
+      # duration_policy) are committed project data, not gitignored build
+      # output (unlike direction/edit_plan.json) -- see the frozen_candidate
+      # commit step below for the same real-network-only-in-CI pattern this
+      # mirrors. [skip ci] avoids a self-triggered second proof run, matching
+      # that same step; this repo's real footage/durations can only be
+      # resolved here, in CI, not in a local sandbox with no access to the
+      # pinned source repository.
+      - name: Commit regenerated full production shot list
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          set -euo pipefail
+          git config user.name "orvyq-proof-bot"
+          git config user.email "orvyq-proof-bot@users.noreply.github.com"
+          git add "projects/$PROJECT_ID/direction/editorial_blueprint.json" "projects/$PROJECT_ID/direction/editorial_pause_map.json"
+          if git diff --cached --quiet; then
+            echo "full production shot list unchanged; nothing to commit."
+            exit 0
+          fi
+          git commit -m "Regenerate full production shot list for proof run ${{ github.run_id }} [skip ci]"
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
 
       - name: Fetch and verify official primary evidence
         run: node scripts/orvyq_fetch_primary_evidence.mjs

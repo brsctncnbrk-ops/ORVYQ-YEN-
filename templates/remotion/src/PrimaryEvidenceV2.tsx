@@ -110,12 +110,36 @@ const Cards: React.FC<{ items: EvidenceItem[]; reveal: number }> = ({ items, rev
 
 const TimelineStage: React.FC<{ spec: PrimaryEvidenceSpec; reveal: number }> = ({ spec, reveal }) => <div style={{ position: "absolute", left: 82, right: 82, top: 226, bottom: spec.limitation ? 264 : 204 }}><Cards items={spec.items || []} reveal={reveal} /></div>;
 
-const ArticleStage: React.FC<{ spec: PrimaryEvidenceSpec; reveal: number }> = ({ spec, reveal }) => (
-  <div style={{ position: "absolute", left: 88, right: 88, top: 210, bottom: spec.limitation ? 270 : 206, display: "grid", gridTemplateColumns: ".85fr 1.55fr", gap: 23 }}>
-    <Surface style={{ padding: "34px 31px", display: "flex", alignItems: "center" }}><div><div style={{ color: RED, fontSize: 18, letterSpacing: ".14em", fontWeight: 900 }}>OFFICIAL RESEARCH ARTICLE</div><div style={{ color: INK, fontFamily: "Arial, Helvetica, sans-serif", fontSize: 82, lineHeight: .92, letterSpacing: "-.055em", fontWeight: 870, marginTop: 25 }}>16</div><div style={{ color: INK, fontFamily: "Arial, Helvetica, sans-serif", fontSize: 29, lineHeight: 1.1, fontWeight: 760, marginTop: 8 }}>leading models stress-tested</div><div style={{ color: MUTED, fontFamily: "Arial, Helvetica, sans-serif", fontSize: 22, lineHeight: 1.27, marginTop: 20 }}>Hypothetical corporate environments with email access and autonomous action.</div></div></Surface>
-    <div><Cards items={spec.items || []} reveal={reveal} /></div>
-  </div>
-);
+// The left headline card and the right supporting-card grid are both driven
+// entirely by spec.items (this shot's own authored evidence content) -- the
+// left card is simply that array's own first entry rendered larger, not a
+// second, separately-authored field. This used to hardcode one claim's real
+// figure ("16 leading models stress-tested") as a permanent fixture of the
+// source_article layout, which silently relabelled every OTHER claim's
+// source_article shot with that same unrelated number; see the evidence-spec
+// generator (scripts/lib/orvyq-evidence-authoring.mjs) for where spec.items
+// is actually authored per shot.
+const ArticleStage: React.FC<{ spec: PrimaryEvidenceSpec; reveal: number }> = ({ spec, reveal }) => {
+  const items = spec.items || [];
+  const [headline, ...rest] = items;
+  return (
+    <div style={{ position: "absolute", left: 88, right: 88, top: 210, bottom: spec.limitation ? 270 : 206, display: "grid", gridTemplateColumns: ".85fr 1.55fr", gap: 23 }}>
+      <Surface style={{ padding: "34px 31px", display: "flex", alignItems: "center" }}>
+        <div>
+          <div style={{ color: RED, fontSize: 18, letterSpacing: ".14em", fontWeight: 900 }}>OFFICIAL RESEARCH ARTICLE</div>
+          {headline ? (
+            <>
+              <div style={{ color: BLUE, fontFamily: "Arial, Helvetica, sans-serif", fontSize: 20, letterSpacing: ".1em", fontWeight: 800, marginTop: 25 }}>{headline.label}</div>
+              <div style={{ color: INK, fontFamily: "Arial, Helvetica, sans-serif", fontSize: 34, lineHeight: 1.1, fontWeight: 830, marginTop: 10 }}>{headline.value}</div>
+              {headline.detail ? <div style={{ color: MUTED, fontFamily: "Arial, Helvetica, sans-serif", fontSize: 22, lineHeight: 1.27, marginTop: 20 }}>{headline.detail}</div> : null}
+            </>
+          ) : null}
+        </div>
+      </Surface>
+      <div><Cards items={rest} reveal={reveal} /></div>
+    </div>
+  );
+};
 
 const FlowStage: React.FC<{ spec: PrimaryEvidenceSpec; reveal: number }> = ({ spec, reveal }) => (
   <div style={{ position: "absolute", left: 98, right: 98, top: 245, bottom: spec.limitation ? 278 : 216, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
