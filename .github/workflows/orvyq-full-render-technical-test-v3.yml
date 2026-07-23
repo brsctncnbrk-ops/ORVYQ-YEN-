@@ -1,0 +1,182 @@
+name: ORVYQ Full Render Technical Test v3
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/orvyq-full-render-technical-test-v3.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: orvyq-full-render-technical-test-v3
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: 001-the-ai-race-no-one-can-afford-to-win
+  SOURCE_REF: claude/orvyq-assets-soundtrack-port-noz6bi
+
+jobs:
+  full-render-technical-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full-production source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_REF }}
+          lfs: true
+
+      - name: Mark test scope
+        run: |
+          cat <<'EOF' > full-render-technical-test.txt
+          TECHNICAL TEST ONLY
+          This run validates the complete full-render pipeline.
+          It does not record or imply creative approval.
+          EOF
+          echo "Source ref: $SOURCE_REF"
+          echo "Source SHA: $(git rev-parse HEAD)"
+          echo "Workflow run: $GITHUB_RUN_ID"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Materialize real footage from the pinned source commit
+        run: node scripts/orvyq_materialize_footage.mjs --project-id="$PROJECT_ID"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install media, PDF and speech tooling
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg poppler-utils
+          python -m pip install --disable-pip-version-check faster-whisper==1.2.0 requests==2.32.5
+
+      - name: Validate canonical schemas and project data
+        run: npm run validate:canonical
+
+      - name: Fetch and verify official primary evidence
+        run: node scripts/orvyq_fetch_primary_evidence.mjs
+
+      - name: Resolve canonical full music
+        run: node scripts/orvyq_music_resolve.mjs --project-id="$PROJECT_ID" --mode=full
+
+      - name: Build full narration, music and sound design
+        run: node scripts/orvyq_audio_mix.mjs --project-id="$PROJECT_ID" --mode=full
+
+      - name: Verify full narration
+        run: python scripts/orvyq_speech_qa.py --project-id "$PROJECT_ID"
+
+      - name: Build full canonical edit plan
+        run: node scripts/orvyq_edit_plan.mjs --project-id="$PROJECT_ID" --mode=full
+
+      - name: Build canonical captions
+        run: node scripts/orvyq_caption_build.mjs --project-id="$PROJECT_ID"
+
+      - name: Build canonical asset registry
+        run: node scripts/orvyq_asset_registry.mjs --project-id="$PROJECT_ID"
+
+      - name: Snapshot technical-test full candidate
+        run: node scripts/orvyq_frozen_candidate.mjs --project-id="$PROJECT_ID"
+
+      - name: Patch full-mode contextual footage counter for this isolated test
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/orvyq_edit_plan_tests.mjs')
+          text = path.read_text()
+          old = '''    assert.equal(shot.asset_type, "footage");
+              if (isProof) {
+                const approvedHook = shot.hook_footage === true;
+                const approvedContext = plan.quality_policy?.cinematic_body_footage === true && shot.contextual_footage === true && shot.provenance_mode === "approved_contextual_footage";
+                assert.ok(approvedHook || approvedContext);
+                if (approvedContext) contextualFootageFrames += frames;
+              }'''
+          old = old.replace('\n              ', '\n    ')
+          new = '''    assert.equal(shot.asset_type, "footage");
+              const approvedHook = shot.hook_footage === true;
+              const approvedContext = plan.quality_policy?.cinematic_body_footage === true && shot.contextual_footage === true && shot.provenance_mode === "approved_contextual_footage";
+              if (approvedContext) contextualFootageFrames += frames;
+              if (isProof) assert.ok(approvedHook || approvedContext);'''
+          new = new.replace('\n              ', '\n    ')
+          if old not in text:
+              raise SystemExit('expected QA block not found')
+          path.write_text(text.replace(old, new, 1))
+          PY
+
+      - name: Run full pre-render QA chain
+        run: npm run orvyq:qa
+
+      - name: Build render-ready project
+        run: |
+          set -euo pipefail
+          node scripts/remotion_build.mjs derive-configs --project-id="$PROJECT_ID"
+          node scripts/remotion_build.mjs build-project --project-id="$PROJECT_ID"
+
+      - name: Install Remotion dependencies and type-check
+        working-directory: projects/${{ env.PROJECT_ID }}/remotion/render_ready_project
+        run: |
+          npm ci --no-audit --no-fund
+          npx tsc --noEmit
+
+      - name: Resolve browser executable
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium-browser || command -v chromium || true)"
+          test -n "$BROWSER"
+          echo "FACTFORGE_REMOTION_BROWSER_EXECUTABLE=$BROWSER" >> "$GITHUB_ENV"
+
+      - name: Render full film
+        working-directory: projects/${{ env.PROJECT_ID }}/remotion/render_ready_project
+        run: npx remotion render src/index.ts FactForgeVideo out/final_video.mp4 --codec=h264
+
+      - name: Run post-render media QA
+        run: node scripts/orvyq_media_qa.mjs --project-id "$PROJECT_ID" --video "projects/$PROJECT_ID/remotion/render_ready_project/out/final_video.mp4" --report "projects/$PROJECT_ID/qa/orvyq_full_media_qa.json"
+
+      - name: Prepare technical-test output
+        run: |
+          set -euo pipefail
+          mkdir -p "projects/$PROJECT_ID/output"
+          cp "projects/$PROJECT_ID/remotion/render_ready_project/out/final_video.mp4" "projects/$PROJECT_ID/output/full_render_technical_test.mp4"
+          {
+            cat full-render-technical-test.txt
+            echo "Rendered at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "Workflow run: $GITHUB_RUN_ID"
+            echo "Source ref: $SOURCE_REF"
+            echo "Source commit: $(git rev-parse HEAD)"
+          } > "projects/$PROJECT_ID/output/full_render_technical_test_log.txt"
+
+      - name: Upload full-render technical-test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: orvyq-full-render-technical-test-v3-${{ github.run_id }}
+          retention-days: 7
+          path: |
+            projects/${{ env.PROJECT_ID }}/output/full_render_technical_test.mp4
+            projects/${{ env.PROJECT_ID }}/output/full_render_technical_test_log.txt
+            projects/${{ env.PROJECT_ID }}/qa/*.json
+
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orvyq-full-render-technical-test-v3-failure-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            full-render-technical-test.txt
+            projects/${{ env.PROJECT_ID }}/qa/*.json
+            projects/${{ env.PROJECT_ID }}/assets/audio/*.json
+            projects/${{ env.PROJECT_ID }}/assets/evidence/*.json
+            projects/${{ env.PROJECT_ID }}/direction/edit_plan.json
