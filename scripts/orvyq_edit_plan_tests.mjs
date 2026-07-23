@@ -91,13 +91,14 @@ export async function validateCanonicalEditPlan(projectId = PROJECT_ID) {
   const evidenceUsage = new Map();
   const footageUsage = new Map();
   const shotDurations = new Set();
-  let pureGraphicFrames = 0, evidenceFrames = 0, contextualFootageFrames = 0, emphasisBeats = 0, previousSignature = null;
+  let pureGraphicFrames = 0, evidenceFrames = 0, contextualFootageFrames = 0, emphasisBeats = 0, previousSignature = null, previousFootage = null;
 
   for (let index = 0; index < shots.length; index++) {
     const shot = shots[index];
     const frames = shot.end_frame - shot.start_frame;
     const seconds = frames / plan.fps;
     shotDurations.add(frames);
+    if (shot.asset_type !== "footage") previousFootage = null;
     assert.ok(frames > 0 && seconds <= Number(blueprint.global_rules.max_shot_seconds || 8) + 0.001, `${shot.shot_id} invalid duration`);
     if (index > 0) assert.equal(shot.start_frame, shots[index - 1].end_frame);
     assert.ok(["cut", "fade", "dissolve"].includes(shot.transition_in));
@@ -160,8 +161,21 @@ export async function validateCanonicalEditPlan(projectId = PROJECT_ID) {
       assert.ok(approvedHook || approvedContext);
       if (approvedContext) contextualFootageFrames += frames;
     }
-    footageUsage.set(shot.video_asset, (footageUsage.get(shot.video_asset) || 0) + 1);
-    assert.ok(footageUsage.get(shot.video_asset) <= maxUses);
+    // A shot that continues the immediately preceding shot's own asset from
+    // exactly where its trim left off (an editorial pause hold on the same
+    // footage, split into two shots so neither exceeds max_shot_seconds --
+    // see scripts/orvyq_full_production_plan.mjs's pause-insertion pass) is
+    // one continuous use of that clip, not a second one. This mirrors
+    // buildFullPlan's own previousFootage/isContinuationOfPrevious check in
+    // scripts/orvyq_edit_plan.mjs exactly, so this test's usage counting
+    // agrees with the real max_uses_per_source enforcement the edit plan
+    // itself already applied when it was built.
+    const isContinuationOfPrevious = previousFootage?.asset === shot.video_asset && Math.abs(previousFootage.trimOut - shot.trim_in_sec) < 0.02;
+    if (!isContinuationOfPrevious) {
+      footageUsage.set(shot.video_asset, (footageUsage.get(shot.video_asset) || 0) + 1);
+      assert.ok(footageUsage.get(shot.video_asset) <= maxUses);
+    }
+    previousFootage = { asset: shot.video_asset, trimOut: shot.trim_out_sec };
     const file = path.join(dir, shot.video_asset);
     assert.ok(await pathExists(file));
     const sourceDuration = await videoDuration(file);
