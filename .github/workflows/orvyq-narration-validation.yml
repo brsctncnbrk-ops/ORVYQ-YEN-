@@ -1,0 +1,136 @@
+name: ORVYQ Narration Validation
+
+# One-off validation of a newly supplied full-length narration recording
+# against the canonical voice script -- NOT part of the render pipeline, does
+# not touch the renderer or any proof-specific component, and never renders
+# anything. It exists because the sandbox that authored this workflow cannot
+# reach huggingface.co to download Whisper model weights (policy-blocked,
+# same class as the LFS block documented in .gitignore), so the actual
+# ASR-based script-similarity check has to run somewhere with normal network
+# access -- a GitHub-hosted runner, exactly like orvyq-proof.yml's speech QA
+# step already does.
+#
+# projects/*/assets/audio/final_voice.mp3 was committed as a plain git blob
+# (bypassing the .gitattributes LFS filter) specifically to get this one file
+# onto a runner without needing a working Git LFS push, which this sandbox's
+# network policy blocks. It should be migrated into proper LFS tracking by a
+# future session that has LFS push access.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "claude/orvyq-rebuild-canonical-udc3rx"
+    paths:
+      - "projects/001-the-ai-race-no-one-can-afford-to-win/assets/audio/final_voice.mp3"
+      - ".github/workflows/orvyq-narration-validation.yml"
+
+permissions:
+  contents: write
+
+env:
+  PROJECT_ID: 001-the-ai-race-no-one-can-afford-to-win
+
+jobs:
+  validate-narration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg and speech tooling
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          python -m pip install --disable-pip-version-check faster-whisper==1.2.0 requests==2.32.5
+
+      - name: Confirm the narration file is real audio, not an LFS pointer
+        run: |
+          set -euo pipefail
+          FILE="projects/$PROJECT_ID/assets/audio/final_voice.mp3"
+          test -s "$FILE"
+          if head -c 20 "$FILE" | grep -q "version https://git-lfs"; then
+            echo "::error::$FILE is an LFS pointer, not real audio -- checkout did not resolve it."
+            exit 1
+          fi
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,sample_rate,channels -of default=noprint_wrappers=1 "$FILE"
+
+      - name: Run full-duration speech QA against the canonical voice script
+        run: |
+          set +e
+          python scripts/orvyq_speech_qa.py --project-id "$PROJECT_ID" \
+            --media "projects/$PROJECT_ID/assets/audio/final_voice.mp3" \
+            --output-name full_narration_speech_qa.json \
+            --model tiny.en > speech-qa.log 2>&1
+          echo $? > speech-qa.status
+          cat speech-qa.log
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # voice/narration_alignment.json is the single, committed source of
+      # truth for per-word narration timing that full-mode editorial pause
+      # resolution, shot planning, and captioning all read -- see the header
+      # comment in scripts/orvyq_narration_alignment.mjs. Produced here
+      # because this is the one place ASR (network-blocked in the authoring
+      # sandbox) actually runs.
+      - name: Build canonical narration alignment
+        run: node scripts/orvyq_narration_alignment.mjs --project-id="$PROJECT_ID"
+
+      - name: Commit narration alignment to the branch
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          set -euo pipefail
+          FILE="projects/$PROJECT_ID/voice/narration_alignment.json"
+          git config user.name "orvyq-narration-bot"
+          git config user.email "orvyq-narration-bot@users.noreply.github.com"
+          git add "$FILE"
+          if git diff --cached --quiet; then
+            echo "narration_alignment.json unchanged; nothing to commit."
+            exit 0
+          fi
+          git commit -m "Record narration alignment for validation run ${{ github.run_id }} [skip ci]"
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
+
+      - name: Print full transcript and per-word timing summary
+        if: always()
+        run: |
+          set -euo pipefail
+          REPORT="projects/$PROJECT_ID/qa/full_narration_speech_qa.json"
+          if [ -f "$REPORT" ]; then
+            echo "--- summary ---"
+            jq '{source_duration_seconds, analyzed_duration_seconds, word_count, reference_word_count, speech_coverage, average_word_probability, script_similarity, min_similarity, passed, failures}' "$REPORT"
+            echo "--- first 400 chars of transcript ---"
+            jq -r '.transcript' "$REPORT" | head -c 400
+            echo
+            echo "--- last 400 chars of transcript ---"
+            jq -r '.transcript' "$REPORT" | tail -c 400
+            echo
+            echo "--- first word timestamp ---"
+            jq -c '.words[0]' "$REPORT"
+            echo "--- last word timestamp ---"
+            jq -c '.words[-1]' "$REPORT"
+          fi
+
+      - name: Upload narration validation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orvyq-narration-validation-${{ github.run_id }}
+          retention-days: 14
+          path: |
+            speech-qa.log
+            speech-qa.status
+            projects/${{ env.PROJECT_ID }}/qa/full_narration_speech_qa.json
+          if-no-files-found: warn
+
+      - name: Fail the job if speech QA failed
+        run: test "$(cat speech-qa.status)" = "0"

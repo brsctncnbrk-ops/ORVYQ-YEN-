@@ -1,0 +1,227 @@
+name: ORVYQ Music Intake
+
+# Reusable intake/vendoring workflow for adding a licensed music track to
+# music_library/registry.json. This is production-preparation work, not
+# render work -- it never runs automatically and is entirely separate from
+# orvyq-proof.yml / orvyq-full-render.yml, which never fetch music from a
+# third party at render time and instead resolve tracks this workflow has
+# already vendored (scripts/orvyq_music_resolve.mjs).
+#
+# Two recovery modes:
+#  - workflow_artifact: recovers the exact file from a PREVIOUS workflow
+#    run's uploaded artifact in this repo (via actions/download-artifact,
+#    which can reach any run in this repository, unlike a direct blob-
+#    storage download) -- the trusted-internal-source path required for
+#    migrating an already-used track. If that artifact directory also
+#    contains a "<file>.provenance.json" (the shape
+#    scripts/orvyq_audio_mix.mjs's music provenance has always used), its
+#    title/artist/license/attribution/sha256 are read automatically so
+#    they don't have to be retyped, and the recovered file's freshly
+#    computed hash is checked against that provenance's own recorded
+#    sha256 -- proving the recovered bytes are identical to what was
+#    actually used before.
+#  - direct_url: an explicit, human-invoked maintenance path for acquiring
+#    a genuinely NEW track. Never used by proof/full render, and never
+#    invoked automatically.
+on:
+  # GitHub only allows an API workflow_dispatch call to target a workflow
+  # already indexed by some real event -- a brand-new workflow_dispatch-only
+  # file isn't dispatchable until it has run at least once. This self-
+  # referential push (scoped to this file's own path) exists only to index
+  # the workflow the first time; the job itself is a no-op unless the
+  # triggering event actually was workflow_dispatch (see the job-level `if`
+  # below), so a push here never performs real intake work.
+  push:
+    branches:
+      - "claude/orvyq-rebuild-canonical-udc3rx"
+    paths:
+      - ".github/workflows/orvyq-music-intake.yml"
+  workflow_dispatch:
+    inputs:
+      recovery_mode:
+        description: "Where to recover the exact source file from"
+        type: choice
+        options: [workflow_artifact, direct_url]
+        required: true
+      source_run_id:
+        description: "(workflow_artifact) The ORVYQ-YEN- workflow run ID that uploaded the artifact"
+        type: string
+        default: ""
+      source_artifact_name:
+        description: "(workflow_artifact) Name of the artifact uploaded by that run"
+        type: string
+        default: ""
+      source_path_in_artifact:
+        description: "(workflow_artifact) Path to the audio file inside that artifact, e.g. projects/001-the-ai-race-no-one-can-afford-to-win/assets/music/approved_bed.mp3"
+        type: string
+        default: ""
+      source_url:
+        description: "(direct_url) Direct HTTPS URL to the exact licensed file -- maintenance-only, never used by proof/full render"
+        type: string
+        default: ""
+      track_id:
+        description: "New/updated track_id, e.g. sb_signal_to_noise"
+        type: string
+        required: true
+      title:
+        type: string
+        default: ""
+      artist:
+        type: string
+        default: ""
+      source_page_url:
+        type: string
+        default: ""
+      license_name:
+        type: string
+        default: ""
+      license_url:
+        type: string
+        default: ""
+      attribution:
+        type: string
+        default: ""
+      acquisition_provenance:
+        description: "Exactly how this file was obtained and verified"
+        type: string
+        required: true
+      approved_for_proof:
+        type: boolean
+        default: false
+      approved_for_full:
+        type: boolean
+        default: false
+      status:
+        type: choice
+        options: [approved, pending_review, rejected, deprecated]
+        default: approved
+      notes:
+        type: string
+        default: ""
+      expected_sha256:
+        description: "Optional: fail unless the recovered file's sha256 matches exactly"
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  intake:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install ffmpeg (codec/duration verification)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Recover source file from a previous workflow run's artifact
+        if: inputs.recovery_mode == 'workflow_artifact'
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.source_artifact_name }}
+          run-id: ${{ inputs.source_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: recovered-artifact
+
+      - name: Recover source file from an explicit direct URL (maintenance-only)
+        if: inputs.recovery_mode == 'direct_url'
+        run: |
+          set -euo pipefail
+          mkdir -p recovered-artifact
+          curl -fsSL -o "recovered-artifact/direct_download" "${{ inputs.source_url }}"
+          echo "AUTO_SOURCE_PATH=recovered-artifact/direct_download" >> "$GITHUB_ENV"
+
+      - name: Locate the recovered file and auto-fill metadata from its companion provenance.json, if present
+        if: inputs.recovery_mode == 'workflow_artifact'
+        run: |
+          set -euo pipefail
+          SRC="recovered-artifact/${{ inputs.source_path_in_artifact }}"
+          test -f "$SRC"
+          echo "AUTO_SOURCE_PATH=$SRC" >> "$GITHUB_ENV"
+          # scripts/orvyq_fetch_music.mjs writes the provenance file as a
+          # SIBLING of the audio file (approved_bed.provenance.json next to
+          # approved_bed.mp3), not <filename>.mp3.provenance.json -- replace
+          # the trailing extension rather than appending after it.
+          PROV="$(dirname "$SRC")/$(basename "$SRC" | sed 's/\.[^.]*$/.provenance.json/')"
+          if [ -f "$PROV" ]; then
+            echo "Found companion provenance.json -- auto-filling metadata from it."
+            node -e "
+              const fs = require('fs');
+              const p = JSON.parse(fs.readFileSync('$PROV', 'utf8'));
+              const lines = [
+                'AUTO_TITLE=' + (p.title || ''),
+                'AUTO_ARTIST=' + (p.composer || p.artist || ''),
+                'AUTO_SOURCE_PAGE=' + (p.source_page_url || ''),
+                'AUTO_LICENSE_NAME=' + (p.license || p.license_name || ''),
+                'AUTO_LICENSE_URL=' + (p.license_url || ''),
+                'AUTO_ATTRIBUTION=' + (p.attribution || ''),
+                'AUTO_SHA256=' + (p.sha256 || '')
+              ];
+              fs.appendFileSync(process.env.GITHUB_ENV, lines.join('\n') + '\n');
+            "
+          fi
+
+      - name: Run music intake
+        run: |
+          set -euo pipefail
+          TITLE="${{ inputs.title }}"; TITLE="${TITLE:-${AUTO_TITLE:-}}"
+          ARTIST="${{ inputs.artist }}"; ARTIST="${ARTIST:-${AUTO_ARTIST:-}}"
+          SOURCE_PAGE="${{ inputs.source_page_url }}"; SOURCE_PAGE="${SOURCE_PAGE:-${AUTO_SOURCE_PAGE:-}}"
+          LICENSE_NAME="${{ inputs.license_name }}"; LICENSE_NAME="${LICENSE_NAME:-${AUTO_LICENSE_NAME:-}}"
+          LICENSE_URL="${{ inputs.license_url }}"; LICENSE_URL="${LICENSE_URL:-${AUTO_LICENSE_URL:-}}"
+          ATTRIBUTION="${{ inputs.attribution }}"; ATTRIBUTION="${ATTRIBUTION:-${AUTO_ATTRIBUTION:-}}"
+          EXPECTED_SHA="${{ inputs.expected_sha256 }}"; EXPECTED_SHA="${EXPECTED_SHA:-${AUTO_SHA256:-}}"
+          node scripts/orvyq_music_intake.mjs \
+            --source="$AUTO_SOURCE_PATH" \
+            --track-id="${{ inputs.track_id }}" \
+            --title="$TITLE" \
+            --artist="$ARTIST" \
+            --source-page-url="$SOURCE_PAGE" \
+            --license-name="$LICENSE_NAME" \
+            --license-url="$LICENSE_URL" \
+            --attribution="$ATTRIBUTION" \
+            --acquisition-provenance="${{ inputs.acquisition_provenance }}" \
+            --approved-for-proof="${{ inputs.approved_for_proof }}" \
+            --approved-for-full="${{ inputs.approved_for_full }}" \
+            --status="${{ inputs.status }}" \
+            --notes="${{ inputs.notes }}" \
+            --expected-sha256="$EXPECTED_SHA"
+
+      - name: Validate canonical schemas
+        run: npm run validate:canonical
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Commit the canonical asset and registry
+        run: |
+          set -euo pipefail
+          git config user.name "orvyq-music-intake-bot"
+          git config user.email "orvyq-music-intake-bot@users.noreply.github.com"
+          git add -f music_library/
+          if git diff --cached --quiet; then
+            echo "No registry/asset changes to commit."
+            exit 0
+          fi
+          git commit -m "Music intake: vendor track ${{ inputs.track_id }} into the canonical registry"
+          git stash push --include-untracked --message "orvyq-music-intake-bot: local build artifacts" || true
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
+          git stash pop || true

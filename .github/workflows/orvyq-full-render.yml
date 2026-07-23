@@ -1,0 +1,174 @@
+name: ORVYQ Full Render
+
+# Full render = the SAME canonical renderer and SAME frozen inputs that
+# produced the approved proof, with frame_range extended to the full
+# canonical duration. See docs/migration-plan.md and schemas/
+# frozen_candidate.schema.json / proof_approval.schema.json for the freeze
+# model this workflow enforces.
+#
+# This workflow must NEVER run automatically. It requires an explicit human
+# approval input plus a matching qa/proof_approval.json committed to the
+# repository (produced by reviewing a proof artifact from
+# orvyq-proof.yml and approving it out-of-band). This task's own rules
+# (see AGENTS/task instructions) forbid starting a full render during the
+# rebuild -- this file exists so the infrastructure is ready, not to be
+# invoked.
+on:
+  workflow_dispatch:
+    inputs:
+      quality_control_approved:
+        description: "Human has reviewed and approved the proof artifact referenced by qa/proof_approval.json"
+        type: boolean
+        default: false
+      approved_proof_run_id:
+        description: "orvyq-proof.yml run ID that produced the approved proof artifact"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: orvyq-full-render
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: 001-the-ai-race-no-one-can-afford-to-win
+
+jobs:
+  full-render:
+    if: ${{ inputs.quality_control_approved == true && inputs.approved_proof_run_id != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Replaces the old `require(proof_approval.json).approved === true`
+      # check, which only ever looked at one boolean. This verifies the
+      # approval's frozen_candidate_hash still matches the sha256 of the
+      # frozen_candidate.json actually committed at this exact commit, that
+      # it is a "full"-mode candidate (not the 150s proof's), and that its
+      # source_commit_sha matches the commit being rendered -- see
+      # scripts/orvyq_verify_approval.mjs for why a naive boolean check is
+      # not sufficient (real drift has already happened once in this repo's
+      # own history).
+      - name: Verify a matching, approved, full-mode frozen candidate exists
+        run: node scripts/orvyq_verify_approval.mjs --project-id="$PROJECT_ID" --mode=full --stage=early
+
+      # Materializes the real, licensed footage set (motion hook + full
+      # contextual body footage) from the single immutable source commit
+      # pinned in projects/*/migration/external_assets.json -- the same
+      # mechanism orvyq-proof.yml uses, with per-file Git LFS pointer
+      # verification. See scripts/orvyq_materialize_footage.mjs.
+      - name: Materialize real footage from the pinned source commit
+        run: node scripts/orvyq_materialize_footage.mjs --project-id="$PROJECT_ID"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install media, PDF and speech tooling
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg poppler-utils
+          python -m pip install --disable-pip-version-check faster-whisper==1.2.0 requests==2.32.5
+
+      - name: Validate canonical schemas and project data
+        run: npm run validate:canonical
+
+      # Same registry-based resolution proof mode uses (scripts/
+      # orvyq_music_resolve.mjs), resolving all nine per-cue full-length
+      # tracks vendored via orvyq-music-acquisition.yml. Fails closed if any
+      # cue's track is missing, unhashed, unlicensed, or not
+      # approved_for_full -- see docs/full-production-guide.md.
+      - name: Resolve canonical full music (no network)
+        run: node scripts/orvyq_music_resolve.mjs --project-id="$PROJECT_ID" --mode=full
+
+      - name: Build full narration, music and sound design
+        run: node scripts/orvyq_audio_mix.mjs --project-id="$PROJECT_ID" --mode=full
+
+      - name: Verify narration
+        run: python scripts/orvyq_speech_qa.py --project-id "$PROJECT_ID"
+
+      - name: Build full canonical edit plan
+        run: node scripts/orvyq_edit_plan.mjs --project-id="$PROJECT_ID" --mode=full
+
+      - name: Build canonical captions
+        run: node scripts/orvyq_caption_build.mjs --project-id="$PROJECT_ID"
+
+      - name: Build canonical asset registry
+        run: node scripts/orvyq_asset_registry.mjs --project-id="$PROJECT_ID"
+
+      - name: Run full pre-render QA chain
+        run: npm run orvyq:qa
+
+      # Recomputes a frozen candidate from the edit plan, captions, audio mix
+      # and asset registry just built above and confirms every hash still
+      # matches the committed, human-approved qa/frozen_candidate.json
+      # exactly -- what is about to render is provably the same bytes a
+      # human reviewed, not something regenerated differently since.
+      - name: Verify the freshly built pipeline still matches the approved frozen candidate
+        run: node scripts/orvyq_verify_approval.mjs --project-id="$PROJECT_ID" --stage=late
+
+      - name: Build render-ready project
+        run: |
+          set -euo pipefail
+          node scripts/remotion_build.mjs derive-configs --project-id="$PROJECT_ID"
+          node scripts/remotion_build.mjs build-project --project-id="$PROJECT_ID"
+
+      - name: Install Remotion dependencies and type-check
+        working-directory: projects/${{ env.PROJECT_ID }}/remotion/render_ready_project
+        run: |
+          npm ci --no-audit --no-fund
+          npx tsc --noEmit
+
+      - name: Resolve browser executable
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium-browser || command -v chromium || true)"
+          test -n "$BROWSER"
+          echo "FACTFORGE_REMOTION_BROWSER_EXECUTABLE=$BROWSER" >> "$GITHUB_ENV"
+
+      # No --frames flag: renders the full canonical duration, the SAME
+      # composition and SAME renderer the proof workflow used.
+      - name: Render full film
+        working-directory: projects/${{ env.PROJECT_ID }}/remotion/render_ready_project
+        run: npx remotion render src/index.ts FactForgeVideo out/final_video.mp4 --codec=h264
+
+      - name: Run post-render media QA
+        run: node scripts/orvyq_media_qa.mjs --project-id "$PROJECT_ID" --video "projects/$PROJECT_ID/remotion/render_ready_project/out/final_video.mp4" --report "projects/$PROJECT_ID/qa/orvyq_full_media_qa.json"
+
+      - name: Copy to output
+        run: |
+          set -euo pipefail
+          mkdir -p "projects/$PROJECT_ID/output"
+          cp "projects/$PROJECT_ID/remotion/render_ready_project/out/final_video.mp4" "projects/$PROJECT_ID/output/final_video.mp4"
+          {
+            echo "Rendered at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "Workflow run: ${{ github.run_id }}"
+            echo "Approved proof run: ${{ inputs.approved_proof_run_id }}"
+            echo "Source commit: ${{ github.sha }}"
+          } > "projects/$PROJECT_ID/output/render_log.txt"
+
+      - name: Upload full render
+        uses: actions/upload-artifact@v4
+        with:
+          name: orvyq-full-render-${{ github.run_id }}
+          retention-days: 30
+          path: |
+            projects/${{ env.PROJECT_ID }}/output/final_video.mp4
+            projects/${{ env.PROJECT_ID }}/output/render_log.txt
+            projects/${{ env.PROJECT_ID }}/qa/*.json
