@@ -16,7 +16,10 @@ orvyq_fetch_music.mjs              (proof mode; full mode needs real full-length
   → writes assets/music/approved_bed.mp3 + .provenance.json    blocked on Phase 6)
 
 orvyq_audio_mix.mjs   buildCanonicalAudioMix(projectId, {mode, durationSeconds, ...})
-  reads   assets/audio/final_voice.mp3, voice/audio_repair.json?,
+  reads   assets/audio/final_voice.mp3, voice/audio_repair.json? (optional
+          narrator-file repair, applied only when actually present -- do
+          not add one back without confirming the committed narration
+          currently has the defect it describes),
           direction/editorial_pause_map.json (if editorialPauses),
           assets/music/approved_bed.mp3 (if present)
   writes  assets/audio/final_mix.mp3 + final_mix.metadata.json
