@@ -45,15 +45,33 @@ export function validateExternalManifest(manifest) {
   if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(manifest.source_repository)) failures.push("source_repository must be owner/name");
   if (!/^[a-f0-9]{40}$/.test(manifest.source_commit)) failures.push("source_commit must be a full 40-character SHA");
   const targets = new Set();
+  const provenanceCompanionFor = new Set();
   for (const [index, item] of (manifest.imports || []).entries()) {
     try { safeRelative(item.source_path, `imports[${index}].source_path`); } catch (error) { failures.push(String(error.message || error)); }
     try { safeRelative(item.target_path, `imports[${index}].target_path`); } catch (error) { failures.push(String(error.message || error)); }
     if (!["footage", "narration", "provenance"].includes(item.kind)) failures.push(`imports[${index}].kind is invalid`);
     if (targets.has(item.target_path)) failures.push(`duplicate target_path ${item.target_path}`);
     targets.add(item.target_path);
-    if (item.companion_for) {
-      try { safeRelative(item.companion_for, `imports[${index}].companion_for`); } catch (error) { failures.push(String(error.message || error)); }
+    if (item.kind === "provenance") {
+      if (!item.companion_for) failures.push(`imports[${index}] is a provenance file but declares no companion_for`);
+      else {
+        try { safeRelative(item.companion_for, `imports[${index}].companion_for`); provenanceCompanionFor.add(item.companion_for); }
+        catch (error) { failures.push(String(error.message || error)); }
+      }
+    } else if (item.companion_for) {
+      failures.push(`imports[${index}] is kind=${item.kind} but declares companion_for (only provenance entries may)`);
     }
+  }
+  // Every footage (and narration) import must have exactly one provenance
+  // companion pointing back at it -- an asset materialized without its
+  // provenance record would let unlicensed/unapproved footage silently reach
+  // the edit plan.
+  for (const [index, item] of (manifest.imports || []).entries()) {
+    if ((item.kind === "footage" || item.kind === "narration") && !provenanceCompanionFor.has(item.target_path))
+      failures.push(`imports[${index}] (${item.target_path}) has no companion provenance entry`);
+  }
+  for (const companion of provenanceCompanionFor) {
+    if (!targets.has(companion)) failures.push(`a provenance entry's companion_for target does not exist in this manifest: ${companion}`);
   }
   return failures;
 }
@@ -62,6 +80,38 @@ function run(command, args, cwd, env) {
   const result = spawnSync(command, args, { cwd, env: { ...process.env, ...env }, encoding: "utf8", maxBuffer: 256 * 1024 * 1024 });
   if (result.status !== 0) throw new Error(`${command} ${args.join(" ")} failed (${result.status}):\n${result.stdout}\n${result.stderr}`);
   return result.stdout;
+}
+
+const RETRYABLE_ATTEMPTS = 3;
+const RETRYABLE_BACKOFF_MS = 2000;
+
+function sleepSync(ms) {
+  // No async sleep is available at the point this is called (synchronous
+  // spawnSync retry loop) -- Atomics.wait on a scratch SharedArrayBuffer is
+  // the standard bounded, dependency-free way to block the event loop for a
+  // fixed backoff without pulling in a timer/promise mismatch.
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+// Bounded retry (3 attempts, linear backoff) for the two network-dependent
+// git operations only -- git init/checkout/lfs install are local and never
+// need it. A transient GitHub fetch/LFS-batch hiccup on a CI runner
+// shouldn't fail the whole materialization; a real, persistent error (bad
+// commit, revoked LFS object) still fails after the bound is exhausted.
+function runRetryable(command, args, cwd, env) {
+  let lastError;
+  for (let attempt = 1; attempt <= RETRYABLE_ATTEMPTS; attempt += 1) {
+    try {
+      return run(command, args, cwd, env);
+    } catch (error) {
+      lastError = error;
+      if (attempt < RETRYABLE_ATTEMPTS) {
+        console.warn(`Retryable command failed (attempt ${attempt}/${RETRYABLE_ATTEMPTS}): ${command} ${args.join(" ")}; retrying in ${RETRYABLE_BACKOFF_MS * attempt}ms`);
+        sleepSync(RETRYABLE_BACKOFF_MS * attempt);
+      }
+    }
+  }
+  throw lastError;
 }
 
 function parseLfsPointer(text) {
@@ -95,7 +145,7 @@ export async function materializeExternalFootage(projectId = PROJECT_ID) {
     await mkdir(checkout, { recursive: true });
     run("git", ["init", "--quiet"], checkout);
     run("git", ["remote", "add", "origin", `https://github.com/${manifest.source_repository}.git`], checkout);
-    run("git", ["fetch", "--depth=1", "origin", manifest.source_commit], checkout, { GIT_LFS_SKIP_SMUDGE: "1" });
+    runRetryable("git", ["fetch", "--depth=1", "origin", manifest.source_commit], checkout, { GIT_LFS_SKIP_SMUDGE: "1" });
     run("git", ["checkout", "--detach", "FETCH_HEAD"], checkout, { GIT_LFS_SKIP_SMUDGE: "1" });
     run("git", ["lfs", "install", "--local"], checkout);
 
@@ -106,7 +156,7 @@ export async function materializeExternalFootage(projectId = PROJECT_ID) {
     }
     const lfsPaths = [...new Set(manifest.imports.filter((item) => pointers.get(item.source_path)).map((item) => item.source_path))];
     if (lfsPaths.length) {
-      run("git", ["lfs", "pull", "--include", lfsPaths.join(","), "--exclude", ""], checkout);
+      runRetryable("git", ["lfs", "pull", "--include", lfsPaths.join(","), "--exclude", ""], checkout);
       // Deliberately no `git lfs fsck` here -- see file header. Per-file
       // sha256/size verification against each pulled file's own LFS pointer
       // (below) is the real integrity check.

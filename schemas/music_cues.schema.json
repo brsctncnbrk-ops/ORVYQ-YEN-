@@ -56,7 +56,7 @@
         "section_id": { "type": "string" },
         "track_id": {
           "type": "string",
-          "description": "References an entry in music_library/registry.json. Every full_cues entry must reference the SAME track_id -- the full film uses one continuous licensed bed, not a separate file per cue."
+          "description": "References an entry in music_library/registry.json. Each full_cues entry declares its OWN track_id -- the full film's music is assembled from one distinct licensed track per cue (see scripts/orvyq_music_resolve.mjs), not a single continuous bed looped/gained across every section."
         },
         "start": { "type": "number", "minimum": 0 },
         "end": { "type": "number" },

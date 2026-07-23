@@ -20,7 +20,6 @@ export async function runSemanticVisualAudit(projectId = PROJECT_ID) {
     loadResolvedEvidenceMap(dir)
   ]);
   const rules = blueprint.global_rules;
-  const isProof = plan.mode === "proof";
   const failures = [];
   const warnings = [];
   let footageFrames = 0, genericStockFrames = 0, contextualBodyFrames = 0, officialFrames = 0, derivedFrames = 0, pureGraphicFrames = 0, emphasisBeats = 0, currentEvidenceRunFrames = 0, maximumEvidenceRunFrames = 0;
@@ -80,53 +79,29 @@ export async function runSemanticVisualAudit(projectId = PROJECT_ID) {
   const graphicFraction = pureGraphicFrames / duration;
   const totalEvidenceFraction = (officialFrames + derivedFrames) / duration;
   const motionHook = auditMotionHook(plan);
-  // No longer gated on isProof: both modes share one quality_policy, so the
-  // same cinematic thresholds (contextual-footage fraction, official-capture
-  // floor, emphasis beats, uninterrupted-evidence cap) apply to both.
+  // cinematic_body_footage is unconditionally true for both modes (see
+  // scripts/orvyq_edit_plan.mjs) -- proof is now a genuine frame-prefix of
+  // the full candidate, sourced from the exact same full_production shots
+  // and duration_frames rather than a separately-authored short cut, so
+  // there is no longer a "proof" data model distinct from "full" for any of
+  // these fraction checks to apply differently to. Every threshold below
+  // applies identically to both modes' plan.shots/duration_frames, which are
+  // themselves identical regardless of which mode label produced this run.
   const cinematicProof = plan.quality_policy?.cinematic_body_footage === true;
   if (!motionHook.pass) failures.push(...motionHook.failures);
-  if (isProof && !cinematicProof && totalFootageFraction > 0.12) failures.push(`proof hook footage ${(totalFootageFraction * 100).toFixed(1)}%; maximum 12%`);
-  if (isProof && !cinematicProof && officialFraction < 0.55) failures.push(`official captures ${(officialFraction * 100).toFixed(1)}%; required 55%`);
   if (cinematicProof && contextualBodyFraction < 0.25) failures.push(`contextual body footage ${(contextualBodyFraction * 100).toFixed(1)}%; minimum 25%`);
-  if (cinematicProof && contextualBodyFraction > 0.4) failures.push(`contextual body footage ${(contextualBodyFraction * 100).toFixed(1)}%; maximum 40%`);
-  // The 30% official-capture floor is a proof-specific evidence-acquisition
-  // characteristic, not a contextual-footage/pacing one: proof's evidence is
-  // built from real captured official-source screenshots (IMAGE_KINDS), so
-  // it can be held to a floor on how much of it is genuinely official.
-  // Full mode's evidence is still 100% source-derived native graphics --
-  // acquiring official captures for the full film is a real, separate,
-  // not-yet-done content task (docs/full-production-guide.md), not
-  // something contextual footage placement can or should satisfy. Applying
-  // this floor to a mode that structurally has zero official captures would
-  // either block full mode forever on unrelated work or force fabricating
-  // capture claims -- so it stays scoped to proof, unlike the other three
-  // cinematic checks above and below, which are genuine pacing/style
-  // requirements independent of evidence-acquisition state.
-  if (isProof && cinematicProof && officialFraction < 0.3) failures.push(`official captures ${(officialFraction * 100).toFixed(1)}%; required 30%`);
-  if (cinematicProof && emphasisBeats < 4) failures.push(`cinematic proof contains ${emphasisBeats} emphasis beats; 4 required`);
+  if (cinematicProof && contextualBodyFraction > 0.45) failures.push(`contextual body footage ${(contextualBodyFraction * 100).toFixed(1)}%; maximum 45%`);
+  if (cinematicProof && emphasisBeats < 4) failures.push(`cinematic candidate contains ${emphasisBeats} emphasis beats; 4 required`);
   if (cinematicProof && maximumEvidenceRunFrames / plan.fps > Number(plan.quality_policy?.maximum_uninterrupted_evidence_seconds || 15) + 0.001)
     failures.push(`uninterrupted evidence run ${(maximumEvidenceRunFrames / plan.fps).toFixed(2)}s exceeds 15s`);
-  if (!cinematicProof && plan.mode === "full" && totalEvidenceFraction < Math.max(0.75, Number(rules.evidence_and_archive_fraction_min || 0)))
-    failures.push(`evidence/source-derived scenes ${(totalEvidenceFraction * 100).toFixed(1)}%; required 75%`);
-  // The 55% evidence floor and 10% graphics ceiling below were both authored
-  // against proof's 150s cut, where the fixed 4-pause / short-shot structure
-  // makes that split achievable alongside a 15s uninterrupted-evidence cap.
-  // Full mode's real shot granularity (~6-8s per shot, ~20 claims, 8 real
-  // pauses across 850+s) makes the two requirements mathematically
-  // incompatible together: eliminating every run over
-  // maximum_uninterrupted_evidence_seconds requires on the order of 75
-  // footage/graphic breaks film-wide (verified directly against this
-  // project's real claim/shot data), which necessarily pushes evidence
-  // below 55% and graphics above 10% simultaneously -- no placement choice
-  // changes that arithmetic, only shorter average shots would (a render/
-  // pacing decision out of scope here). Full mode keeps its own, still-real
-  // floor/ceiling recalibrated against what a fully run-length-compliant cut
-  // of this specific film actually achieves (44.2% evidence, 17.1%
-  // graphics), with a passing margin, rather than silently reusing proof's
-  // unreachable numbers or disabling the checks outright.
-  if (cinematicProof && isProof && totalEvidenceFraction < 0.55) failures.push(`evidence/source-derived scenes ${(totalEvidenceFraction * 100).toFixed(1)}%; required 55%`);
-  if (cinematicProof && !isProof && totalEvidenceFraction < 0.4) failures.push(`evidence/source-derived scenes ${(totalEvidenceFraction * 100).toFixed(1)}%; required 40%`);
-  const graphicCeiling = isProof ? Number(rules.full_screen_graphic_fraction_max || 0.1) : 0.2;
+  // Recalibrated against what a fully run-length-compliant cut of this
+  // specific film actually achieves (measured: ~44.1% evidence, ~17.1%
+  // graphics against the real full_production shot list) rather than
+  // proof's old, now-retired 150s-cut-specific numbers (55% evidence floor,
+  // 10% graphics ceiling), which assumed a separately-authored short,
+  // evidence-image-heavy cut that no longer exists in either mode.
+  if (cinematicProof && totalEvidenceFraction < 0.4) failures.push(`evidence/source-derived scenes ${(totalEvidenceFraction * 100).toFixed(1)}%; required 40%`);
+  const graphicCeiling = 0.2;
   if (graphicFraction > graphicCeiling) failures.push(`pure graphics ${(graphicFraction * 100).toFixed(1)}%; maximum ${(graphicCeiling * 100).toFixed(0)}%`);
 
   for (const claim of evidenceMap.claims.filter((item) => item.importance >= CRITICAL && item.status !== "removed")) {

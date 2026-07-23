@@ -3,25 +3,23 @@
 // shared renderer/edit-plan path this task requires (docs/migration-plan.md
 // section 1): one buildCanonicalEditPlan() function, one edit_plan.schema.json,
 // one set of per-shot validation rules (IMAGE_KINDS/NATIVE_KINDS/ALLOWED_ROLES/
-// ALLOWED_TRANSITIONS), one auditMotionHook() -- and that each mode's own data
-// dependencies stay isolated from the other's (proof never reads
-// full_production data; full never reads the proof-only cut files), so a
-// change made "to fix proof" cannot silently reach into full mode's inputs
-// or vice versa. This is a static source check, not a data check: it reads
-// scripts/orvyq_edit_plan.mjs's own text and confirms these properties hold
-// structurally, rather than trusting a comment that says so.
+// ALLOWED_TRANSITIONS), one auditMotionHook().
+//
+// This used to check the OPPOSITE property -- that proof and full stayed
+// data-ISOLATED from each other (proof never reading full_production data,
+// full never reading the proof-only cut files) -- because proof was a
+// separately-authored 150s cut. That is no longer the architecture: proof is
+// now a genuine frame-prefix of the full candidate, deliberately sharing
+// every byte of shots/duration_frames/quality_policy with full mode, differing
+// only in frame_range.end_frame and the mode label itself. This is a static
+// source check, not a data check: it reads scripts/orvyq_edit_plan.mjs's own
+// text and confirms these properties hold structurally, rather than trusting
+// a comment that says so.
 import path from "node:path";
 import { promises as fs } from "node:fs";
 import { printJson } from "./lib/fs-utils.mjs";
 
 const EDIT_PLAN_SCRIPT = path.resolve("scripts/orvyq_edit_plan.mjs");
-
-// Proof-only and full-only file dependencies. Each mode's build function
-// must reference only its own list, never the other's -- a reference here
-// would mean one mode's plan construction secretly depends on the other
-// mode's authored cut data, breaking the isolation this task requires.
-const PROOF_ONLY_TOKENS = ["cinematic_proof_cut.json", "proof_preview_cut.json", "motion_hook.json"];
-const FULL_ONLY_TOKENS = ["editorial_blueprint.json", "full_production", "evidence_asset_manifest.json"];
 
 function extractFunctionBody(source, functionName) {
   const marker = `async function ${functionName}(`;
@@ -46,22 +44,24 @@ export async function checkProofFullParity() {
   const source = await fs.readFile(EDIT_PLAN_SCRIPT, "utf8");
   const findings = [];
 
-  const proofBody = extractFunctionBody(source, "buildProofPlan");
-  const fullBody = extractFunctionBody(source, "buildFullPlan");
+  // A reintroduced buildProofPlan would mean proof went back to being a
+  // separately-authored cut instead of a frame-prefix of buildFullPlan's
+  // output -- exactly the regression this check now guards against.
+  if (/\bfunction buildProofPlan\b/.test(source)) {
+    findings.push({ severity: "error", message: "buildProofPlan has been reintroduced -- proof must stay a frame-prefix of buildFullPlan's output, not a separately-authored cut." });
+  }
 
-  for (const token of FULL_ONLY_TOKENS) {
-    if (proofBody.includes(token)) findings.push({ severity: "error", message: `buildProofPlan references full-only data "${token}" -- proof/full isolation is broken.` });
-  }
-  for (const token of PROOF_ONLY_TOKENS) {
-    if (fullBody.includes(token)) findings.push({ severity: "error", message: `buildFullPlan references proof-only data "${token}" -- proof/full isolation is broken.` });
-  }
+  // Confirms buildFullPlan exists and is callable -- extractFunctionBody
+  // throws its own descriptive error if it's missing, which is exactly the
+  // failure mode we want (fail loud, not silently skip the check).
+  extractFunctionBody(source, "buildFullPlan");
 
   // Both modes must be dispatched from, and validated by, the single shared
-  // buildCanonicalEditPlan function -- not two independent top-level
-  // entrypoints (the golden defect this file's own header comment
-  // describes replacing).
-  if (!/mode === "proof"\s*\?\s*await buildProofPlan.*:\s*await buildFullPlan/s.test(source)) {
-    findings.push({ severity: "error", message: "buildCanonicalEditPlan no longer dispatches both modes from a single shared function call -- check for a reintroduced second code path." });
+  // buildCanonicalEditPlan function, calling buildFullPlan unconditionally
+  // (not behind a mode ternary) -- not two independent top-level entrypoints
+  // (the golden defect this file's own header comment describes replacing).
+  if (!/const built = await buildFullPlan\(/.test(source)) {
+    findings.push({ severity: "error", message: "buildCanonicalEditPlan no longer calls buildFullPlan unconditionally for both modes -- check for a reintroduced mode-dependent code path." });
   }
 
   // Both modes must be checked by the same auditMotionHook call and produce

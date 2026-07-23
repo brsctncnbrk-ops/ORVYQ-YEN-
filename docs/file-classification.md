@@ -40,8 +40,8 @@ imported**.
 
 | File | Classification | Notes |
 |---|---|---|
-| `voice_script.txt` | canonical source | Full ~660s+ narration script; the proof uses only the first 114.2s. Ground truth for ASR similarity checks. |
-| `narration_status.json` | QA/status gate | State-tracking file: `full_narration_approved: false`, `full_narration_requires_regeneration: true` — currently and correctly blocks full-film render via `orvyq_edit_plan_tests.mjs`. |
+| `voice_script.txt` | canonical source | Full 804.36s narration script (real ASR-measured length); proof is now a frame-prefix of the full candidate rather than a script subset. Ground truth for ASR similarity checks. |
+| `narration_status.json` | QA/status gate | State-tracking file, checked via `orvyq_edit_plan_tests.mjs`'s `mode === "full"` block (`full_narration_approved` must be `true`) — see that file's current committed value for today's real state, not this note. |
 | `audio_repair.json` | diagnostic artifact / one-time repair record | Documents a specific manual splice correction to a malformed narrator delivery (`rotate_at_seconds: 72.12`). Not referenced by any script (`grep` confirms zero matches) — historical annotation only. |
 | `voice_notes.md` | canonical source | Director/voice notes. |
 

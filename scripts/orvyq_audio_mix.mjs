@@ -33,12 +33,10 @@
 //    Phase 6 human approval, not something to fabricate here.
 import path from "node:path";
 import { promises as fs } from "node:fs";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import { projectDir, readJson, writeJsonAtomic, pathExists, parseArgs, printJson } from "./lib/fs-utils.mjs";
 import { resolveFullFilmPauses } from "./lib/orvyq-pause-resolver.mjs";
+import { command, extractLoudnorm, measureLoudness, normalizeFilter, durationSecondsOf } from "./lib/orvyq-loudness.mjs";
 
-const exec = promisify(execFile);
 const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
 const PROOF_SECONDS = 150;
 const UNDER_SPEECH_GAIN_DEFAULT = 0.7;
@@ -55,13 +53,6 @@ const PROOF_MUSIC_SECTIONS = [
 
 const SFX_VOLUME_BY_CUE = { low_impact: 0.5, tonal_bloom: 0.7, ui_tick: 0.65 };
 
-async function command(binary, args) {
-  try {
-    return await exec(binary, args, { maxBuffer: 64 * 1024 * 1024 });
-  } catch (error) {
-    throw new Error(`${binary} failed: ${error.stderr || error.message}`);
-  }
-}
 async function exists(file) {
   try {
     await fs.access(file);
@@ -73,25 +64,6 @@ async function exists(file) {
 async function readOptionalJson(file) {
   if (!(await exists(file))) return null;
   return JSON.parse(await fs.readFile(file, "utf8"));
-}
-function extractLoudnorm(text) {
-  const candidates = [...String(text).matchAll(/\{\s*"input_i"[\s\S]*?\n\}/g)].map((match) => match[0]);
-  if (!candidates.length) throw new Error("FFmpeg loudnorm analysis did not return JSON");
-  return JSON.parse(candidates.at(-1));
-}
-async function durationSecondsOf(file) {
-  const { stdout } = await command("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "default=nk=1:nw=1", file]);
-  const duration = Number.parseFloat(stdout.trim());
-  if (!Number.isFinite(duration) || duration <= 0) throw new Error(`Could not determine duration for ${file}`);
-  return duration;
-}
-async function measureLoudness(file, target = { i: -16, tp: -1.5, lra: 9 }) {
-  const result = await command("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-filter:a", `loudnorm=I=${target.i}:TP=${target.tp}:LRA=${target.lra}:print_format=json`, "-f", "null", "-"]);
-  return extractLoudnorm(`${result.stdout}\n${result.stderr}`);
-}
-function normalizeFilter(loudnorm = null) {
-  if (!loudnorm) return "loudnorm=I=-16:TP=-1.5:LRA=9:print_format=json";
-  return `loudnorm=I=-16:TP=-1.5:LRA=9:measured_I=${loudnorm.input_i}:measured_TP=${loudnorm.input_tp}:measured_LRA=${loudnorm.input_lra}:measured_thresh=${loudnorm.input_thresh}:offset=${loudnorm.target_offset}:linear=true:print_format=summary`;
 }
 
 async function prepareNarrator({ dir, audioDir, sourceVoice, sourceDuration }) {
@@ -227,26 +199,32 @@ async function generateOriginalSfx(sfxDir) {
 // real, distinct, already-authored music states covering the whole film
 // (not the 5-section proof structure rescaled, which describes the
 // 150-second proof cut specifically and was never written to represent the
-// full film's actual sections). The cue sheet's own start/end values are
-// against its authored duration_seconds, which predates real ASR-measured
-// narration length and the added opening motion hook -- rescaled
-// proportionally onto the real output duration, the same technique already
-// used above for the proof-based fallback and for the SFX "first evidence
-// beat" placement, rather than trusting stale absolute timestamps.
+// full film's actual sections). full_cues' own start/end values are already
+// real absolute seconds matching the actual narration timeline (they are
+// regenerated from direction/edit_plan.json's own section boundaries every
+// time scripts/orvyq_full_production_plan.mjs runs) -- no proportional
+// rescaling is applied. This also makes a genuine proof-boundary prefix
+// render (`duration` shorter than `fullCuesAuthoredDuration`, deliberately,
+// via scripts/orvyq_edit_plan.mjs's resolveProofBoundaryFrame) work
+// correctly: cues are simply clipped to whatever `duration` is actually
+// being produced, rather than squeezed proportionally into a shorter span
+// (which would desynchronize every cue from the real narration content it
+// was authored against).
 export function musicSectionsForDuration(duration, { fullCues, fullCuesAuthoredDuration } = {}) {
-  if (Math.abs(duration - PROOF_SECONDS) < 0.01) return PROOF_MUSIC_SECTIONS;
   if (fullCues?.length) {
-    const scale = duration / fullCuesAuthoredDuration;
-    return fullCues.map((cue) => ({
-      id: cue.cue_id,
-      start: cue.start * scale,
-      end: cue.end * scale,
-      function: cue.function,
-      energy_start: cue.energy_start,
-      energy_end: cue.energy_end,
-      under_speech_gain: UNDER_SPEECH_GAIN_DEFAULT
-    }));
+    return fullCues
+      .filter((cue) => Number(cue.start) < duration - 0.001)
+      .map((cue) => ({
+        id: cue.cue_id,
+        start: Number(cue.start),
+        end: Math.min(Number(cue.end), duration),
+        function: cue.function,
+        energy_start: cue.energy_start,
+        energy_end: cue.energy_end,
+        under_speech_gain: UNDER_SPEECH_GAIN_DEFAULT
+      }));
   }
+  if (Math.abs(duration - PROOF_SECONDS) < 0.01) return PROOF_MUSIC_SECTIONS;
   const boundaries = [0, 0.23, 0.4, 0.63, 0.84, 1].map((ratio) => ratio * duration);
   return PROOF_MUSIC_SECTIONS.map((section, index) => ({ ...section, start: boundaries[index], end: boundaries[index + 1] }));
 }
@@ -326,7 +304,7 @@ function mixFilter({ timelineNarrationDuration, outputDuration, pauseWindows, se
 
 export async function buildCanonicalAudioMix(
   projectId = PROJECT_ID,
-  { mode = "proof", durationSeconds = null, narrationLimitSeconds = null, editorialPauses = true, requireApprovedMusic = true } = {}
+  { mode = "proof", durationSeconds = null, narrationLimitSeconds = null, editorialPauses = true, requireApprovedMusic = true, allowPrefixTruncation = false } = {}
 ) {
   const dir = projectDir(projectId);
   const audioDir = path.join(dir, "assets", "audio");
@@ -345,7 +323,16 @@ export async function buildCanonicalAudioMix(
   const narration = await prepareEditorialNarration({ dir, audioDir, voice: prepared.voice, availableDuration, narrationLimitSeconds, editorialPauses, mode });
 
   const outputDuration = Number.isFinite(durationSeconds) && durationSeconds > 0 ? durationSeconds : narration.timelineNarrationDuration;
-  if (outputDuration + 0.001 < narration.timelineNarrationDuration)
+  // A shorter outputDuration normally means broken input (someone forgot to
+  // include the whole paused narration) and must fail loud. The one
+  // legitimate exception is a deliberate proof-boundary prefix render: the
+  // full paused narration timeline is still built above from the complete
+  // narration and all real editorial pauses (narrationLimitSeconds/mode are
+  // untouched), and only the FINAL mix output is intentionally cut short at
+  // outputDuration -- exactly the same real full narration/music content a
+  // full render would produce, just truncated at render time. The caller
+  // must opt into this explicitly; it is never the default.
+  if (outputDuration + 0.001 < narration.timelineNarrationDuration && !allowPrefixTruncation)
     throw new Error(`Output duration ${outputDuration}s is shorter than the paused narration timeline ${narration.timelineNarrationDuration}s`);
 
   const hasApprovedMusic = await exists(approvedMusic);
@@ -441,7 +428,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     durationSeconds: args["duration-seconds"] ? Number.parseFloat(args["duration-seconds"]) : null,
     narrationLimitSeconds: args["narration-limit-seconds"] ? Number.parseFloat(args["narration-limit-seconds"]) : null,
     editorialPauses: args["no-editorial-pauses"] ? false : true,
-    requireApprovedMusic: args["allow-fallback-music"] ? false : true
+    requireApprovedMusic: args["allow-fallback-music"] ? false : true,
+    allowPrefixTruncation: Boolean(args["allow-prefix-truncation"])
   })
     .then((result) => printJson({ ok: true, ...result }))
     .catch((error) => {

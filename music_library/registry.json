@@ -17,8 +17,9 @@
       "date_acquired": "2026-07-22T20:19:38.595Z",
       "acquisition_provenance": "Recovered from GitHub Actions run 29921936297's orvyq-narration-diagnostics artifact via actions/download-artifact -- the exact CI run whose frozen candidate is referenced by the approved qa/proof_approval.json (workflow_run_id 29921936297). Never re-fetched from scottbuckley.com.au (confirmed down: UND_ERR_CONNECT_TIMEOUT across two independent runs). Recovered bytes verified against the companion approved_bed.provenance.json's own recorded sha256.",
       "approved_for_proof": true,
-      "approved_for_full": false,
-      "status": "approved"
+      "approved_for_full": true,
+      "status": "approved",
+      "notes": "Also assigned to CUE_06_REGULATION_PARADOX (Signal to Noise, Full Mix) in direction/music_cue_sheet.json -- the same real, already-hash-verified file, no re-acquisition needed; approved_for_full flipped to true since this asset now also backs a full-mode cue."
     }
   ]
 }

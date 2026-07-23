@@ -34,13 +34,6 @@ concurrency:
 
 env:
   PROJECT_ID: 001-the-ai-race-no-one-can-afford-to-win
-  # The full edit plan's opening motion hook is the exact same real, licensed
-  # footage proof mode uses (direction/motion_hook.json) -- not a second,
-  # full-mode-only asset -- so the full render recovers it from the same
-  # golden reference orvyq-proof.yml uses, rather than requiring it be
-  # committed as a plain (non-LFS) blob to this branch.
-  GOLDEN_REPO: brsctncnbrk-ops/YouTube_pepline
-  GOLDEN_REF: 9affbd2494d8197a564c4a552b879fadb0e14a4a
 
 jobs:
   full-render:
@@ -73,26 +66,13 @@ jobs:
       - name: Verify a matching, approved, full-mode frozen candidate exists
         run: node scripts/orvyq_verify_approval.mjs --project-id="$PROJECT_ID" --mode=full --stage=early
 
-      - name: Recover real motion-hook footage from the golden reference
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ env.GOLDEN_REPO }}
-          ref: ${{ env.GOLDEN_REF }}
-          lfs: true
-          path: golden-reference
-          sparse-checkout: |
-            projects/001-the-ai-race-no-one-can-afford-to-win/assets/footage
-          sparse-checkout-cone-mode: false
-
-      - name: Stage golden footage into the canonical project
-        run: |
-          set -euo pipefail
-          SRC="golden-reference/projects/$PROJECT_ID"
-          DST="projects/$PROJECT_ID"
-          mkdir -p "$DST/assets/footage"
-          cp "$SRC"/assets/footage/*.mp4 "$DST/assets/footage/"
-          cp "$SRC"/assets/footage/*.provenance.json "$DST/assets/footage/"
-          rm -rf golden-reference
+      # Materializes the real, licensed footage set (motion hook + full
+      # contextual body footage) from the single immutable source commit
+      # pinned in projects/*/migration/external_assets.json -- the same
+      # mechanism orvyq-proof.yml uses, with per-file Git LFS pointer
+      # verification. See scripts/orvyq_materialize_footage.mjs.
+      - name: Materialize real footage from the pinned source commit
+        run: node scripts/orvyq_materialize_footage.mjs --project-id="$PROJECT_ID"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -110,11 +90,10 @@ jobs:
         run: npm run validate:canonical
 
       # Same registry-based resolution proof mode uses (scripts/
-      # orvyq_music_resolve.mjs), just for the full-length track_id. This is
-      # expected to fail today: no real full-length licensed music has been
-      # added to music_library/registry.json with approved_for_full: true
-      # yet -- full mode must stay correctly blocked until it is (see
-      # docs/full-production-guide.md).
+      # orvyq_music_resolve.mjs), resolving all nine per-cue full-length
+      # tracks vendored via orvyq-music-acquisition.yml. Fails closed if any
+      # cue's track is missing, unhashed, unlicensed, or not
+      # approved_for_full -- see docs/full-production-guide.md.
       - name: Resolve canonical full music (no network)
         run: node scripts/orvyq_music_resolve.mjs --project-id="$PROJECT_ID" --mode=full
 

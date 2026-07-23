@@ -1,0 +1,108 @@
+name: ORVYQ Full Music Acquisition
+
+# Downloads, verifies, and vendors the nine real, official Scott Buckley (CC
+# BY 4.0) tracks direction/music_cue_sheet.json's full_cues assign -- one
+# distinct licensed track per cue, not a single shared bed -- via
+# scripts/orvyq_fetch_full_music.mjs. This is production-preparation work,
+# not render work: it never renders video, never touches the edit plan, and
+# is entirely separate from orvyq-proof.yml / orvyq-full-render.yml, which
+# never fetch music from a third party at render time and instead resolve
+# tracks this workflow has already vendored (scripts/orvyq_music_resolve.mjs).
+# Manual dispatch only -- it never runs automatically.
+on:
+  # GitHub only allows an API workflow_dispatch call to target a workflow
+  # already indexed by some real event -- a brand-new workflow_dispatch-only
+  # file isn't dispatchable until it has run at least once. This self-
+  # referential push (scoped to this file's own path, same guarded pattern as
+  # orvyq-music-intake.yml / orvyq-full-plan-validate.yml) exists only to
+  # index the workflow the first time; the job itself only runs the real
+  # acquisition on workflow_dispatch (see the job-level `if` below).
+  push:
+    branches:
+      - "claude/orvyq-assets-soundtrack-port-noz6bi"
+    paths:
+      - ".github/workflows/orvyq-music-acquisition.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: orvyq-music-acquisition-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: 001-the-ai-race-no-one-can-afford-to-win
+
+jobs:
+  acquire:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install ffmpeg/ffprobe (codec/sample-rate/channel/duration probing) and confirm Git LFS
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          git lfs version
+
+      # Downloads all nine official tracks (bounded retry per file), snapshots
+      # each track's official license/source page (retained + hash-recorded
+      # under music_library/license_snapshots/), computes sha256/byte size,
+      # probes codec/sample_rate/channels/duration, runs the canonical
+      # scripts/orvyq_music_intake.mjs path for every track (which itself
+      # re-verifies the hash, copies the file into music_library/tracks/, and
+      # upserts music_library/registry.json), marks each cue "ready" in
+      # direction/music_cue_sheet.json only after its own track validates,
+      # and writes one consolidated YouTube-description attribution file.
+      # Never renders video.
+      - name: Download, verify and vendor the nine official tracks
+        run: node scripts/orvyq_fetch_full_music.mjs --project-id="$PROJECT_ID"
+
+      - name: Validate canonical schemas
+        run: npm run validate:canonical
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Confirm every vendored track is stored via Git LFS
+        run: |
+          set -euo pipefail
+          for f in music_library/tracks/*.mp3; do
+            git check-attr filter "$f" | grep -q "filter: lfs" || { echo "::error::$f is not tracked by Git LFS"; exit 1; }
+          done
+
+      - name: Print the resolved full music package for review
+        run: |
+          echo "--- direction/music_cue_sheet.json full_cues ---"
+          node -e "const s=require('./projects/$PROJECT_ID/direction/music_cue_sheet.json'); for (const c of s.full_cues) console.log(c.cue_id, c.track_id, c.status)"
+          echo "--- music_library/registry.json ---"
+          node -e "const r=require('./music_library/registry.json'); for (const t of r.tracks) console.log(t.track_id, t.title, t.approved_for_full, t.status)"
+
+      - name: Commit and push the vendored music package
+        run: |
+          set -euo pipefail
+          git config user.name "orvyq-music-acquisition-bot"
+          git config user.email "orvyq-music-acquisition-bot@users.noreply.github.com"
+          git add -f music_library/ "projects/$PROJECT_ID/direction/music_cue_sheet.json" "projects/$PROJECT_ID/assets/music/youtube_description_attribution.txt"
+          if git diff --cached --quiet; then
+            echo "No music package changes to commit."
+            exit 0
+          fi
+          git commit -m "Vendor the real full music package: nine licensed Scott Buckley tracks, one per cue"
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"

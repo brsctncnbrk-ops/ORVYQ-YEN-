@@ -1,21 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { extractRequiredTrackId } from "./orvyq_music_resolve.mjs";
+import { extractRequiredTrackId, extractFullCueTrackIds } from "./orvyq_music_resolve.mjs";
 
 test("extractRequiredTrackId reads proof_score.track_id for proof mode", () => {
   const cueSheet = { proof_score: { track_id: "sb_signal_to_noise" }, full_cues: [] };
   assert.equal(extractRequiredTrackId(cueSheet, "proof"), "sb_signal_to_noise");
-});
-
-test("extractRequiredTrackId requires every full_cues entry to share one track_id (proof/full parity of resolution)", () => {
-  const cueSheet = {
-    full_cues: [
-      { cue_id: "A", track_id: "full_score_v1" },
-      { cue_id: "B", track_id: "full_score_v1" },
-      { cue_id: "C", track_id: "full_score_v1" }
-    ]
-  };
-  assert.equal(extractRequiredTrackId(cueSheet, "full"), "full_score_v1");
 });
 
 test("extractRequiredTrackId throws when proof_score has no track_id (unknown cue-sheet track_id case)", () => {
@@ -23,21 +12,39 @@ test("extractRequiredTrackId throws when proof_score has no track_id (unknown cu
   assert.throws(() => extractRequiredTrackId(cueSheet, "proof"), /does not declare a track_id/);
 });
 
-test("extractRequiredTrackId throws when full_cues declare no track_id at all", () => {
-  const cueSheet = { full_cues: [{ cue_id: "A" }, { cue_id: "B" }] };
-  assert.throws(() => extractRequiredTrackId(cueSheet, "full"), /does not declare a track_id/);
-});
-
-test("extractRequiredTrackId throws when full_cues reference more than one distinct track_id", () => {
-  const cueSheet = {
-    full_cues: [
-      { cue_id: "A", track_id: "full_score_v1" },
-      { cue_id: "B", track_id: "full_score_v2" }
-    ]
-  };
-  assert.throws(() => extractRequiredTrackId(cueSheet, "full"), /more than one distinct track_id/);
+test("extractRequiredTrackId rejects mode \"full\" -- full mode resolves one track_id per cue, not a single shared one", () => {
+  const cueSheet = { full_cues: [{ cue_id: "A", track_id: "x" }] };
+  assert.throws(() => extractRequiredTrackId(cueSheet, "full"), /extractFullCueTrackIds/);
 });
 
 test("extractRequiredTrackId rejects an invalid mode", () => {
-  assert.throws(() => extractRequiredTrackId({}, "preview"), /mode must be "proof" or "full"/);
+  assert.throws(() => extractRequiredTrackId({}, "preview"), /extractFullCueTrackIds/);
+});
+
+test("extractFullCueTrackIds reads each cue's own distinct track_id", () => {
+  const cueSheet = {
+    full_cues: [
+      { cue_id: "A", section_id: "SEC_A", track_id: "sb_intervention", start: 0, end: 60 },
+      { cue_id: "B", section_id: "SEC_B", track_id: "sb_catalyst", start: 60, end: 120 }
+    ]
+  };
+  const cues = extractFullCueTrackIds(cueSheet);
+  assert.equal(cues.length, 2);
+  assert.equal(cues[0].track_id, "sb_intervention");
+  assert.equal(cues[1].track_id, "sb_catalyst");
+  assert.notEqual(cues[0].track_id, cues[1].track_id);
+});
+
+test("extractFullCueTrackIds throws when a cue is missing its own track_id", () => {
+  const cueSheet = { full_cues: [{ cue_id: "A", start: 0, end: 60 }] };
+  assert.throws(() => extractFullCueTrackIds(cueSheet), /does not declare a track_id/);
+});
+
+test("extractFullCueTrackIds throws when a cue's start/end is invalid", () => {
+  const cueSheet = { full_cues: [{ cue_id: "A", track_id: "x", start: 60, end: 60 }] };
+  assert.throws(() => extractFullCueTrackIds(cueSheet), /invalid start\/end/);
+});
+
+test("extractFullCueTrackIds throws when there are no full_cues at all", () => {
+  assert.throws(() => extractFullCueTrackIds({ full_cues: [] }), /no full_cues/);
 });

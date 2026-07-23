@@ -15,15 +15,28 @@ test("proof duration returns the exact hand-timed proof sections unchanged", () 
   assert.equal(sections.at(-1).end, 150);
 });
 
-test("full-cue sections rescale proportionally onto the real output duration", () => {
-  const sections = musicSectionsForDuration(842.29, { fullCues: FULL_CUES, fullCuesAuthoredDuration: 720 });
+test("full-cue sections use their own real absolute seconds unchanged for a genuine full-length render", () => {
+  const sections = musicSectionsForDuration(720, { fullCues: FULL_CUES, fullCuesAuthoredDuration: 720 });
   assert.equal(sections.length, 3);
-  const scale = 842.29 / 720;
-  assert.ok(Math.abs(sections[0].end - 72 * scale) < 1e-9);
-  assert.ok(Math.abs(sections.at(-1).end - 842.29) < 1e-9);
+  assert.equal(sections[0].end, 72);
+  assert.equal(sections.at(-1).end, 720);
   // Real, already-authored cue metadata carries through untouched.
   assert.equal(sections[1].function, "evidence");
   assert.equal(sections[1].energy_end, 0.62);
+});
+
+test("full-cue sections are clipped (not proportionally rescaled) for a shorter deliberate proof-prefix duration", () => {
+  const sections = musicSectionsForDuration(100, { fullCues: FULL_CUES, fullCuesAuthoredDuration: 720 });
+  // Only cues that actually start before the prefix boundary are included --
+  // CUE_03 (starts at 180) is entirely beyond the 100s prefix.
+  assert.equal(sections.length, 2);
+  assert.equal(sections[0].start, 0);
+  assert.equal(sections[0].end, 72);
+  assert.equal(sections[1].start, 72);
+  // CUE_02 nominally ends at 180, but a prefix that stops at 100s never
+  // plays past 100s of it -- the section is clipped to the real render
+  // length, not left describing content beyond what actually exists.
+  assert.equal(sections[1].end, 100);
 });
 
 test("without full cues, a non-proof duration falls back to the proof structure rescaled by ratio", () => {

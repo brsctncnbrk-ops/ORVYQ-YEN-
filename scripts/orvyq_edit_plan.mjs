@@ -1,39 +1,23 @@
 #!/usr/bin/env node
 // buildCanonicalEditPlan() -- the single edit-plan generator for BOTH proof
-// and full render modes.
+// and full render modes, both now built from the exact same data model
+// (direction/editorial_blueprint.json's full_production.shots).
 //
-// This replaces two golden-repo scripts that were structurally different
-// code paths (docs/migration-plan.md section 1): orvyq_preview_plan.mjs
-// (dispatched to via an env-var boolean, wrote schema_version
-// "7.0-cinematic-proof") and orvyq_edit_plan.mjs's full-production branch
-// (wrote schema_version "5.1-evidence-led-full"). Both branches are here,
-// in one function, sharing one output schema (edit_plan.schema.json,
-// schema_version "1.0-canonical") and one `quality_policy` shape.
-//
-// What's still mode-specific, honestly: `mode: "proof"` still reads from
-// direction/cinematic_proof_cut.json (+ its motion_hook.json /
-// proof_preview_cut.json evidence-bridge dependencies) while `mode: "full"`
-// reads from direction/editorial_blueprint.json's full_production.shots.
-// This is NOT the same defect the golden system had. A 150-second proof and
-// a 660+ second full film are genuinely different authored cuts -- the full
-// film has ~5x the runtime to fill with claims the proof never touches, and
-// its shot list does not exist yet (full_production.status is still
-// "blocked_until_research_and_assets_complete" in the recovered project
-// data). What WAS wrong, and is fixed here: both cuts now flow through the
-// same function, the same per-asset-type validation rules, the same
-// schema_version, and the same quality_policy field set -- there is no
-// longer a second, independently-diverging code path or a second
-// independently-enforced (or silently skipped) rule set for "full".
-//
-// The legacy non-cinematic 120-second zero-footage proof branch
-// (ORVYQ_CINEMATIC_PROOF=0 in the golden system) is intentionally dropped,
-// not ported: docs/file-classification.md section 1.7 confirms it was
-// superseded before the approved proof shipped, and PR #10's title
-// ("Build ORVYQ 150-second cinematic proof") + cinematic_revision_plan.json
-// (`approval_status: "user_approved"`) confirm only the cinematic path was
-// ever actually used. direction/proof_preview_cut.json is still read here
-// as a real data dependency (the cinematic cut's evidence-bridge shots
-// reference it by index), just not as a standalone alternate plan format.
+// Proof used to read a separately-authored 150s cut (direction/
+// cinematic_proof_cut.json + motion_hook.json + proof_preview_cut.json,
+// approved via cinematic_revision_plan.json). That approach meant proof and
+// full could diverge in footage, narration, music, and editorial content --
+// a proof approval covered different bytes than what a full render would
+// actually produce. Proof is now a genuine frame-prefix of the full
+// candidate instead: buildFullPlan() runs unconditionally, and `mode` only
+// changes the label written to plan.mode and (via frameEnd/
+// resolveProofBoundaryFrame below) where frame_range.end_frame cuts off --
+// duration_frames, shots, and quality_policy are identical in both modes,
+// exactly as schemas/edit_plan.schema.json has always documented. The
+// original cinematic_proof_cut.json/proof_preview_cut.json/
+// cinematic_revision_plan.json files are left on disk as the historical
+// record of that originally-approved 150s cut; nothing in this file reads
+// them anymore.
 import path from "node:path";
 import { projectDir, readJson, writeJsonAtomic, pathExists, parseArgs, printJson } from "./lib/fs-utils.mjs";
 import { loadResolvedEvidenceMap } from "./lib/orvyq-evidence.mjs";
@@ -72,161 +56,27 @@ function fractionSummary(shots, totalFrames) {
   };
 }
 
-// ---- mode: "proof" -- reads direction/cinematic_proof_cut.json ----
+// ---- proof boundary resolution ----
+//
+// Proof used to be a separately-authored short cut (resolveProofShots() /
+// buildProofPlan(), reading direction/cinematic_proof_cut.json +
+// proof_preview_cut.json + motion_hook.json) built to its own
+// cinematic_revision_plan.json-approved 150s duration. That data is retained
+// on disk as a historical record of the originally-approved cut but is no
+// longer read here: proof is now a genuine frame-prefix of the full
+// candidate (see buildCanonicalEditPlan below), sourced from the exact same
+// buildFullPlan() shots/duration_frames as a full render, truncated only at
+// render/selection time via frame_range.end_frame. This resolves WHERE that
+// truncation point falls: the real shot boundary matching the pause anchor
+// text below, chosen because it closes a complete narrative arc (the race
+// paradox through the competitive-incentive reflection) on a strong,
+// self-contained line, rather than an arbitrary duration cutoff.
+const PROOF_BOUNDARY_ANCHOR_TEXT = "Slowing down alone doesn't remove the risk. It just hands the frontier to whoever doesn't.";
 
-async function resolveProofShots(dir) {
-  const [proofCut, cinematicCut, motionHook] = await Promise.all([
-    readJson(path.join(dir, "direction", "proof_preview_cut.json")),
-    readJson(path.join(dir, "direction", "cinematic_proof_cut.json")),
-    readJson(path.join(dir, "direction", "motion_hook.json"))
-  ]);
-  const resolved = (cinematicCut.shots || []).map((entry) => {
-    let source = null;
-    if (Number.isInteger(entry.source_motion_hook_index)) source = motionHook.shots?.[entry.source_motion_hook_index];
-    if (Number.isInteger(entry.source_evidence_index)) source = proofCut.shots?.[entry.source_evidence_index];
-    if ((entry.source_motion_hook_index !== undefined || entry.source_evidence_index !== undefined) && !source)
-      throw new Error("Cinematic proof references a missing source shot");
-    const merged = source
-      ? {
-          ...source,
-          ...entry,
-          ...(source.evidence || entry.evidence ? { evidence: { ...(source.evidence || {}), ...(entry.evidence || {}) } } : {}),
-          ...(source.graphic || entry.graphic ? { graphic: { ...(source.graphic || {}), ...(entry.graphic || {}) } } : {})
-        }
-      : { ...entry };
-    delete merged.source_motion_hook_index;
-    delete merged.source_evidence_index;
-    return merged;
-  });
-  return { cut: cinematicCut, cutShots: resolved, strategy: cinematicCut.strategy };
-}
-
-async function buildProofPlan(dir, projectId, blueprint) {
-  const [evidenceManifest, runtimeManifest, { cut, cutShots, strategy }] = await Promise.all([
-    readJson(path.join(dir, "research", "primary_evidence_manifest.json")),
-    readJson(path.join(dir, "assets", "evidence", "primary_evidence.runtime.json")),
-    resolveProofShots(dir)
-  ]);
-  if (!runtimeManifest.pass) throw new Error("Primary evidence runtime manifest did not pass");
-
-  const manifestById = new Map((evidenceManifest.assets || []).map((asset) => [asset.evidence_asset_id, asset]));
-  const runtimeById = new Map((runtimeManifest.assets || []).map((asset) => [asset.evidence_asset_id, asset]));
-  const sourceLimit = blueprint.global_rules.max_uses_per_source;
-  const assetUsage = new Map();
-  const evidenceIdUsage = new Map();
-  const scenes = cutShots.map((_, index) => ({ scene_id: `scene_${String(index + 1).padStart(3, "0")}`, start_frame: 0, end_frame: Infinity }));
-  let cursorSeconds = 0;
-  const shots = [];
-
-  for (let index = 0; index < cutShots.length; index += 1) {
-    const spec = cutShots[index];
-    const startFrame = Math.round(cursorSeconds * FPS);
-    cursorSeconds += Number(spec.duration);
-    const endFrame = Math.round(cursorSeconds * FPS);
-    const common = {
-      shot_id: `shot_${String(index + 1).padStart(3, "0")}`,
-      scene_id: sceneForFrame(scenes, index),
-      start_frame: startFrame,
-      end_frame: endFrame,
-      claim_id: spec.claim_id,
-      visual_role: spec.visual_role,
-      generic_stock: Boolean(spec.generic_stock),
-      editorial_purpose: spec.editorial_purpose,
-      editorial_overlay: null,
-      transition_in: spec.transition_in || (index === 0 ? "cut" : "cut"),
-      transition_out: spec.transition_out || (index === cutShots.length - 1 ? "fade" : "cut"),
-      text_overlay: null,
-      sound_cue: spec.sound_cue || null,
-      emphasis_card: spec.emphasis_card || null
-    };
-
-    if (spec.asset_type === "graphic") {
-      shots.push({ ...common, asset_type: "graphic", graphic: spec.graphic, motif: spec.graphic.type });
-      continue;
-    }
-
-    if (spec.asset_type === "footage") {
-      const isHookFootage = spec.hook_footage === true;
-      const isContextualFootage = spec.contextual_footage === true;
-      if (!isHookFootage && !isContextualFootage)
-        throw new Error(`${common.shot_id} footage must be either the approved motion hook or approved contextual body footage`);
-      const absoluteVideo = path.join(dir, spec.video_asset || "");
-      const provenancePath = path.join(dir, `${spec.video_asset}.provenance.json`);
-      if (!(await pathExists(absoluteVideo))) throw new Error(`${common.shot_id} footage is missing: ${spec.video_asset}`);
-      if (!(await pathExists(provenancePath))) throw new Error(`${common.shot_id} footage provenance is missing`);
-      const provenance = await readJson(provenancePath);
-      if (!provenance.approved_for_final_edit || !provenance.license_url) throw new Error(`${common.shot_id} footage is not licensed and approved`);
-      const sourceDuration = Number(provenance.actual_duration_seconds || provenance.duration);
-      if (!Number.isFinite(sourceDuration) || spec.trim_in_sec < 0 || spec.trim_out_sec <= spec.trim_in_sec || spec.trim_out_sec > sourceDuration + 0.02)
-        throw new Error(`${common.shot_id} has an invalid footage trim`);
-      if (Math.abs(spec.trim_out_sec - spec.trim_in_sec - Number(spec.duration)) > 0.02)
-        throw new Error(`${common.shot_id} footage trim does not match shot duration`);
-      shots.push({
-        ...common,
-        asset_type: "footage",
-        video_asset: spec.video_asset,
-        trim_in_sec: spec.trim_in_sec,
-        trim_out_sec: spec.trim_out_sec,
-        motion_variant: spec.motion_variant || "hold",
-        hook_footage: isHookFootage,
-        contextual_footage: isContextualFootage,
-        provenance_mode: isHookFootage ? "approved_motion_hook" : "approved_contextual_footage",
-        motif: spec.video_asset
-      });
-      continue;
-    }
-
-    if (spec.asset_type !== "evidence") throw new Error(`${common.shot_id} is not evidence, graphic, or approved footage`);
-    const evidence = spec.evidence;
-    if (!evidence?.kind || (!IMAGE_KINDS.has(evidence.kind) && !NATIVE_KINDS.has(evidence.kind)))
-      throw new Error(`${common.shot_id} has unsupported evidence kind ${evidence?.kind}`);
-    if (!(evidence.source_ids || []).length || !evidence.source_label) throw new Error(`${common.shot_id} lacks visible source attribution`);
-    if ((evidence.font_px || 0) < blueprint.global_rules.minimum_overlay_font_px) throw new Error(`${common.shot_id} evidence typography is too small`);
-
-    const images = evidence.image_assets || [];
-    const ids = evidence.evidence_asset_ids || [];
-    if (IMAGE_KINDS.has(evidence.kind)) {
-      if (!images.length || images.length !== ids.length) throw new Error(`${common.shot_id} image evidence must pair every image with an evidence_asset_id`);
-      for (let assetIndex = 0; assetIndex < ids.length; assetIndex += 1) {
-        const id = ids[assetIndex];
-        const declared = manifestById.get(id);
-        const runtime = runtimeById.get(id);
-        const image = images[assetIndex];
-        if (!declared || !runtime) throw new Error(`${common.shot_id} references unavailable primary evidence ${id}`);
-        if (declared.local_asset !== image || runtime.local_asset !== image) throw new Error(`${common.shot_id} primary evidence path mismatch for ${id}`);
-        if (!(await pathExists(path.join(dir, image)))) throw new Error(`${common.shot_id} primary evidence file is missing: ${image}`);
-        assetUsage.set(image, (assetUsage.get(image) || 0) + 1);
-        evidenceIdUsage.set(id, (evidenceIdUsage.get(id) || 0) + 1);
-        if (assetUsage.get(image) > sourceLimit) throw new Error(`${image} exceeds the ${sourceLimit}-use limit`);
-      }
-    } else if (images.length || ids.length) {
-      throw new Error(`${common.shot_id} native source-derived graphic cannot smuggle image assets`);
-    }
-
-    const focus = defaultFocus(evidence);
-    shots.push({
-      ...common,
-      asset_type: "evidence",
-      evidence: { ...evidence, ...(focus ? { focus } : {}), provenance_mode: IMAGE_KINDS.has(evidence.kind) ? "official_primary_capture" : "source_derived_graphic" },
-      motif: evidence.kind
-    });
-  }
-
-  if (Math.abs(cursorSeconds - cut.duration_seconds) > 0.001)
-    throw new Error(`Proof cut must total ${cut.duration_seconds}s, got ${cursorSeconds}s`);
-
-  return {
-    shots,
-    durationFrames: Math.round(cut.duration_seconds * FPS),
-    productionMode: blueprint.production_mode,
-    strategy,
-    sourceUsage: assetUsage,
-    evidenceIdUsage,
-    quality_policy_overrides: {
-      minimum_emphasis_beats: 4,
-      maximum_uninterrupted_evidence_seconds: 15
-    }
-  };
+export function resolveProofBoundaryFrame(shots, anchorText = PROOF_BOUNDARY_ANCHOR_TEXT) {
+  const match = shots.find((shot) => shot.emphasis_card?.title === anchorText);
+  if (!match) throw new Error(`Proof boundary anchor not found among built shots: "${anchorText}"`);
+  return match.end_frame;
 }
 
 // ---- mode: "full" -- reads direction/editorial_blueprint.json's full_production.shots ----
@@ -412,7 +262,12 @@ export async function buildCanonicalEditPlan(projectId = PROJECT_ID, { mode = "p
   const dir = projectDir(projectId);
   const blueprint = await readJson(path.join(dir, "direction", "editorial_blueprint.json"));
 
-  const built = mode === "proof" ? await buildProofPlan(dir, projectId, blueprint) : await buildFullPlan(dir, projectId, blueprint);
+  // Both modes now build from the exact same full data model: proof is a
+  // frame-prefix of the full candidate, not a separately-authored cut (see
+  // the "proof boundary resolution" section above). The only thing `mode`
+  // still changes here is `frame_range.end_frame` (via frameEnd, below) and
+  // the label written into plan.mode itself.
+  const built = await buildFullPlan(dir, projectId, blueprint);
   const { shots, durationFrames, productionMode, strategy, sourceUsage, evidenceIdUsage, quality_policy_overrides } = built;
 
   const hookAudit = auditMotionHook({
@@ -425,7 +280,12 @@ export async function buildCanonicalEditPlan(projectId = PROJECT_ID, { mode = "p
   });
   if (!hookAudit.pass) throw new Error(`Motion hook failed: ${hookAudit.failures.join("; ")}`);
 
-  const selectedEnd = Number.isFinite(frameEnd) && frameEnd > 0 ? Math.min(frameEnd, durationFrames) : durationFrames;
+  // For proof, an explicit --frame-end always wins; otherwise the boundary
+  // is resolved automatically from the real, current shot list (never a
+  // stale hardcoded frame number) so it can never silently drift out of
+  // sync with upstream edits to footage/narration/pause timing.
+  const resolvedFrameEnd = Number.isFinite(frameEnd) && frameEnd > 0 ? frameEnd : mode === "proof" ? resolveProofBoundaryFrame(shots) : null;
+  const selectedEnd = Number.isFinite(resolvedFrameEnd) && resolvedFrameEnd > 0 ? Math.min(resolvedFrameEnd, durationFrames) : durationFrames;
 
   const plan = {
     schema_version: "1.0-canonical",
@@ -440,9 +300,7 @@ export async function buildCanonicalEditPlan(projectId = PROJECT_ID, { mode = "p
     strategy,
     render_source_sha: process.env.GITHUB_SHA || null,
     art_direction: {
-      principle: mode === "proof"
-        ? "short licensed motion hook first; then alternate source-backed evidence with semantically relevant licensed context footage and deliberate emphasis beats"
-        : "evidence first, context second, metaphor only after the claim is established",
+      principle: strategy,
       topic: "AI competition, safety frameworks, governance, and controlled agentic-misalignment evaluations",
       palette: { ink: "#F5F0E7", accent: "#D95B53", information: "#86A9CC", ground: "#07101A" },
       source_treatment: "full-screen official captures and explicit source-derived graphics"

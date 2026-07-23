@@ -13,20 +13,22 @@
 // narration between two quoted claims stays visually attached to the
 // claim that just finished speaking rather than being left unplanned.
 //
-// No footage is referenced here. Full-production contextual/hook footage
-// has not been acquired for this project (a real, separate content gap --
-// see docs/full-production-guide.md) and this script will NOT fabricate a
-// footage reference to a file that does not exist (buildCanonicalEditPlan's
-// pathExists check would catch that anyway). Every claim beat is rendered
-// as asset_type "evidence" using a NATIVE_KINDS kind (concept_map,
-// comparison, evidence_chain, boundary, source_timeline, source_article) --
-// derived from that claim's own visual_treatment.{primary,secondary,metaphor}
-// fields, which are real editorial content already present in the resolved
-// evidence map, not invented here. Each section opens with a short graphic
-// title card. This produces a schema-valid, gap-free, zero-placeholder full
-// shot list; it does NOT satisfy the golden project's contextual-footage
-// visual-variety requirement, which remains a genuine, separately reported
-// content gap until real footage is acquired.
+// Contextual footage IS referenced here: FOOTAGE_ASSIGNMENTS assigns real,
+// licensed clips (materialized via scripts/orvyq_materialize_footage.mjs
+// from projects/*/migration/external_assets.json, the same immutable source
+// commit the opening motion hook already uses) to specific claim/occurrence
+// pairs, and FULL_FOOTAGE_POOL backs an automatic backfill pass that breaks
+// up long uninterrupted evidence/graphic runs with additional contextual
+// footage once the hand-assigned occurrences are used up (see the run-length-
+// breaking pass below). Every other claim beat is rendered as asset_type
+// "evidence" using a NATIVE_KINDS kind (concept_map, comparison,
+// evidence_chain, boundary, source_timeline, source_article) -- derived from
+// that claim's own visual_treatment.{primary,secondary,metaphor} fields,
+// which are real editorial content already present in the resolved evidence
+// map, not invented here. Each section opens with a short graphic title
+// card. This produces a schema-valid, gap-free, zero-placeholder full shot
+// list with real contextual footage across the whole film, not just an
+// opening hook.
 import path from "node:path";
 import { projectDir, readJson, readJsonSafe, writeJsonAtomic, parseArgs, printJson } from "./lib/fs-utils.mjs";
 import { loadResolvedEvidenceMap } from "./lib/orvyq-evidence.mjs";
@@ -825,29 +827,65 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
   // alternating +/-delta already prevents this within one claim's own
   // slices, but a claim boundary (or a claim whose slices were left at
   // plain equal division because canVary was false) can still produce a
-  // rare leftover triplet. This pass nudges just the SECOND shot of any
-  // such triplet by -0.2s and transfers that 0.2s to the THIRD shot, so the
-  // total duration of the two (and the whole timeline) is unchanged -- a
-  // duration-only adjustment, not a content or visual change.
-  // Footage shots are skipped here entirely: nudging trim_out_sec risks
-  // either exceeding the licensed clip's real duration or breaking a
-  // contiguous pause-continuation pair's exact trim match (see
-  // scripts/orvyq_edit_plan.mjs's previousFootage check above), and this is
-  // a cosmetic duration-variety fix, not worth that risk. A run of 3
-  // identical durations is only corrected here when the prior neighbor is a
-  // non-footage shot with room to give.
+  // rare leftover triplet. This pass nudges one shot of any such triplet by
+  // -0.2s and transfers that 0.2s to an adjacent shot within the same
+  // triplet, so the total duration of the two (and the whole timeline) is
+  // unchanged -- a duration-only adjustment, not a content or visual change.
+  //
+  // Footage shots CAN be nudged too, but only when doing so cannot silently
+  // desynchronize a contiguous pause-continuation pair (two shots on the
+  // same clip where the first's trim_out_sec is the second's trim_in_sec --
+  // see scripts/orvyq_edit_plan.mjs's previousFootage check) and only within
+  // the real licensed clip's own on-disk duration (assetDurationSeconds,
+  // read from its provenance file above) -- trim_in_sec is left untouched
+  // and only trim_out_sec moves with the duration, so a shrink always stays
+  // valid and a grow is checked against the clip's real remaining length
+  // before being applied.
+  const isContiguousFootagePair = (a, b) =>
+    a?.asset_type === "footage" && b?.asset_type === "footage" && a.asset === b.asset && Math.abs(a.trim_out_sec - b.trim_in_sec) < 0.005;
+  const partOfContiguousPair = (index) => {
+    const shot = shots[index];
+    if (shot.asset_type !== "footage") return false;
+    return isContiguousFootagePair(shots[index - 1], shot) || isContiguousFootagePair(shot, shots[index + 1]);
+  };
+  const canDonate = (index, delta) => {
+    const shot = shots[index];
+    if (shot.duration - delta <= 1) return false;
+    if (shot.asset_type !== "footage") return true;
+    if (partOfContiguousPair(index)) return false;
+    return shot.trim_out_sec - delta > shot.trim_in_sec + 0.5;
+  };
+  const canReceive = (index, delta) => {
+    const shot = shots[index];
+    if (shot.duration + delta > maxShotSeconds) return false;
+    if (shot.asset_type !== "footage") return true;
+    if (partOfContiguousPair(index)) return false;
+    const clipDuration = assetDurationSeconds.get(shot.asset);
+    return Number.isFinite(clipDuration) && shot.trim_out_sec + delta <= clipDuration - 0.02;
+  };
+  const applyDelta = (index, delta) => {
+    const shot = shots[index];
+    const updated = { ...shot, duration: Math.round((shot.duration + delta) * 1000) / 1000 };
+    if (shot.asset_type === "footage") updated.trim_out_sec = Math.round((shot.trim_out_sec + delta) * 1000) / 1000;
+    shots[index] = updated;
+  };
   for (let i = 2; i < shots.length; i += 1) {
-    if (
-      shots[i].duration === shots[i - 1].duration &&
-      shots[i - 1].duration === shots[i - 2].duration &&
-      shots[i - 1].duration > 1.2 &&
-      shots[i].duration + 0.2 <= maxShotSeconds &&
-      shots[i - 1].asset_type !== "footage" &&
-      shots[i].asset_type !== "footage"
-    ) {
-      shots[i - 1] = { ...shots[i - 1], duration: Math.round((shots[i - 1].duration - 0.2) * 1000) / 1000 };
-      shots[i] = { ...shots[i], duration: Math.round((shots[i].duration + 0.2) * 1000) / 1000 };
+    if (shots[i].duration !== shots[i - 1].duration || shots[i - 1].duration !== shots[i - 2].duration) continue;
+    if (canDonate(i - 1, 0.2) && canReceive(i, 0.2)) {
+      applyDelta(i - 1, -0.2);
+      applyDelta(i, 0.2);
+    } else if (canDonate(i - 2, 0.2) && canReceive(i - 1, 0.2)) {
+      applyDelta(i - 2, -0.2);
+      applyDelta(i - 1, 0.2);
+    } else if (canDonate(i, 0.2) && canReceive(i - 1, 0.2)) {
+      applyDelta(i, -0.2);
+      applyDelta(i - 1, 0.2);
     }
+    // Every remaining possibility is exhausted (donor/receiver checked on
+    // all three adjacent pairs within the triplet); if none qualifies, this
+    // triplet is left as-is and scripts/orvyq_pacing_audit.mjs will
+    // correctly fail the build rather than silently ship an unfixed run --
+    // this has not been observed against this project's real shot data.
   }
 
   // ---- opening motion hook: the same real, licensed footage proof mode
