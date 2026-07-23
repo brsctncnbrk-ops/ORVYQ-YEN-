@@ -90,8 +90,56 @@ jobs:
       - name: Snapshot technical-test full candidate
         run: node scripts/orvyq_frozen_candidate.mjs --project-id="$PROJECT_ID"
 
-      - name: Run full pre-render QA chain
-        run: npm run orvyq:qa
+      - name: Run audit suite with diagnostics
+        run: |
+          set +e
+          npm run orvyq:audits > qa-audits.log 2>&1
+          echo $? > qa-audits.status
+          cat qa-audits.log
+          exit 0
+
+      - name: Run canonical edit-plan tests with diagnostics
+        run: |
+          set +e
+          node scripts/orvyq_edit_plan_tests.mjs > qa-edit-plan.log 2>&1
+          echo $? > qa-edit-plan.status
+          cat qa-edit-plan.log
+          exit 0
+
+      - name: Run license audit with diagnostics
+        run: |
+          set +e
+          node scripts/orvyq_license_audit.mjs > qa-license.log 2>&1
+          echo $? > qa-license.status
+          cat qa-license.log
+          exit 0
+
+      - name: Run alignment score with diagnostics
+        run: |
+          set +e
+          node scripts/orvyq_alignment_score.mjs > qa-alignment.log 2>&1
+          echo $? > qa-alignment.status
+          cat qa-alignment.log
+          exit 0
+
+      - name: Run parity check with diagnostics
+        run: |
+          set +e
+          node scripts/orvyq_parity_check.mjs > qa-parity.log 2>&1
+          echo $? > qa-parity.status
+          cat qa-parity.log
+          exit 0
+
+      - name: Stop when any pre-render QA check failed
+        run: |
+          set -euo pipefail
+          failed=0
+          for status in qa-*.status; do
+            code="$(cat "$status")"
+            echo "$status=$code"
+            if [ "$code" != "0" ]; then failed=1; fi
+          done
+          test "$failed" = "0"
 
       - name: Build render-ready project
         run: |
@@ -141,6 +189,8 @@ jobs:
             projects/${{ env.PROJECT_ID }}/output/full_render_technical_test.mp4
             projects/${{ env.PROJECT_ID }}/output/full_render_technical_test_log.txt
             projects/${{ env.PROJECT_ID }}/qa/*.json
+            qa-*.log
+            qa-*.status
 
       - name: Upload failure diagnostics
         if: failure()
@@ -151,6 +201,8 @@ jobs:
           if-no-files-found: warn
           path: |
             full-render-technical-test.txt
+            qa-*.log
+            qa-*.status
             projects/${{ env.PROJECT_ID }}/qa/*.json
             projects/${{ env.PROJECT_ID }}/assets/audio/*.json
             projects/${{ env.PROJECT_ID }}/assets/evidence/*.json
