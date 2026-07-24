@@ -5,7 +5,7 @@ name: ORVYQ Full Music Acquisition
 # distinct licensed track per cue, not a single shared bed -- via
 # scripts/orvyq_fetch_full_music.mjs. This is production-preparation work,
 # not render work: it never renders video, never touches the edit plan, and
-# is entirely separate from orvyq-proof.yml / orvyq-full-render.yml, which
+# is entirely separate from orvyq-review.yml / orvyq-final-encode.yml, which
 # never fetch music from a third party at render time and instead resolve
 # tracks this workflow has already vendored (scripts/orvyq_music_resolve.mjs).
 # Manual dispatch only -- it never runs automatically.
@@ -20,6 +20,7 @@ on:
   push:
     branches:
       - "claude/orvyq-assets-soundtrack-port-noz6bi"
+      - "claude/orvyq-canonical-candidate-parity-bl7w0u"
     paths:
       - ".github/workflows/orvyq-music-acquisition.yml"
   workflow_dispatch:

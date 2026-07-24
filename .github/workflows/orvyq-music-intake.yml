@@ -3,7 +3,7 @@ name: ORVYQ Music Intake
 # Reusable intake/vendoring workflow for adding a licensed music track to
 # music_library/registry.json. This is production-preparation work, not
 # render work -- it never runs automatically and is entirely separate from
-# orvyq-proof.yml / orvyq-full-render.yml, which never fetch music from a
+# orvyq-review.yml / orvyq-final-encode.yml, which never fetch music from a
 # third party at render time and instead resolve tracks this workflow has
 # already vendored (scripts/orvyq_music_resolve.mjs).
 #
@@ -34,6 +34,7 @@ on:
   push:
     branches:
       - "claude/orvyq-rebuild-canonical-udc3rx"
+      - "claude/orvyq-canonical-candidate-parity-bl7w0u"
     paths:
       - ".github/workflows/orvyq-music-intake.yml"
   workflow_dispatch:

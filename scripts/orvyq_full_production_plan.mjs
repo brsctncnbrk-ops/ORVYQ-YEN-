@@ -16,140 +16,335 @@
 // Contextual footage IS referenced here: FOOTAGE_ASSIGNMENTS assigns real,
 // licensed clips (materialized via scripts/orvyq_materialize_footage.mjs
 // from projects/*/migration/external_assets.json, the same immutable source
-// commit the opening motion hook already uses) to specific claim/occurrence
-// pairs, and FULL_FOOTAGE_POOL backs an automatic backfill pass that breaks
-// up long uninterrupted evidence/graphic runs with additional contextual
-// footage once the hand-assigned occurrences are used up (see the run-length-
-// breaking pass below). Every other claim beat is rendered as asset_type
-// "evidence" using a NATIVE_KINDS kind (concept_map, comparison,
-// evidence_chain, boundary, source_timeline, source_article) -- derived from
-// that claim's own visual_treatment.{primary,secondary,metaphor} fields,
-// which are real editorial content already present in the resolved evidence
-// map, not invented here. Each section opens with a short graphic title
-// card. This produces a schema-valid, gap-free, zero-placeholder full shot
-// list with real contextual footage across the whole film, not just an
+// commit the opening motion hook already uses) to specific (claim_id,
+// sliceIndex) pairs -- any slice of any claim's own coverage window is
+// directly addressable, not restricted to a fixed positional pattern (see
+// sliceClaimWindow/FOOTAGE_ASSIGNMENTS below). There is no automatic
+// backfill: a long uninterrupted evidence/graphic run or an editorial pause
+// that doesn't land on footage fails the build with a specific report
+// (below) rather than being silently patched from FULL_FOOTAGE_POOL, which
+// is documentation of the licensed catalog only. Every other claim beat is
+// rendered as asset_type "evidence" using a NATIVE_KINDS kind (concept_map,
+// comparison, evidence_chain, boundary, source_timeline, source_article) --
+// derived from that claim's own visual_treatment.{primary,secondary,metaphor}
+// fields, which are real editorial content already present in the resolved
+// evidence map, not invented here. Each section opens with a short graphic
+// title card. This produces a schema-valid, gap-free, zero-placeholder full
+// shot list with real contextual footage across the whole film, not just an
 // opening hook.
 import path from "node:path";
 import { projectDir, readJson, readJsonSafe, writeJsonAtomic, parseArgs, printJson } from "./lib/fs-utils.mjs";
 import { loadResolvedEvidenceMap } from "./lib/orvyq-evidence.mjs";
 import { resolveFullFilmPauses, tokenizeWords, tokenizeAnchorText, findAnchorMatch } from "./lib/orvyq-pause-resolver.mjs";
 import { buildEvidenceContent } from "./lib/orvyq-evidence-authoring.mjs";
+import { FPS, END_CARD_SECONDS } from "./lib/orvyq-timeline.mjs";
 
 const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
 const TARGET_SHOT_SECONDS = 6;
 const TITLE_CARD_SECONDS = 2.5;
 const DEFAULT_FONT_PX = 32;
-// Must match scripts/orvyq_edit_plan.mjs's own FPS constant -- used below
-// only to replicate buildCanonicalEditPlan's cumulative frame rounding when
-// quantizing footage trims, not to compute any rendered frame number here.
-const FPS = 30;
-// A short closing hold after the last narrated word and its final editorial
-// pause: a terminal title card, not a claim beat, so it is added on top of
-// the narration-derived timeline rather than carved out of it. Mirrors the
-// dedicated end_card concept in the ORVYQ reference renderer
-// (brsctncnbrk-ops/ORVYQ, direction/production_plan.json's "end" shot).
-export const END_CARD_SECONDS = 4;
+export { END_CARD_SECONDS };
 
 // Contextual footage placement -- see docs/full-production-guide.md and the
 // commit that introduced this table for the editorial rationale. Every
-// entry replaces one specific, already-least-evidentially-loaded "metaphor"
-// -role slice (sliceClaimWindow's own third rotation slot, today rendered as
-// a generic "boundary" stated-limitation card) of a real claim's own
-// coverage window with one of the 15 licensed contextual footage clips
+// entry replaces ONE SPECIFIC, hand-chosen slice of a real claim's own
+// coverage window with one of the licensed contextual footage clips
 // materialized by scripts/orvyq_materialize_footage.mjs, trimmed to that
-// slice's exact real duration. No primary/context evidence slice is ever
-// touched -- only "metaphor" slices are eligible, and most are still left as
-// graphic cards (only 21 of the real 31 metaphor-role slices are reassigned
-// here). `occurrence` counts a claim's own metaphor-role slices in order
-// (0-based) since one long claim can produce several. `trimInRatio` picks
-// where in the source clip's real duration this use starts; a clip used
-// twice uses two different windows of it, never the same footage twice in
-// the same moment. Every asset referenced here was inspected frame-by-frame
-// (see the commit message) before assignment, not chosen by filename order.
-const FOOTAGE_ASSIGNMENTS = {
-  CLM_003_GOVERNANCE_LAG: { 0: { asset: "assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4", trimInRatio: 0.12, motion: "drift_right" } },
-  CLM_004_AGENTIC_MISALIGNMENT_TEST: { 0: { asset: "assets/footage/scene_022_740741da33e14d6a45468490.mp4", trimInRatio: 0.1, motion: "push" } },
-  CLM_005_BLACKMAIL_SCENARIO: { 0: { asset: "assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4", trimInRatio: 0.12, motion: "hold" } },
-  CLM_006_NO_REAL_WORLD_INCIDENT: { 0: { asset: "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4", trimInRatio: 0.1, motion: "hold" } },
+// slice's exact real duration.
+//
+// Keyed by (claim_id, sliceIndex) -- sliceIndex is the claim's own slice's
+// raw 0-based position in the array sliceClaimWindow() returns for that
+// claim, exactly as buildFullProductionPlan enumerates it. This used to be
+// gated by a fixed "every third slice" positional rule
+// (`footageCandidateSlot: i % 3 === 2`) -- footage could only ever land on
+// slice 2, 5, 8, ...  regardless of which slice actually needed it. That
+// mechanism has been removed: any slice of any claim is now directly
+// addressable here, so a coverage gap (an uninterrupted-evidence run over
+// the cap, or a pause that doesn't land on footage) is closed by adding a
+// real assignment at the slice that actually needs one, not by hoping a
+// human-authored occurrence happens to fall on a multiple-of-three slot.
+// The table's pre-existing entries were remapped from their old
+// occurrence-among-candidates numbering to their real, unchanged slice
+// index (old occurrence k landed on slice 3k+2 under the removed rule) --
+// every one of them still lands on the exact same real footage, at the
+// exact same real narration moment, as before.
+//
+// `trimInRatio` picks where in the source clip's real duration this use
+// starts; a clip used twice uses two different windows of it, never the
+// same footage twice in the same moment. Every asset referenced here was
+// inspected frame-by-frame (see the commit message) before assignment, not
+// chosen by filename order. Every entry carries an explicit `role` (never
+// auto-rotated) and, for any asset that appears more than once across this
+// table (and/or HOOK_PRELOADED_USAGE below), an explicit `reuse_reason` on
+// every occurrence sharing that asset -- a second use of the same stock
+// file is only allowed as a deliberate, named callback, never an
+// unexplained repeat (verified by scripts/orvyq_duplicate_footage_audit.mjs).
+export const FOOTAGE_ASSIGNMENTS = {
+  CLM_003_GOVERNANCE_LAG: {
+    // Spans slices 0-2 with one continuous pass through the opening
+    // motion-hook clip (task follow-up section 17): CLM_001+CLM_002's own
+    // combined evidence run (14.9s) is already close to the 15s cap, so
+    // CLM_003's own opening slice must be footage too, not just its third
+    // slice, to avoid a real uninterrupted-evidence violation spanning
+    // three claims. One continuous trim (not three separate uses) keeps
+    // this within the asset's own max_uses_per_source budget.
+    0: { asset: "assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4", trimInRatio: 0.03, span: 3, motion: "drift_right", role: "context", reuse_reason: "Opening motion-hook clip returns once, later, under the governance-lag claim it originally introduced -- a direct visual callback to the film's own opening, not a new unrelated selection." }
+  },
+  CLM_004_AGENTIC_MISALIGNMENT_TEST: {
+    // First amber-labeled "controlled evaluation" testing-room footage
+    // (direction/direction_plan.md's own scene_004 description) -- this
+    // claim IS that introduction, and this slice is also where the claim's
+    // own editorial pause lands, so it must be footage regardless.
+    // Real materialized duration of scene_004 (10.09s) is not long enough
+    // to host both this slice (6.635s) and the editorial pause that lands
+    // inside it (4s continuation of the same asset, 10.635s total needed)
+    // -- confirmed live via CI's real footage_duration_report.json, not a
+    // guess. scene_010 (abstract connective beat, no real-world entity
+    // implied per direction/direction_plan.md) has ample real duration for
+    // both.
+    0: { asset: "assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4", trimInRatio: 0, motion: "push", role: "context" },
+    2: { asset: "assets/footage/scene_022_740741da33e14d6a45468490.mp4", trimInRatio: 0.1, motion: "push", role: "context", reuse_reason: "Reused once more, at a different trim window, in the film's closing synthesis section (CLM_020), which explicitly recaps earlier evidence rather than introducing new claims." }
+  },
+  CLM_005_BLACKMAIL_SCENARIO: {
+    // direction_plan.md's own scene_005 description is this exact claim:
+    // "Depict the reported blackmail-style test case" / "the film's single
+    // most sensitive reconstruction."
+    0: { asset: "assets/footage/scene_005_e98a421f0d9c432e4d2036fb.mp4", trimInRatio: 0.1, motion: "hold", role: "context" }
+    // Slice 2 is now a graphic recap card (see GRAPHIC_BREAK_ASSIGNMENTS
+    // below) instead of a second use of scene_012 -- recovers footage
+    // budget under scripts/orvyq_semantic_visual_audit.mjs's contextual
+    // body footage ceiling; this slice's own evidence run is still broken
+    // (a graphic resets the run counter identically to footage).
+  },
+  CLM_006_NO_REAL_WORLD_INCIDENT: {
+    // Slice 2 is now a graphic recap card (see GRAPHIC_BREAK_ASSIGNMENTS
+    // below) instead of a footage break.
+  },
   CLM_007_MARKET_PRESSURE: {
-    // occurrence 0's real narration window contains the "But a fire drill
-    // still tells you something about the building." editorial pause --
-    // handled as a contiguous continuation shot (see the pause-insertion
-    // pass below), not a second reference to the clip.
-    0: { asset: "assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4", trimInRatio: 0.12, motion: "push" },
-    1: { asset: "assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4", trimInRatio: 0.55, motion: "pull" }
+    // slice 2's real narration window contains the "But a fire drill still
+    // tells you something about the building." editorial pause -- handled
+    // as a contiguous continuation shot (see the pause-insertion pass
+    // below), not a second reference to the clip.
+    2: { asset: "assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4", trimInRatio: 0.12, motion: "push", role: "context" },
+    5: { asset: "assets/footage/scene_009_8366baffbbfa53ec1a18715e.mp4", trimInRatio: 0.55, motion: "pull", role: "context", reuse_reason: "Same clip, a different trim window, within this claim's own coverage -- not a repeat of the same visual moment shown once already." }
   },
   CLM_009_CYBER_EXTORTION: {
-    0: { asset: "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4", trimInRatio: 0.15, motion: "hold" },
-    // occurrence 1's real narration window contains the "Slowing down alone
-    // doesn't remove the risk..." editorial pause -- a contiguous
-    // continuation shot (scene_014 has ample room for slice+pause).
-    // Without a break here, CLM_009's own claim runs uninterrupted for
-    // 47.5s -- well past the 15s cap -- so this occurrence is not left on
-    // its default treatment.
-    1: { asset: "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4", trimInRatio: 0.3, motion: "hold" },
-    2: { asset: "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4", trimInRatio: 0.35, motion: "drift_left" }
+    // Spans slices 1-2 with one continuous pass (task follow-up section
+    // 17): this claim's own slice width (7.7s) means any two adjacent
+    // non-footage slices already exceed the 15s cap on their own, so a
+    // single third-of-the-way footage slice is not enough by itself.
+    1: { asset: "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4", trimInRatio: 0.1, span: 2, motion: "hold", role: "context", reuse_reason: "Returns from the opening motion hook under the cyber-extortion claim, at a distinct trim window." },
+    // Slice 5 (the last slice of this span) is where the "Land the
+    // competitive incentive" editorial pause lands -- a real editorial
+    // pause continues its enclosing slice's own asset from wherever that
+    // slice's own trim ends, so this span's real source duration must cover
+    // BOTH slices 4-5 AND the pause's own held duration, not just the two
+    // slices alone (task follow-up section 17/19 -- confirmed live via a
+    // real footage-trim-overrun CI failure at a different, tighter-margin
+    // clip; scene_026's real duration comfortably covers this one).
+    4: { asset: "assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4", trimInRatio: 0.02, span: 2, motion: "hold", role: "context" },
+    // Slice 7 is where the "Pivot from strategic pressure to documented
+    // misuse" editorial pause lands -- same real-duration-must-cover-the-
+    // pause-too requirement as slice 5 above; scene_006 (this claim's
+    // original choice) was NOT long enough for slice 7 + Its own pause once
+    // materialized for real (confirmed via CI), so this uses scene_014
+    // instead (freed up here since it now only carries CLM_018's own
+    // separate use, still within its 2-use budget).
+    7: { asset: "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4", trimInRatio: 0.1, motion: "hold", role: "context" },
+    8: { asset: "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4", trimInRatio: 0.35, motion: "drift_left", role: "context", reuse_reason: "Returns from the opening motion hook under this claim's third footage slice, at a distinct trim window." }
+  },
+  CLM_010_CYBER_ESPIONAGE: {
+    // Only slice 0 (of this claim's own 2 slices) becomes footage. Real CI
+    // coverage-gap detection confirmed the run needing a break sits between
+    // CLM_009 and CLM_010 specifically ("Uninterrupted evidence run of
+    // 15.3s (> 15s cap) from CLM_009_CYBER_EXTORTION to
+    // CLM_010_CYBER_ESPIONAGE" -- putting the footage break on slice 1
+    // instead left slice 0's own evidence shot chaining straight onto
+    // CLM_009's tail run). Slice 1 is deliberately left at its default
+    // (this claim's own visual_treatment.primary, "campaign_phase_diagram"
+    // -> real source-backed "evidence_chain") -- this is a critical
+    // (importance 5), source-attributed claim (SRC_ANTHROPIC_ESPIONAGE_2025),
+    // and scripts/orvyq_evidence_audit.mjs hard-requires at least one
+    // physical, source-backed evidence shot per critical claim; making
+    // BOTH slices footage (the original span:2 pass) left this claim with
+    // zero evidence shots and failed that audit in real CI (confirmed:
+    // "CLM_010_CYBER_ESPIONAGE has no physical, source-backed visual
+    // evidence").
+    0: { asset: "assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4", trimInRatio: 0.05, motion: "hold", role: "context" }
   },
   CLM_011_BIO_SAFEGUARD_THRESHOLD: {
-    0: { asset: "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4", trimInRatio: 0.55, motion: "hold" },
-    1: { asset: "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4", trimInRatio: 0.5, motion: "hold" }
+    // Slice 0 breaks the run continuing in from CLM_010's own required
+    // evidence slice (real CI coverage-gap detection: "Uninterrupted
+    // evidence run of 21.8s (> 15s cap) from CLM_010_CYBER_ESPIONAGE to
+    // CLM_011_BIO_SAFEGUARD_THRESHOLD" -- CLM_010 itself cannot host this
+    // break since it must keep its own one required evidence slot, see its
+    // own comment above). scene_011 was tried first but its own real usage
+    // (hook_preloaded_uses:1 + CLM_009 slice 8) was ALREADY at the 2-use
+    // cap -- confirmed live in CI ("scene_011 ... exceeds the 2-use
+    // limit"). scene_006 is this claim's own already-established asset
+    // (slice 7, below) with exactly one prior use, so a second trim window
+    // here stays within budget and keeps the same "designed test vs real
+    // incident" framing at both ends of the claim.
+    0: { asset: "assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4", trimInRatio: 0.05, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window within this same claim." },
+    2: { asset: "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4", trimInRatio: 0.55, motion: "hold", role: "context", reuse_reason: "A later trim window of the same clip used for CLM_006; both claims belong to the same controlled-evaluation evidence arc (SEC_02)." },
+    // Spans slices 5-6 with one continuous pass so the claim's own final
+    // two slices (otherwise both evidence) don't chain into CLM_021's
+    // opening slices as one long uninterrupted run.
+    5: { asset: "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4", trimInRatio: 0.05, span: 2, motion: "hold", role: "context", reuse_reason: "Second use at a later trim window; both this claim and CLM_021 (its later reuse) sit in the same evidence arc." }
+    // This claim's own final slice, immediately before CLM_021 begins, is
+    // now a graphic recap card instead of a second footage use (see
+    // GRAPHIC_BREAK_ASSIGNMENTS below) -- still breaks the run into
+    // CLM_021's opening slices exactly as the footage version did.
   },
   CLM_021_INFORMATION_INTEGRITY: {
-    0: { asset: "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4", trimInRatio: 0.12, motion: "hold" },
-    1: { asset: "assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4", trimInRatio: 0.6, motion: "hold" }
+    // Slices 2 and 5 are now graphic recap cards instead of a second
+    // footage use of scene_015/scene_027 (see GRAPHIC_BREAK_ASSIGNMENTS
+    // below) -- still break their respective evidence runs.
   },
-  CLM_012_JOB_FORECAST_DIVERGENCE: { 0: { asset: "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4", trimInRatio: 0.12, motion: "hold" } },
-  CLM_013_JOB_EXPOSURE: { 0: { asset: "assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4", trimInRatio: 0.12, motion: "hold" } },
+  CLM_012_JOB_FORECAST_DIVERGENCE: {
+    // This 2-slice claim's own footage assignment used to be keyed to an
+    // occurrence number (the old i%3==2 rule's "occurrence 0") that
+    // resolved to slice index 2 -- an index this 2-slice claim (indices 0
+    // and 1 only) never actually has, so the assignment silently never
+    // fired. Corrected to its real, existing slice index (task follow-up
+    // section 17); same asset, same creative intent.
+    1: { asset: "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4", trimInRatio: 0.12, motion: "hold", role: "context", reuse_reason: "Second use lands on the film's own final editorial pause (CLM_020 slice 13), immediately before the last line -- a deliberate visual return to a job-market image as the film closes, not an incidental repeat." }
+  },
+  CLM_013_JOB_EXPOSURE: {
+    // Spans slices 2-3 (this claim's last two slices) so its own tail
+    // doesn't chain into CLM_014 (which has no footage of its own) as one
+    // long uninterrupted run.
+    2: { asset: "assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4", trimInRatio: 0.12, span: 2, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window across two related governance/labor claims (this one and CLM_015)." }
+  },
   CLM_015_EU_SYSTEMIC_RISK_THRESHOLD: {
-    // occurrence 0's real narration window contains the "It's about who
-    // gets to decide." editorial pause -- a contiguous continuation shot,
-    // same as CLM_007 occurrence 0 above.
-    0: { asset: "assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4", trimInRatio: 0.08, motion: "hold" },
-    1: { asset: "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4", trimInRatio: 0.12, motion: "hold" },
-    2: { asset: "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4", trimInRatio: 0.12, motion: "drift_left" }
+    // slice 2's real narration window contains the "It's about who gets to
+    // decide." editorial pause -- a contiguous continuation shot, same as
+    // CLM_007 slice 2 above.
+    2: { asset: "assets/footage/scene_020_820a251a5b10ad8f5a63266f.mp4", trimInRatio: 0.08, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window across two related governance/labor claims (this one and CLM_013)." },
+    5: { asset: "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4", trimInRatio: 0.12, motion: "hold", role: "context", reuse_reason: "Reused once more in the closing synthesis section (CLM_020), which explicitly recaps earlier evidence rather than introducing new claims." },
+    8: { asset: "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4", trimInRatio: 0.12, motion: "drift_left", role: "context", reuse_reason: "Reused once more in the closing synthesis section (CLM_020), which explicitly recaps earlier evidence rather than introducing new claims." }
   },
-  CLM_016_COMPLIANCE_INCUMBENCY: { 0: { asset: "assets/footage/scene_018_f681c3057e36f147005d2652.mp4", trimInRatio: 0.12, motion: "hold" } },
+  CLM_016_COMPLIANCE_INCUMBENCY: {
+    // Slice 2 is now a graphic recap card instead of a footage break (see
+    // GRAPHIC_BREAK_ASSIGNMENTS below).
+  },
   CLM_017_OPEN_CLOSED_TRADEOFF: {
-    0: { asset: "assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4", trimInRatio: 0.55, motion: "pull" },
-    1: { asset: "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4", trimInRatio: 0.12, motion: "hold" }
+    // Slices 2 and 5 are now graphic recap cards instead of footage breaks
+    // (see GRAPHIC_BREAK_ASSIGNMENTS below).
   },
   CLM_018_INDEPENDENT_EVALUATIONS: {
-    0: { asset: "assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4", trimInRatio: 0.12, motion: "hold" },
+    // Spans slices 1-2 with one continuous pass through the auditors
+    // clip -- see CLM_009's own note on why a single third-of-the-way slice
+    // is not enough once a claim's own slice width sits close to half the
+    // evidence-run cap.
+    1: { asset: "assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4", trimInRatio: 0.12, span: 2, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window; both this claim and CLM_021 (its other reuse) belong to the same evaluations/safeguards section." },
+    // Independent-researchers/open-repo footage -- direction_plan.md's own
+    // scene_023 description -- fits "independent evaluations" directly.
+    4: { asset: "assets/footage/scene_023_dbe758e1473aee29a155377a.mp4", trimInRatio: 0.1, motion: "cut", role: "context" },
     // scene_024's monitoring-room footage (its second, brief use beyond the
     // shared motion hook) fits "a second set of eyes" directly.
-    1: { asset: "assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4", trimInRatio: 0.06, motion: "hold" },
-    2: { asset: "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4", trimInRatio: 0.12, motion: "drift_right" },
-    3: { asset: "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4", trimInRatio: 0.55, motion: "hold" }
+    5: { asset: "assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4", trimInRatio: 0.06, motion: "hold", role: "context", reuse_reason: "Second, brief use of the shared monitoring-room motion-hook footage -- fits 'a second set of eyes' directly." },
+    7: { asset: "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4", trimInRatio: 0.05, span: 2, motion: "drift_right", role: "context", reuse_reason: "Second use at a different trim window; both this claim and CLM_009 (its other reuse) sit in the film's evidence-and-safeguards arc." },
+    // Slice 9 stands alone (7.6s, under the cap by itself, between slice
+    // 8's footage and slice 10's footage below) -- no assignment needed.
+    // Slice 10 alone is where this claim's own editorial pause ("Hold the
+    // open-versus-closed dilemma...") lands: a pause becomes its own
+    // contiguous continuation shot on whatever asset its enclosing slice
+    // used, so that slice's real source duration must cover BOTH the slice
+    // itself AND the pause's own held duration -- confirmed via a real
+    // footage-trim-overrun CI failure at a different clip (task follow-up
+    // section 17/19); a single (not spanning) slice here keeps the real
+    // duration this needs modest enough for scene_003 to comfortably cover.
+    10: { asset: "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4", trimInRatio: 0.05, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window across two claims in the same governance arc (this one and CLM_017)." },
+    // A separate, non-contiguous second use of the independent-researchers
+    // clip already introduced at slice 4 above -- this slice sits right
+    // after the slice-9/10 span ends on the claim's own pause, so it cannot
+    // itself continue that span's trim.
+    11: { asset: "assets/footage/scene_023_dbe758e1473aee29a155377a.mp4", trimInRatio: 0.6, motion: "cut", role: "context", reuse_reason: "Second use at a different trim window, within this claim's own coverage -- not a repeat of the same visual moment shown once already." }
+  },
+  CLM_019_INCIDENT_REPORTING: {
+    // This 2-slice claim's tail slice still needs a break -- otherwise
+    // CLM_018's own final (already-covered) slice plus this claim's
+    // evidence chains into one long uninterrupted run -- now a graphic
+    // recap card instead of a second footage use (see
+    // GRAPHIC_BREAK_ASSIGNMENTS below); a graphic resets the run counter
+    // identically to footage.
   },
   CLM_020_SYSTEMIC_INCENTIVE_FINAL: {
-    0: { asset: "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4", trimInRatio: 0.55, motion: "hold" },
-    1: { asset: "assets/footage/scene_018_f681c3057e36f147005d2652.mp4", trimInRatio: 0.55, motion: "hold" },
-    2: { asset: "assets/footage/scene_022_740741da33e14d6a45468490.mp4", trimInRatio: 0.55, motion: "push" },
-    3: { asset: "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4", trimInRatio: 0.55, motion: "hold" },
-    // occurrence 4 is left on its default treatment: scene_014's second use
-    // is needed to break up CLM_009's own 47.5s uninterrupted run instead
-    // (see above) -- occurrences 0/1/2/3/5 already keep this claim's own
-    // runs well under the 15s cap.
-    // occurrence 5's real narration window contains the film's own final
-    // editorial pause ("That work hasn't been done yet.") right up against
-    // the last word of narration -- a contiguous continuation shot.
-    5: { asset: "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4", trimInRatio: 0.45, motion: "hold" }
+    // Every footage entry below spans 2-4 contiguous slices (one continuous
+    // pass per clip, task follow-up section 17) rather than a single
+    // isolated slice: this is the film's longest single claim (~134s,
+    // 17 slices at this claim's own slice width), and a footage slice only
+    // once every three slices (the old i%3==2 rule) always left two
+    // adjacent evidence slices in between -- which, at this claim's own
+    // slice width, always exceeds the 15s uninterrupted-evidence cap on its
+    // own. Spanning multiple contiguous slices per real clip (each still
+    // one continuous, single use of that asset) closes every one of those
+    // gaps without needing additional distinct licensed clips beyond the
+    // five this claim's own closing-synthesis recap already uses.
+    1: { asset: "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4", trimInRatio: 0.05, span: 2, motion: "hold", role: "context", reuse_reason: "This is the film's closing synthesis claim (see evidence_requirements: 'a recap ... rather than a new factual claim'), so all footage slices here are deliberate visual recaps of earlier evidence, not new selections." },
+    4: { asset: "assets/footage/scene_018_f681c3057e36f147005d2652.mp4", trimInRatio: 0.02, span: 2, motion: "hold", role: "context", reuse_reason: "Closing synthesis recap of CLM_016's footage -- see slice 1's note." },
+    7: { asset: "assets/footage/scene_022_740741da33e14d6a45468490.mp4", trimInRatio: 0.02, span: 3, motion: "push", role: "context", reuse_reason: "Closing synthesis recap of CLM_004's footage -- see slice 1's note." },
+    11: { asset: "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4", trimInRatio: 0.45, motion: "hold", role: "context", reuse_reason: "Closing synthesis recap of CLM_015's footage -- see slice 1's note." },
+    // Slice 12 stands alone (under the cap by itself, between slice 11's
+    // footage and slice 13's footage below) -- no assignment needed.
+    // Slice 13 alone closes the run before the final span; a fresh,
+    // ample-duration clip, not extended into 14 (kept separate from the
+    // pause-hosting span below -- see its own note on why real duration
+    // must cover the pause too, not just the covered slices).
+    13: { asset: "assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4", trimInRatio: 0.3, motion: "hold", role: "context", reuse_reason: "Second use, different trim window; another brief abstract connective beat within the closing synthesis, same as its first use earlier in the film." },
+    // Slices 15-16: slice 16 is where the film's own final TWO editorial
+    // pauses land, back to back, right up against the last word of
+    // narration ("That work hasn't been done yet.") -- both continue this
+    // span's own asset from wherever its trim ends, so the real source
+    // duration needed here is this 2-slice span PLUS both pause durations,
+    // not just the two slices alone (confirmed via a real footage-trim-
+    // overrun CI failure at a different, tighter-margin clip; this was
+    // previously a 4-slice span starting at 13, which real materialized
+    // duration could not cover once the trailing pauses were accounted
+    // for -- slice 14 is left alone, under the cap by itself between 13
+    // and 15's footage).
+    15: { asset: "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4", trimInRatio: 0.02, span: 2, motion: "hold", role: "context", reuse_reason: "Closing synthesis recap of CLM_012's footage, deliberately timed to land on the film's final editorial pauses -- see slice 1's note." }
   }
 };
 
-// The full set of licensed footage clips materialized by
+// A real evidence-run interruption does not have to be footage: a plain,
+// non-structural graphic recap card (asset_type "graphic", same mechanism
+// scripts/orvyq_tension_card_audit.mjs already governs for emphasis beats)
+// resets scripts/orvyq_semantic_visual_audit.mjs's own uninterrupted-
+// evidence-run counter exactly the same way a footage shot does. Closing
+// every one of the 28 real coverage gaps above with FOOTAGE_ASSIGNMENTS
+// alone pushed contextual_body_footage_fraction to 50.1%, over its own 45%
+// ceiling (confirmed live in CI) -- recalibrated against what this fraction
+// measured before that gap-closing pass added so much additional footage.
+// Each entry here converts exactly one non-pause-bearing slice (never one
+// that also hosts an editorial pause -- those must stay footage so the
+// pause can continue that slice's own asset) from its default evidence
+// kind to a graphic recap card instead, recovering footage-fraction budget
+// without reopening any of the run-length gaps FOOTAGE_ASSIGNMENTS closes.
+export const GRAPHIC_BREAK_ASSIGNMENTS = {
+  CLM_005_BLACKMAIL_SCENARIO: { 2: { title: "A RECONSTRUCTION, NOT A RECORDING", subtitle: "Dramatized from the reported test case." } },
+  CLM_006_NO_REAL_WORLD_INCIDENT: { 2: { title: "DESIGNED TEST, NOT A REAL INCIDENT", subtitle: "No real-world harm was reported for this case." } },
+  CLM_011_BIO_SAFEGUARD_THRESHOLD: { 7: { title: "SAME THRESHOLD, DIFFERENT DOMAIN", subtitle: "The bio-safeguard question recurs across every risk category." } },
+  CLM_016_COMPLIANCE_INCUMBENCY: { 2: { title: "COMPLIANCE COST, COMPETITIVE MOAT", subtitle: "The same rules can entrench whoever can already afford them." } },
+  CLM_017_OPEN_CLOSED_TRADEOFF: { 2: { title: "OPEN VS. CLOSED", subtitle: "Neither side of this trade-off is cost-free." }, 5: { title: "NO CONSENSUS ON THE TRADE-OFF", subtitle: "Researchers remain genuinely split." } },
+  CLM_019_INCIDENT_REPORTING: { 1: { title: "REPORTING GAPS, NOT JUST INCIDENT GAPS", subtitle: "What isn't disclosed can't be counted." } },
+  CLM_021_INFORMATION_INTEGRITY: { 2: { title: "AMBIGUITY BY DESIGN", subtitle: "Synthetic and real information increasingly blend together." }, 5: { title: "THE SAME ARCHITECTURE, REPEATED", subtitle: "Independent evaluation returns as a theme, not a one-off." } }
+};
+
+// The full catalog of licensed footage clips materialized by
 // scripts/orvyq_materialize_footage.mjs and inspected frame-by-frame before
-// use (see the commit message): the 15 clips FOOTAGE_ASSIGNMENTS draws from,
-// plus scene_011/scene_024 (already used once each by the shared motion
-// hook) and 6 additional Pexels/Pixabay clips from the same immutable,
-// hash-verified source commit, pulled in specifically because 15 clips at a
-// 2-use cap could not supply enough breaks to keep every uninterrupted
-// evidence run under maximum_uninterrupted_evidence_seconds across an
-// 850+-second film without either starving the contextual-footage-fraction
-// floor or blowing the full-screen-graphic-fraction ceiling. Used by the
-// automatic run-length pass below as a backfill after FOOTAGE_ASSIGNMENTS'
-// hand-placed, content-matched slots.
-const FULL_FOOTAGE_POOL = [
+// any use (see the commit message). This is documentation of what is
+// licensed and available, used by scripts/orvyq_duplicate_footage_audit.mjs
+// and the missing-coverage report below to know which additional clips a
+// human editor could still hand-assign -- it is NOT consulted by this script
+// to pick footage automatically. Every clip that actually appears in the
+// candidate must come from an explicit FOOTAGE_ASSIGNMENTS entry; a claim
+// window with no such entry renders as ordinary evidence, and an
+// uninterrupted-evidence run that exceeds the cap with no assignment inside
+// it fails the build with a report, rather than being silently patched from
+// this list.
+export const FULL_FOOTAGE_POOL = [
   "assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4",
   "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4",
   "assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4",
@@ -179,12 +374,70 @@ const FULL_FOOTAGE_POOL = [
 // Uses already spent by the shared motion hook (direction/motion_hook.json),
 // which counts against the same max_uses_per_source budget (see
 // scripts/orvyq_edit_plan.mjs's buildFullPlan).
-const HOOK_PRELOADED_USAGE = {
+export const HOOK_PRELOADED_USAGE = {
   "assets/footage/scene_001_52c2ebe35b131555e20a5ab5.mp4": 1,
   "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4": 1,
   "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4": 1,
   "assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4": 1
 };
+
+// Expands one claim's FOOTAGE_ASSIGNMENTS entries into a concrete
+// sliceIndex -> {asset, trimInSec, trimOutSec, motion, role, reuseReason}
+// map. Most entries cover exactly one slice (the default, `span: 1`,
+// matching every entry's historical behavior exactly: trimInRatio picks
+// where in the source clip this slice's content starts, clamped so its
+// trim never overruns the clip's own real duration). An entry may instead
+// declare `span: N > 1` to cover N contiguous slices with ONE real,
+// continuously-trimmed pass through the same source clip -- the second and
+// later slices continue exactly where the previous one's trim left off, so
+// scripts/orvyq_duplicate_footage_audit.mjs's own contiguity rule (same
+// asset, `trim_out_sec === trim_in_sec` within tolerance) recognizes the
+// whole span as ONE use, not N separate ones. This is how a single
+// licensed clip can break up a long claim's evidence run across several
+// consecutive slices without spending several of that asset's limited
+// max_uses_per_source budget -- the clip must actually be long enough to
+// supply that much continuous real footage; expandFootageAssignments
+// throws loudly, rather than silently clamping, if it is not.
+export function expandFootageAssignments(claimId, sliceDurations, assetDurationSeconds, assignmentsTable = FOOTAGE_ASSIGNMENTS) {
+  const declared = assignmentsTable[claimId];
+  const expanded = new Map();
+  if (!declared) return expanded;
+  for (const [startIndexRaw, assignment] of Object.entries(declared)) {
+    const startIndex = Number(startIndexRaw);
+    const span = Math.max(1, Math.round(Number(assignment.span) || 1));
+    const assetDuration = assetDurationSeconds.get(assignment.asset);
+    if (!Number.isFinite(assetDuration)) throw new Error(`${claimId}: no known real duration for footage asset ${assignment.asset}`);
+
+    if (span === 1) {
+      const sliceIndex = startIndex;
+      const sliceDuration = sliceDurations[sliceIndex];
+      if (sliceDuration === undefined) throw new Error(`${claimId}: footage assignment at slice ${sliceIndex} does not exist (claim has ${sliceDurations.length} slices)`);
+      if (expanded.has(sliceIndex)) throw new Error(`${claimId}: slice ${sliceIndex} has more than one footage assignment covering it`);
+      const latestTrimIn = Math.max(0, assetDuration - sliceDuration - 0.3);
+      const trimIn = Math.round(Math.min(assignment.trimInRatio * assetDuration, latestTrimIn) * 1000) / 1000;
+      expanded.set(sliceIndex, { asset: assignment.asset, trimInSec: trimIn, trimOutSec: Math.round((trimIn + sliceDuration) * 1000) / 1000, motion: assignment.motion, role: assignment.role, reuseReason: assignment.reuse_reason || null });
+      continue;
+    }
+
+    let trimCursor = Math.round(assignment.trimInRatio * assetDuration * 1000) / 1000;
+    for (let offset = 0; offset < span; offset += 1) {
+      const sliceIndex = startIndex + offset;
+      const sliceDuration = sliceDurations[sliceIndex];
+      if (sliceDuration === undefined) throw new Error(`${claimId}: footage span starting at slice ${startIndex} (span ${span}) reaches slice ${sliceIndex}, which does not exist (claim has ${sliceDurations.length} slices)`);
+      if (expanded.has(sliceIndex)) throw new Error(`${claimId}: slice ${sliceIndex} has more than one footage assignment covering it`);
+      const trimIn = trimCursor;
+      const trimOut = Math.round((trimIn + sliceDuration) * 1000) / 1000;
+      if (trimOut > assetDuration + 0.001)
+        throw new Error(
+          `${claimId}: footage span starting at slice ${startIndex} (asset ${assignment.asset}, real duration ${assetDuration}s) overruns that real duration at slice ${sliceIndex} (would need ${trimOut}s) -- ` +
+            "shorten the span or pick a longer source clip"
+        );
+      expanded.set(sliceIndex, { asset: assignment.asset, trimInSec: trimIn, trimOutSec: trimOut, motion: assignment.motion, role: assignment.role, reuseReason: assignment.reuse_reason || null });
+      trimCursor = trimOut;
+    }
+  }
+  return expanded;
+}
 
 // Maps the editorial visual_treatment vocabulary already present in the
 // resolved evidence claims onto the renderer's NATIVE_KINDS enum
@@ -348,53 +601,37 @@ export function locateClaimWindow(tokens, claim, searchFromTokenIndex) {
   return { matchStart: tokens[best.firstIndex].start, matchEnd: tokens[best.lastIndex].end, nextSearchTokenIndex: best.lastIndex + 1 };
 }
 
-// A small alternating +/-delta applied to otherwise-equal slice durations so
-// consecutive slices are never exactly the same length --
-// scripts/orvyq_pacing_audit.mjs fails any 3 consecutive shots sharing one
-// duration to the millisecond, which perfectly equal division reliably
-// produces for any claim sliced into 3+ parts. Each +delta is paired with a
-// matching -delta (period 2), so an even number of interior slices nets to
-// exactly zero drift; only an odd count leaves a single delta's worth (0.3s)
-// for the final slice to absorb, which base sliceSeconds already has
-// headroom for (it is guaranteed <= maxShotSeconds by construction). Applied
-// only when there is real headroom to the cap, so a slice already at
-// maxShotSeconds is left unmodified rather than risking an overflow.
-const DURATION_VARIATION_DELTA = 0.3;
-
+// Splits one claim's real coverage window into the minimum number of
+// equal-length slices needed to keep every slice at or under
+// maxShotSeconds -- a technical necessity (the renderer/schema cap a single
+// shot's length), not a creative decision. There is deliberately no
+// artificial duration jitter here: two adjacent claims of different real
+// lengths already produce different slice durations, and a claim that
+// legitimately needs 3+ equal-length slices is allowed to have them --
+// scripts/orvyq_pacing_audit.mjs's "no 3 identical durations in a row" rule
+// is enforced honestly against whatever this produces, not gamed by nudging
+// durations a few frames in either direction.
+//
+// Every slice defaults to plain "evidence" (this claim's own primary
+// visual_treatment, via kindFor) -- there is no automatic evidence -> context
+// -> metaphor rotation and no automatic "boundary" tension card, and no
+// positional restriction on which slice may become footage: a slice becomes
+// footage/context only if buildFullProductionPlan finds a matching,
+// hand-authored FOOTAGE_ASSIGNMENTS[claim_id][sliceIndex] entry for its own
+// real 0-based index in the array this function returns -- any index is
+// eligible, not just a fixed "every third slice" position. Everything else
+// stays real, source-backed evidence.
 export function sliceClaimWindow(claim, coverStart, coverEnd, maxShotSeconds) {
   const duration = coverEnd - coverStart;
   const sliceCount = Math.max(1, Math.ceil(duration / Math.min(maxShotSeconds, TARGET_SHOT_SECONDS + 2)));
   const sliceSeconds = duration / sliceCount;
-  const kindRotation = [
-    kindFor(claim.visual_treatment?.primary),
-    kindFor(claim.visual_treatment?.secondary),
-    "boundary" // claim.visual_treatment.metaphor beats are rendered as a stated-limitation/tension card
-  ];
-  const roleRotation = ["evidence", "context", "metaphor"];
-  // Interior slices (every index except the last, whose end is pinned to
-  // coverEnd) are varied strictly in +delta/-delta PAIRS so the net drift
-  // handed to the final slice is always exactly zero -- a lone unpaired
-  // delta at the end of an odd-length interior run is left at the plain
-  // sliceSeconds instead. This pairing only holds if BOTH the +delta and
-  // -delta candidates fit under maxShotSeconds (and above a sane floor):
-  // clamping just the +delta side back to base while the -delta side still
-  // applies would break the zero-drift guarantee and could push the last
-  // slice over the cap. So variation is applied at all only when sliceSeconds
-  // itself has enough headroom for both directions; a claim already sliced
-  // close to the cap keeps plain equal division instead.
-  const interiorCount = sliceCount - 1;
-  const canVary = sliceSeconds + DURATION_VARIATION_DELTA <= maxShotSeconds && sliceSeconds - DURATION_VARIATION_DELTA > 1;
   const slices = [];
   let cursor = coverStart;
   for (let i = 0; i < sliceCount; i += 1) {
     const start = cursor;
-    let length = sliceSeconds;
-    if (canVary && i < interiorCount - (interiorCount % 2)) {
-      length = sliceSeconds + (i % 2 === 0 ? DURATION_VARIATION_DELTA : -DURATION_VARIATION_DELTA);
-    }
-    const end = i === sliceCount - 1 ? coverEnd : cursor + length;
+    const end = i === sliceCount - 1 ? coverEnd : cursor + sliceSeconds;
     cursor = end;
-    slices.push({ start, end, kind: kindRotation[i % kindRotation.length], role: roleRotation[i % roleRotation.length] });
+    slices.push({ start, end, kind: kindFor(claim.visual_treatment?.primary) });
   }
   return slices;
 }
@@ -558,31 +795,47 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
       window.coverStart += TITLE_CARD_SECONDS;
     }
     const slices = sliceClaimWindow(window.claim, window.coverStart, window.coverEnd, maxShotSeconds);
-    let metaphorOccurrence = 0;
+    const sliceDurations = slices.map((slice) => slice.end - slice.start);
+    const footageBySlice = expandFootageAssignments(window.claim.claim_id, sliceDurations, assetDurationSeconds);
+    const graphicBreaksForClaim = GRAPHIC_BREAK_ASSIGNMENTS[window.claim.claim_id];
     for (const [sliceIndex, slice] of slices.entries()) {
-      const footageAssignment = slice.role === "metaphor" ? FOOTAGE_ASSIGNMENTS[window.claim.claim_id]?.[metaphorOccurrence] : undefined;
-      if (slice.role === "metaphor") metaphorOccurrence += 1;
+      const graphicBreak = graphicBreaksForClaim?.[sliceIndex];
+      if (graphicBreak) {
+        rawShots.push({
+          kind: "graphic",
+          section_id: window.claim.section_id,
+          claim_id: window.claim.claim_id,
+          start: slice.start,
+          end: slice.end,
+          role: "graphic",
+          graphic: { type: "claim_recap_card", title: graphicBreak.title, subtitle: graphicBreak.subtitle ?? null },
+          dissolveIn: isFirstWindowOverall && sliceIndex === 0
+        });
+        if (deferTitleCard && sliceIndex === 0) rawShots.push(titleCardShot);
+        continue;
+      }
+      const footageAssignment = footageBySlice.get(sliceIndex);
       if (footageAssignment) {
-        const sliceDuration = slice.end - slice.start;
-        const assetDuration = assetDurationSeconds.get(footageAssignment.asset);
-        const latestTrimIn = Math.max(0, assetDuration - sliceDuration - 0.3);
-        const trimIn = Math.round(Math.min(footageAssignment.trimInRatio * assetDuration, latestTrimIn) * 1000) / 1000;
         rawShots.push({
           kind: "footage",
           section_id: window.claim.section_id,
           claim_id: window.claim.claim_id,
           start: slice.start,
           end: slice.end,
-          role: slice.role,
+          role: footageAssignment.role || "context",
+          reuseReason: footageAssignment.reuseReason,
           asset: footageAssignment.asset,
-          trimInSec: trimIn,
-          trimOutSec: Math.round((trimIn + sliceDuration) * 1000) / 1000,
+          trimInSec: footageAssignment.trimInSec,
+          trimOutSec: footageAssignment.trimOutSec,
           motion: footageAssignment.motion,
           dissolveIn: isFirstWindowOverall && sliceIndex === 0
         });
         if (deferTitleCard && sliceIndex === 0) rawShots.push(titleCardShot);
         continue;
       }
+      // No authored footage assignment for this slice: it stays ordinary,
+      // source-backed evidence -- never an automatic "metaphor" role or
+      // "boundary" graphic (see sliceClaimWindow's docstring above).
       rawShots.push({
         kind: "evidence",
         evidenceKind: slice.kind,
@@ -590,7 +843,7 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
         claim_id: window.claim.claim_id,
         start: slice.start,
         end: slice.end,
-        role: slice.role,
+        role: "evidence",
         // Carries through to the shot spec's transition_in so it dissolves
         // directly out of the motion hook rather than defaulting to "cut".
         dissolveIn: isFirstWindowOverall && sliceIndex === 0
@@ -619,6 +872,17 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
     // timestamp -- should never conceptually land inside one; skip them
     // defensively anyway rather than emit an invalid graphic-typed pause
     // shot with no graphic content if a numeric edge case ever occurs.
+    // Chained trim cursor: if MORE THAN ONE pause lands inside the same
+    // enclosing shot's window (both of the film's own final two pauses land
+    // back-to-back inside the same terminal shot), each subsequent pause
+    // must continue from the PREVIOUS pause's own trim_out, not restart
+    // from the enclosing shot's trim_out every time -- otherwise two
+    // pauses sharing one enclosing shot would both read the identical
+    // trim window and register as a second, non-contiguous use of that
+    // asset (confirmed via a real CI failure: "exceeds the 2-use limit"
+    // on an asset used only twice, once per claim, because its second
+    // claim's own two trailing pauses were not chained).
+    let pauseTrimCursor = raw.trimOutSec;
     while (
       raw.kind !== "graphic" &&
       pauseCursor < pauses.length &&
@@ -627,6 +891,8 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
     ) {
       const pause = pauses[pauseCursor];
       const pauseOutputStart = raw.end + insertedSeconds;
+      const pauseTrimIn = pauseTrimCursor;
+      const pauseTrimOut = Math.round((pauseTrimIn + pause.duration_seconds) * 1000) / 1000;
       finalShots.push({
         kind: raw.kind,
         evidenceKind: raw.evidenceKind,
@@ -635,19 +901,22 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
         role: raw.role,
         // A footage-kind pause hold becomes its own shot immediately
         // continuing the SAME clip from exactly where the enclosing shot's
-        // trim left off (rather than extending that shot's own duration,
-        // which could push a single shot over max_shot_seconds) -- the
-        // licensed footage keeps playing under the narration pause across
-        // two contiguous shots. buildCanonicalEditPlan's source-usage count
-        // (scripts/orvyq_edit_plan.mjs) treats two contiguous same-asset
-        // shots like this as one continuous use, not two, so this never
-        // silently doubles a clip's max_uses_per_source count for what is
-        // visually a single unbroken shot.
-        ...(raw.kind === "footage" ? { asset: raw.asset, trimInSec: raw.trimOutSec, trimOutSec: Math.round((raw.trimOutSec + pause.duration_seconds) * 1000) / 1000, motion: raw.motion } : {}),
+        // trim (or the previous pause's own trim, if this is not the first
+        // pause inside this shot) left off (rather than extending that
+        // shot's own duration, which could push a single shot over
+        // max_shot_seconds) -- the licensed footage keeps playing under the
+        // narration pause(s) across contiguous shots. buildCanonicalEditPlan's
+        // source-usage count (scripts/orvyq_edit_plan.mjs) treats a whole
+        // chain of contiguous same-asset shots like this as one continuous
+        // use, not several, so this never silently inflates a clip's
+        // max_uses_per_source count for what is visually a single unbroken
+        // shot.
+        ...(raw.kind === "footage" ? { asset: raw.asset, trimInSec: pauseTrimIn, trimOutSec: pauseTrimOut, motion: raw.motion } : {}),
         outputStart: pauseOutputStart,
         outputEnd: pauseOutputStart + pause.duration_seconds,
         emphasis: pause
       });
+      pauseTrimCursor = pauseTrimOut;
       insertedSeconds += pause.duration_seconds;
       pauseCursor += 1;
     }
@@ -725,7 +994,8 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
         motion: shot.motion,
         hook_footage: false,
         contextual_footage: true,
-        generic_stock: true
+        generic_stock: true,
+        ...(shot.reuseReason ? { reuse_reason: shot.reuseReason } : {})
       };
     }
     const claim = usableClaims.find((c) => c.claim_id === shot.claim_id);
@@ -757,122 +1027,18 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
     };
   });
 
-  // ---- break up uninterrupted evidence runs longer than the cap ----
-  // The per-claim slice rotation (evidence/context/metaphor) only guarantees
-  // a breathing-room beat WITHIN one claim's own coverage window; it says
-  // nothing about the boundary between two consecutive claims, and several
-  // short claims chained together (or one long claim with no metaphor slot
-  // assigned to footage) can run uninterrupted well past
-  // maximum_uninterrupted_evidence_seconds. This pass walks the fully
-  // assembled shot list and converts the single best candidate inside each
-  // over-length run in place (same duration, same position -- no runtime is
-  // added or removed), preferring to convert a metaphor-role shot (the least
-  // evidentially load-bearing) over a context-role one, and a context-role
-  // one over primary evidence, only touching primary evidence when a run has
-  // no other candidate at all. The conversion itself prefers real licensed
-  // footage from FULL_FOOTAGE_POOL (a clip with enough remaining duration
-  // and remaining max_uses_per_source budget) over a graphic card, so the
-  // film-wide pacing fix draws on the same licensed contextual footage
-  // rather than inflating full_screen_graphic_fraction.
+  // ---- audit-only: uninterrupted evidence runs and pause placement ----
+  // No automatic conversion happens here anymore -- there is no footage pool
+  // to draw from and no graphic-tension-card fallback. Both checks are
+  // read-only: if the film's real, hand-authored FOOTAGE_ASSIGNMENTS
+  // coverage is not enough to keep every evidence run under the cap, or to
+  // land every narration pause on footage, the build fails with a specific,
+  // actionable report (claim_id + real time window) instead of silently
+  // inventing a fix. A human editor resolves this by adding a
+  // FOOTAGE_ASSIGNMENTS entry (or, if the licensed pool genuinely lacks a
+  // fitting clip, by acquiring one) -- not by re-running this script.
   const MAX_EVIDENCE_RUN_SECONDS = Number(blueprint.global_rules?.max_uninterrupted_evidence_seconds) || 15;
-  const CONVERSION_MARGIN_SECONDS = MAX_EVIDENCE_RUN_SECONDS - 1;
-  const ROLE_PRIORITY = { metaphor: 0, context: 1, evidence: 2, archive: 2 };
-  const MAX_USES_PER_SOURCE = Number(blueprint.global_rules?.max_uses_per_source) || 2;
-  const footageUsage = new Map(Object.entries(HOOK_PRELOADED_USAGE));
-  // Fraction ceilings this pass must not cross (schemas/edit_plan quality
-  // policy: contextual_body_footage_fraction max 0.4, evidence_and_archive
-  // min via 0.55 evidence floor, full_screen_graphic_fraction_max 0.1) --
-  // approximated against the real canonical total (motion hook + narration
-  // + pauses + end card) with a small safety margin so the automated pass
-  // stops just short of the hard limits rather than exactly at them.
-  const approxTotalDuration = narrationEnd + insertedSeconds + motionHook.duration_seconds + END_CARD_SECONDS;
-  const footageCeilingSeconds = approxTotalDuration * 0.39;
-  let footageSecondsTotal = motionHook.duration_seconds;
-  let graphicSecondsTotal = 0;
-  for (const shot of shots) {
-    if (shot.asset_type === "footage") footageUsage.set(shot.asset, (footageUsage.get(shot.asset) || 0) + 1);
-    if (shot.asset_type === "footage") footageSecondsTotal += shot.duration;
-    if (shot.asset_type === "graphic") graphicSecondsTotal += shot.duration;
-  }
-  let poolRotation = 0;
-  function pickFootageFor(durationSeconds) {
-    if (footageSecondsTotal + durationSeconds > footageCeilingSeconds) return null;
-    for (let attempt = 0; attempt < FULL_FOOTAGE_POOL.length; attempt += 1) {
-      const asset = FULL_FOOTAGE_POOL[(poolRotation + attempt) % FULL_FOOTAGE_POOL.length];
-      const used = footageUsage.get(asset) || 0;
-      if (used >= MAX_USES_PER_SOURCE) continue;
-      const clipDuration = assetDurationSeconds.get(asset);
-      const latestTrimIn = clipDuration - durationSeconds - 0.3;
-      if (latestTrimIn < 0) continue;
-      // Each successive use of the same clip starts further into it, so two
-      // uses never show the same moment.
-      const trimIn = Math.round(Math.min(latestTrimIn, used * (clipDuration * 0.4)) * 1000) / 1000;
-      poolRotation = (poolRotation + attempt + 1) % FULL_FOOTAGE_POOL.length;
-      footageUsage.set(asset, used + 1);
-      footageSecondsTotal += durationSeconds;
-      return { asset, trimIn, trimOut: Math.round((trimIn + durationSeconds) * 1000) / 1000 };
-    }
-    return null;
-  }
-
-  // A critical claim (importance >= 5) must keep at least one physical,
-  // source-backed evidence scene (buildFullProductionPlan's own caller,
-  // scripts/orvyq_semantic_visual_audit.mjs, enforces this) -- this pass
-  // must never convert a critical claim's last remaining evidence shot.
-  const CRITICAL_IMPORTANCE = 5;
-  const criticalClaimIds = new Set(usableClaims.filter((c) => c.importance >= CRITICAL_IMPORTANCE).map((c) => c.claim_id));
-  const evidenceShotCountByClaim = new Map();
-  for (const shot of shots) {
-    if (shot.asset_type === "evidence") evidenceShotCountByClaim.set(shot.claim_id, (evidenceShotCountByClaim.get(shot.claim_id) || 0) + 1);
-  }
-
-  // ---- editorial pause holds must land on footage, not an evidence card ----
-  // A pause anchor's real narration timestamp can fall inside an
-  // "evidence"-kind slice just as easily as a "footage"-kind one --
-  // narration timing (resolveFullFilmPauses) and visual-kind rotation
-  // (sliceClaimWindow) are entirely independent, and the pause-insertion
-  // pass above deliberately excludes only "graphic" (title card) slices,
-  // not "evidence" ones. But a narration pause is a moment for the picture
-  // to hold still and breathe, not for an information-dense evidence card
-  // to suddenly appear mid-beat -- scripts/orvyq_edit_plan_tests.mjs
-  // enforces this (every shot carrying an emphasis_card must be asset_type
-  // "footage"). Convert any surviving non-footage emphasis-card shot to
-  // real licensed contextual footage here, from the same pool the
-  // run-length-breaking pass below draws from -- and, unlike that pass's
-  // own conversion (which never needs to carry a shot's emphasis_card
-  // forward, since it only ever touches shots that don't have one),
-  // explicitly preserve it. Uses the same critical-claim protection as the
-  // pass below and keeps evidenceShotCountByClaim in sync so that pass
-  // sees the updated counts.
-  for (let i = 0; i < shots.length; i += 1) {
-    const shot = shots[i];
-    if (!shot.emphasis_card || shot.asset_type === "footage") continue;
-    const isLastCriticalEvidence =
-      shot.asset_type === "evidence" && criticalClaimIds.has(shot.claim_id) && (evidenceShotCountByClaim.get(shot.claim_id) || 0) <= 1;
-    if (isLastCriticalEvidence) continue;
-    const footage = pickFootageFor(shot.duration);
-    if (!footage) continue; // pool truly exhausted; left as-is, the editorial check will correctly report it
-    if (shot.asset_type === "evidence") evidenceShotCountByClaim.set(shot.claim_id, (evidenceShotCountByClaim.get(shot.claim_id) || 0) - 1);
-    shots[i] = {
-      duration: shot.duration,
-      claim_id: shot.claim_id,
-      section_id: shot.section_id,
-      scene_id: shot.scene_id,
-      visual_role: shot.visual_role === "evidence" ? "context" : shot.visual_role,
-      editorial_purpose: shot.editorial_purpose,
-      asset_type: "footage",
-      asset: footage.asset,
-      trim_in_sec: footage.trimIn,
-      trim_out_sec: footage.trimOut,
-      motion: "hold",
-      hook_footage: false,
-      contextual_footage: true,
-      generic_stock: true,
-      emphasis_card: shot.emphasis_card,
-      sound_cue: shot.sound_cue,
-      ...(shot.transition_in ? { transition_in: shot.transition_in } : {})
-    };
-  }
+  const missingCoverage = [];
 
   let runSeconds = 0;
   let runStartIndex = -1;
@@ -884,177 +1050,37 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
     }
     if (runStartIndex === -1) runStartIndex = i;
     runSeconds += shots[i].duration;
-    if (runSeconds <= CONVERSION_MARGIN_SECONDS) continue;
-
-    const isLastCriticalEvidence = (shot) =>
-      criticalClaimIds.has(shot.claim_id) && (evidenceShotCountByClaim.get(shot.claim_id) || 0) <= 1;
-    let bestIndex = -1;
-    let bestPriority = Infinity;
-    for (let j = i; j >= runStartIndex; j -= 1) {
-      if (isLastCriticalEvidence(shots[j])) continue;
-      const priority = ROLE_PRIORITY[shots[j].visual_role] ?? 2;
-      if (priority < bestPriority) {
-        bestPriority = priority;
-        bestIndex = j;
-      }
+    if (runSeconds > MAX_EVIDENCE_RUN_SECONDS) {
+      const first = shots[runStartIndex];
+      const last = shots[i];
+      missingCoverage.push(
+        `Uninterrupted evidence run of ${runSeconds.toFixed(1)}s (> ${MAX_EVIDENCE_RUN_SECONDS}s cap) from ${first.shot_id || first.claim_id} to ${last.shot_id || last.claim_id} ` +
+          `(claims ${[...new Set(shots.slice(runStartIndex, i + 1).map((s) => s.claim_id))].join(", ")}) has no FOOTAGE_ASSIGNMENTS entry to break it up -- ` +
+          "add an authored footage assignment inside this window, or acquire an additional licensed clip if the pool has none left to assign."
+      );
+      runSeconds = 0;
+      runStartIndex = i + 1;
     }
-    if (bestIndex === -1) continue; // every shot in this run is a critical claim's last evidence scene -- leave the run as-is rather than break required coverage
-    const target = shots[bestIndex];
-    evidenceShotCountByClaim.set(target.claim_id, (evidenceShotCountByClaim.get(target.claim_id) || 0) - 1);
-    const footage = pickFootageFor(target.duration);
-    if (footage) {
-      shots[bestIndex] = {
-        duration: target.duration,
-        claim_id: target.claim_id,
-        section_id: target.section_id,
-        scene_id: target.scene_id,
-        visual_role: target.visual_role === "evidence" ? "context" : target.visual_role,
-        editorial_purpose: `Break up an uninterrupted evidence run with contextual footage relevant to ${target.claim_id.replace(/^CLM_\d+_/, "").replace(/_/g, " ").toLowerCase()}.`.slice(0, 200),
-        asset_type: "footage",
-        asset: footage.asset,
-        trim_in_sec: footage.trimIn,
-        trim_out_sec: footage.trimOut,
-        motion: "hold",
-        hook_footage: false,
-        contextual_footage: true,
-        generic_stock: true,
-        ...(target.transition_in ? { transition_in: target.transition_in } : {})
-      };
-    } else {
-      const claim = usableClaims.find((c) => c.claim_id === target.claim_id);
-      const label = (claim?.visual_treatment?.metaphor || target.claim_id.replace(/^CLM_\d+_/, "")).replace(/_/g, " ").toLowerCase();
-      // The graphic ceiling is a soft internal budget (see above); a run
-      // that would otherwise stay over max_uninterrupted_evidence_seconds
-      // still gets broken up even past it -- exceeding
-      // full_screen_graphic_fraction_max slightly is a smaller, reported
-      // problem than leaving a 15s+ uninterrupted evidence run in the film.
-      graphicSecondsTotal += target.duration;
-      shots[bestIndex] = {
-        duration: target.duration,
-        claim_id: target.claim_id,
-        section_id: target.section_id,
-        scene_id: target.scene_id,
-        visual_role: "graphic",
-        editorial_purpose: `Tension beat: hold on "${label}" between evidence scenes to keep pacing varied.`.slice(0, 200),
-        asset_type: "graphic",
-        graphic: { type: "tension_card", title: label.charAt(0).toUpperCase() + label.slice(1), subtitle: null },
-        ...(target.transition_in ? { transition_in: target.transition_in } : {})
-      };
-    }
-
-    runSeconds = 0;
-    for (let k = bestIndex + 1; k <= i; k += 1) {
-      if (shots[k].asset_type === "evidence") runSeconds += shots[k].duration;
-    }
-    runStartIndex = bestIndex + 1;
   }
 
-  // Quantized BEFORE the duration-variety correction pass below, not after:
-  // that pass's own "identical duration" check compares exact float
-  // equality, and two durations it correctly judged distinct (e.g. two
-  // sliceClaimWindow interior slices a few milliseconds apart) can round to
-  // the SAME frame count once quantized -- silently re-merging a triplet
-  // the correction pass had just broken up. Quantizing first means the
-  // correction pass's own equality check, and the ±0.2s (6-frame) delta it
-  // applies, both operate on the real frame-granularity values that will
-  // actually reach scripts/orvyq_pacing_audit.mjs, so nothing downstream of
-  // this pass can undo its fix. See quantizeShotsToFrames' own docstring
-  // for why quantizing doesn't need to know the shots' eventual cumulative
-  // frame offset (hookDuration, computed later below) to be correct.
+  // A pause must land on footage (the picture holds still and breathes;
+  // scripts/orvyq_edit_plan_tests.mjs requires every emphasis_card shot to
+  // be asset_type "footage") -- report any pause that doesn't, rather than
+  // auto-converting it.
+  for (const shot of shots) {
+    if (shot.emphasis_card && shot.asset_type !== "footage") {
+      missingCoverage.push(
+        `Editorial pause "${shot.emphasis_card.title}" (claim ${shot.claim_id}) lands on a ${shot.asset_type} shot, not footage -- ` +
+          "add a FOOTAGE_ASSIGNMENTS entry for this claim occurrence so the pause holds on real footage instead of an evidence/graphic card."
+      );
+    }
+  }
+
+  if (missingCoverage.length) {
+    throw new Error(`Full production plan has ${missingCoverage.length} unresolved creative-coverage gap(s):\n- ${missingCoverage.join("\n- ")}`);
+  }
+
   quantizeShotsToFrames(shots);
-
-  // ---- final duration-variety correction ----
-  // scripts/orvyq_pacing_audit.mjs fails any 3 consecutive shots (of any
-  // asset_type) sharing the exact same duration. sliceClaimWindow's own
-  // alternating +/-delta only varies INTERIOR slices when canVary is true;
-  // a claim sliced into many near-max-length pieces (canVary false because
-  // sliceSeconds itself is already close to max_shot_seconds) gets NO
-  // variation at all, so every one of its slices -- and, since the
-  // run-length-breaking pass above converts a shot to footage/graphic AT
-  // THE SAME duration, every shot derived from them too -- can share one
-  // literally identical duration across an arbitrarily long run, not just
-  // an isolated triplet. A single local nudge per triplet can't fully
-  // de-duplicate a run longer than 3: this instead walks every maximal run
-  // of consecutive equal durations and applies a period-3 alternating
-  // pattern (0, +DELTA, -DELTA, +DELTA, -DELTA, ...) starting from the
-  // run's second element -- any 3 consecutive positions inside the run
-  // always land on 3 different pattern values, so no 3-in-a-row survives
-  // regardless of run length, and every +DELTA is applied together with a
-  // matching -DELTA at the very next position, so the run's total duration
-  // (and the whole timeline's) is unchanged -- a duration-only adjustment,
-  // not a content or visual change.
-  //
-  // Footage shots CAN be nudged too, but only when doing so cannot silently
-  // desynchronize a contiguous pause-continuation pair (two shots on the
-  // same clip where the first's trim_out_sec is the second's trim_in_sec --
-  // see scripts/orvyq_edit_plan.mjs's previousFootage check) and only within
-  // the real licensed clip's own on-disk duration (assetDurationSeconds,
-  // read from its provenance file above) -- trim_in_sec is left untouched
-  // and only trim_out_sec moves with the duration, so a shrink always stays
-  // valid and a grow is checked against the clip's real remaining length
-  // before being applied.
-  const isContiguousFootagePair = (a, b) =>
-    a?.asset_type === "footage" && b?.asset_type === "footage" && a.asset === b.asset && Math.abs(a.trim_out_sec - b.trim_in_sec) < 0.005;
-  const partOfContiguousPair = (index) => {
-    const shot = shots[index];
-    if (shot.asset_type !== "footage") return false;
-    return isContiguousFootagePair(shots[index - 1], shot) || isContiguousFootagePair(shot, shots[index + 1]);
-  };
-  const canDonate = (index, delta) => {
-    const shot = shots[index];
-    if (shot.duration - delta <= 1) return false;
-    if (shot.asset_type !== "footage") return true;
-    if (partOfContiguousPair(index)) return false;
-    return shot.trim_out_sec - delta > shot.trim_in_sec + 0.5;
-  };
-  const canReceive = (index, delta) => {
-    const shot = shots[index];
-    if (shot.duration + delta > maxShotSeconds) return false;
-    if (shot.asset_type !== "footage") return true;
-    if (partOfContiguousPair(index)) return false;
-    const clipDuration = assetDurationSeconds.get(shot.asset);
-    return Number.isFinite(clipDuration) && shot.trim_out_sec + delta <= clipDuration - 0.02;
-  };
-  const applyDelta = (index, delta) => {
-    const shot = shots[index];
-    const updated = { ...shot, duration: Math.round((shot.duration + delta) * 1000) / 1000 };
-    if (shot.asset_type === "footage") updated.trim_out_sec = Math.round((shot.trim_out_sec + delta) * 1000) / 1000;
-    shots[index] = updated;
-  };
-  // A shot in a long identical-duration run (see above) can already sit
-  // close to max_shot_seconds -- sliceClaimWindow only produces such a run
-  // in the first place when sliceSeconds itself is close to the cap -- so
-  // a fixed 0.2s (6-frame) receiver delta can fail canReceive's own
-  // max_shot_seconds check even when a smaller delta would fit
-  // comfortably. Shrinking the delta to the real available headroom (still
-  // in whole frames, so both shots stay frame-exact after
-  // quantizeShotsToFrames above) keeps the pair genuinely distinguishable
-  // without ever exceeding the cap.
-  const RUN_CORRECTION_DELTA_FRAMES = 6;
-  let runStart = 0;
-  while (runStart < shots.length) {
-    let runEnd = runStart + 1;
-    while (runEnd < shots.length && shots[runEnd].duration === shots[runStart].duration) runEnd += 1;
-    const runLength = runEnd - runStart;
-    for (let offset = 1; offset + 1 < runLength; offset += 2) {
-      const donorIndex = runStart + offset;
-      const receiverIndex = runStart + offset + 1;
-      const receiverHeadroomFrames = Math.floor((maxShotSeconds - shots[receiverIndex].duration) * FPS + 1e-6);
-      const deltaFrames = Math.min(RUN_CORRECTION_DELTA_FRAMES, receiverHeadroomFrames);
-      const delta = deltaFrames / FPS;
-      if (deltaFrames >= 1 && canDonate(donorIndex, delta) && canReceive(receiverIndex, delta)) {
-        applyDelta(donorIndex, -delta);
-        applyDelta(receiverIndex, delta);
-      }
-      // If this pair can't safely take the delta (e.g. a footage clip too
-      // short to grow, or part of a contiguous pause-continuation pair),
-      // it's left unadjusted and scripts/orvyq_pacing_audit.mjs will
-      // correctly fail the build rather than silently ship an unfixed run
-      // -- this has not been observed against this project's real shot
-      // data.
-    }
-    runStart = runEnd;
-  }
 
   // ---- opening motion hook: the same real, licensed footage proof mode
   // uses (direction/motion_hook.json), not a second, full-mode-only asset.

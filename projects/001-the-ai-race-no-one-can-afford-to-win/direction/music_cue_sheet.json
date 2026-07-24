@@ -4,11 +4,12 @@
   "duration_seconds": 857.29,
   "policy": {
     "minimum_distinct_music_states": 4,
-    "continuous_single_loop_forbidden": true,
+    "single_tonal_world_required": true,
     "narration_ducking_required": true,
     "random_whoosh_glitch_boom_forbidden": true,
     "silence_may_be_used_as_an_editorial_cue": true,
-    "full_render_requires_all_cues_ready": true
+    "full_render_requires_all_cues_ready": true,
+    "policy_note": "continuous_single_loop_forbidden (which required >=2 distinct cue tracks) has been replaced by single_tonal_world_required: the goal is one continuous musical backbone with energy automation, not a mandated minimum number of distinct audio files. See docs/canonical-candidate-audit.md section 4."
   },
   "proof_score": {
     "status": "ready",
@@ -63,7 +64,7 @@
       "instrumentation": "low tonal pulse, restrained harmonic bed, sparse upper texture",
       "transition_out": "thin to near-silence before the controlled-test evidence",
       "status": "ready",
-      "track_id": "sb_intervention_nomelody"
+      "track_id": "sb_signal_to_noise_nomelody"
     },
     {
       "cue_id": "CUE_02_CONTROLLED_EVIDENCE",
@@ -91,7 +92,7 @@
       "instrumentation": "measured percussion, arpeggiated pulse, widening harmonic field",
       "transition_out": "hard rhythmic reduction before real-world misuse evidence",
       "status": "ready",
-      "track_id": "sb_catalyst"
+      "track_id": "sb_signal_to_noise"
     },
     {
       "cue_id": "CUE_04_REAL_WORLD_MISUSE",
@@ -102,10 +103,10 @@
       "energy_start": 0.44,
       "energy_end": 0.72,
       "function": "Keep cyber and biological evidence tense but factual, with room for attribution caveats.",
-      "instrumentation": "low pulse, muted impacts at evidence transitions, no glitch clichés",
+      "instrumentation": "low pulse, muted impacts at evidence transitions, no glitch clich\u00e9s",
       "transition_out": "release tension into uncertainty rather than resolve it",
       "status": "ready",
-      "track_id": "sb_emergent"
+      "track_id": "sb_signal_to_noise_nomelody"
     },
     {
       "cue_id": "CUE_05_WORK_CONCENTRATION",
@@ -119,7 +120,7 @@
       "instrumentation": "warmer sustained tones, irregular soft pulse, reduced low end",
       "transition_out": "introduce institutional weight for regulation",
       "status": "ready",
-      "track_id": "sb_undertow"
+      "track_id": "sb_signal_to_noise_nomelody"
     },
     {
       "cue_id": "CUE_06_REGULATION_PARADOX",
@@ -147,7 +148,7 @@
       "instrumentation": "two complementary harmonic motifs, restrained stereo separation",
       "transition_out": "resolve rhythm while preserving harmonic uncertainty",
       "status": "ready",
-      "track_id": "sb_ephemera"
+      "track_id": "sb_signal_to_noise_nomelody"
     },
     {
       "cue_id": "CUE_08_SAFETY_ARCHITECTURE",
@@ -161,7 +162,7 @@
       "instrumentation": "clear pulse, brighter harmonic layer, controlled lift",
       "transition_out": "remove pulse and leave a broad reflective bed",
       "status": "ready",
-      "track_id": "sb_horizons"
+      "track_id": "sb_signal_to_noise"
     },
     {
       "cue_id": "CUE_09_FINAL_PARADOX",
@@ -175,7 +176,7 @@
       "instrumentation": "wide sustained harmony, sparse piano-like tone, long natural decay",
       "transition_out": "four-to-six-second clean release into black",
       "status": "ready",
-      "track_id": "sb_solace"
+      "track_id": "sb_signal_to_noise"
     }
   ]
 }

@@ -14,12 +14,20 @@ projects/*/output/*
 projects/*/qa/*
 !projects/*/qa/.gitkeep
 
-# frozen_candidate.json and proof_approval.json are approval records, not
-# regenerable QA output -- see schemas/frozen_candidate.schema.json and
-# proof_approval.schema.json. orvyq-full-render.yml reads
-# qa/proof_approval.json from the committed repo, not from a workflow
-# artifact, so both must be committed.
-!projects/*/qa/frozen_candidate.json
+# proof_approval.json is the one human-authored approval record -- see
+# schemas/proof_approval.schema.json. orvyq-final-encode.yml reads it from
+# the committed repo (not a workflow artifact), so it must be committed by
+# an explicit human action.
+#
+# frozen_candidate.json is deliberately NOT carved out here anymore: it is
+# always-regenerate build output, produced fresh by orvyq-review.yml on
+# every run and shipped only inside that run's render bundle artifact (see
+# docs/canonical-candidate-audit.md) -- committing it back to the branch was
+# what entangled candidate identity with an unrelated bot commit's SHA.
+# Historical frozen_candidate.json files already committed before this fix
+# remain tracked (this rule only affects untracked/new changes) and stay in
+# place as historical reference, per the task's own "do not delete history"
+# rule.
 !projects/*/qa/proof_approval.json
 
 # Always-regenerate build output -- see docs/golden-renderer-map.md section 5.

@@ -7,7 +7,7 @@ name: ORVYQ Narration Validation
 # reach huggingface.co to download Whisper model weights (policy-blocked,
 # same class as the LFS block documented in .gitignore), so the actual
 # ASR-based script-similarity check has to run somewhere with normal network
-# access -- a GitHub-hosted runner, exactly like orvyq-proof.yml's speech QA
+# access -- a GitHub-hosted runner, exactly like orvyq-review.yml's speech QA
 # step already does.
 #
 # projects/*/assets/audio/final_voice.mp3 was committed as a plain git blob
@@ -20,6 +20,7 @@ on:
   push:
     branches:
       - "claude/orvyq-rebuild-canonical-udc3rx"
+      - "claude/orvyq-canonical-candidate-parity-bl7w0u"
     paths:
       - "projects/001-the-ai-race-no-one-can-afford-to-win/assets/audio/final_voice.mp3"
       - ".github/workflows/orvyq-narration-validation.yml"
