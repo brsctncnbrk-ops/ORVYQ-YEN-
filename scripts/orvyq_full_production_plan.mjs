@@ -95,7 +95,14 @@ export const FOOTAGE_ASSIGNMENTS = {
     // (direction/direction_plan.md's own scene_004 description) -- this
     // claim IS that introduction, and this slice is also where the claim's
     // own editorial pause lands, so it must be footage regardless.
-    0: { asset: "assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4", trimInRatio: 0, motion: "push", role: "context" },
+    // Real materialized duration of scene_004 (10.09s) is not long enough
+    // to host both this slice (6.635s) and the editorial pause that lands
+    // inside it (4s continuation of the same asset, 10.635s total needed)
+    // -- confirmed live via CI's real footage_duration_report.json, not a
+    // guess. scene_010 (abstract connective beat, no real-world entity
+    // implied per direction/direction_plan.md) has ample real duration for
+    // both.
+    0: { asset: "assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4", trimInRatio: 0, motion: "push", role: "context" },
     2: { asset: "assets/footage/scene_022_740741da33e14d6a45468490.mp4", trimInRatio: 0.1, motion: "push", role: "context", reuse_reason: "Reused once more, at a different trim window, in the film's closing synthesis section (CLM_020), which explicitly recaps earlier evidence rather than introducing new claims." }
   },
   CLM_005_BLACKMAIL_SCENARIO: {
@@ -122,11 +129,23 @@ export const FOOTAGE_ASSIGNMENTS = {
     // non-footage slices already exceed the 15s cap on their own, so a
     // single third-of-the-way footage slice is not enough by itself.
     1: { asset: "assets/footage/scene_017_17388828bde9ac80bd22eb8e.mp4", trimInRatio: 0.1, span: 2, motion: "hold", role: "context", reuse_reason: "Returns from the opening motion hook under the cyber-extortion claim, at a distinct trim window." },
-    // slice 7's real narration window contains the "Pivot from strategic
-    // pressure to documented misuse" editorial pause -- a contiguous
-    // continuation shot.
-    4: { asset: "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4", trimInRatio: 0.2, span: 2, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window; both this claim and CLM_018 (its later reuse) sit in the film's evidence-and-safeguards arc." },
-    7: { asset: "assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4", trimInRatio: 0.1, motion: "hold", role: "context" },
+    // Slice 5 (the last slice of this span) is where the "Land the
+    // competitive incentive" editorial pause lands -- a real editorial
+    // pause continues its enclosing slice's own asset from wherever that
+    // slice's own trim ends, so this span's real source duration must cover
+    // BOTH slices 4-5 AND the pause's own held duration, not just the two
+    // slices alone (task follow-up section 17/19 -- confirmed live via a
+    // real footage-trim-overrun CI failure at a different, tighter-margin
+    // clip; scene_026's real duration comfortably covers this one).
+    4: { asset: "assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4", trimInRatio: 0.02, span: 2, motion: "hold", role: "context" },
+    // Slice 7 is where the "Pivot from strategic pressure to documented
+    // misuse" editorial pause lands -- same real-duration-must-cover-the-
+    // pause-too requirement as slice 5 above; scene_006 (this claim's
+    // original choice) was NOT long enough for slice 7 + Its own pause once
+    // materialized for real (confirmed via CI), so this uses scene_014
+    // instead (freed up here since it now only carries CLM_018's own
+    // separate use, still within its 2-use budget).
+    7: { asset: "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4", trimInRatio: 0.1, motion: "hold", role: "context" },
     8: { asset: "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4", trimInRatio: 0.35, motion: "drift_left", role: "context", reuse_reason: "Returns from the opening motion hook under this claim's third footage slice, at a distinct trim window." }
   },
   CLM_010_CYBER_ESPIONAGE: {
@@ -194,15 +213,17 @@ export const FOOTAGE_ASSIGNMENTS = {
     // shared motion hook) fits "a second set of eyes" directly.
     5: { asset: "assets/footage/scene_024_6e6f4af26cad60cc78930d6d.mp4", trimInRatio: 0.06, motion: "hold", role: "context", reuse_reason: "Second, brief use of the shared monitoring-room motion-hook footage -- fits 'a second set of eyes' directly." },
     7: { asset: "assets/footage/scene_014_416086d1c7285d9e6a01fc67.mp4", trimInRatio: 0.05, span: 2, motion: "drift_right", role: "context", reuse_reason: "Second use at a different trim window; both this claim and CLM_009 (its other reuse) sit in the film's evidence-and-safeguards arc." },
-    // Ends this span AT slice 10 deliberately (not 10-11): slice 10 is where
-    // this claim's own editorial pause ("Hold the open-versus-closed
-    // dilemma...") lands, and a pause always becomes its own contiguous
-    // continuation shot on whatever asset the enclosing slice used -- so the
-    // pause-bearing slice must be the LAST slice of its own span, never a
-    // slice something else in the same span continues past, or the
-    // following slice's trim would silently skip the pause's own held
-    // duration.
-    9: { asset: "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4", trimInRatio: 0.05, span: 2, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window across two claims in the same governance arc (this one and CLM_017)." },
+    // Slice 9 stands alone (7.6s, under the cap by itself, between slice
+    // 8's footage and slice 10's footage below) -- no assignment needed.
+    // Slice 10 alone is where this claim's own editorial pause ("Hold the
+    // open-versus-closed dilemma...") lands: a pause becomes its own
+    // contiguous continuation shot on whatever asset its enclosing slice
+    // used, so that slice's real source duration must cover BOTH the slice
+    // itself AND the pause's own held duration -- confirmed via a real
+    // footage-trim-overrun CI failure at a different clip (task follow-up
+    // section 17/19); a single (not spanning) slice here keeps the real
+    // duration this needs modest enough for scene_003 to comfortably cover.
+    10: { asset: "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4", trimInRatio: 0.05, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window across two claims in the same governance arc (this one and CLM_017)." },
     // A separate, non-contiguous second use of the independent-researchers
     // clip already introduced at slice 4 above -- this slice sits right
     // after the slice-9/10 span ends on the claim's own pause, so it cannot
@@ -231,10 +252,25 @@ export const FOOTAGE_ASSIGNMENTS = {
     4: { asset: "assets/footage/scene_018_f681c3057e36f147005d2652.mp4", trimInRatio: 0.02, span: 2, motion: "hold", role: "context", reuse_reason: "Closing synthesis recap of CLM_016's footage -- see slice 1's note." },
     7: { asset: "assets/footage/scene_022_740741da33e14d6a45468490.mp4", trimInRatio: 0.02, span: 3, motion: "push", role: "context", reuse_reason: "Closing synthesis recap of CLM_004's footage -- see slice 1's note." },
     11: { asset: "assets/footage/scene_021_d2e9e57773ef446f8e402456.mp4", trimInRatio: 0.45, motion: "hold", role: "context", reuse_reason: "Closing synthesis recap of CLM_015's footage -- see slice 1's note." },
-    // This 4-slice span reaches the film's own final editorial pause
-    // ("That work hasn't been done yet.") right up against the last word
-    // of narration -- a contiguous continuation shot at its own tail end.
-    13: { asset: "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4", trimInRatio: 0.02, span: 4, motion: "hold", role: "context", reuse_reason: "Closing synthesis recap of CLM_012's footage, deliberately timed to land on the film's final editorial pause -- see slice 1's note." }
+    // Slice 12 stands alone (under the cap by itself, between slice 11's
+    // footage and slice 13's footage below) -- no assignment needed.
+    // Slice 13 alone closes the run before the final span; a fresh,
+    // ample-duration clip, not extended into 14 (kept separate from the
+    // pause-hosting span below -- see its own note on why real duration
+    // must cover the pause too, not just the covered slices).
+    13: { asset: "assets/footage/scene_010_6f7bc11f2a696985af0db15f.mp4", trimInRatio: 0.3, motion: "hold", role: "context", reuse_reason: "Second use, different trim window; another brief abstract connective beat within the closing synthesis, same as its first use earlier in the film." },
+    // Slices 15-16: slice 16 is where the film's own final TWO editorial
+    // pauses land, back to back, right up against the last word of
+    // narration ("That work hasn't been done yet.") -- both continue this
+    // span's own asset from wherever its trim ends, so the real source
+    // duration needed here is this 2-slice span PLUS both pause durations,
+    // not just the two slices alone (confirmed via a real footage-trim-
+    // overrun CI failure at a different, tighter-margin clip; this was
+    // previously a 4-slice span starting at 13, which real materialized
+    // duration could not cover once the trailing pauses were accounted
+    // for -- slice 14 is left alone, under the cap by itself between 13
+    // and 15's footage).
+    15: { asset: "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4", trimInRatio: 0.02, span: 2, motion: "hold", role: "context", reuse_reason: "Closing synthesis recap of CLM_012's footage, deliberately timed to land on the film's final editorial pauses -- see slice 1's note." }
   }
 };
 
