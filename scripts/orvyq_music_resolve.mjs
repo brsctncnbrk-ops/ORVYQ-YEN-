@@ -31,7 +31,17 @@ import { resolveCanonicalTrack, resolveCanonicalTrackToPath, loadMusicRegistry }
 import { command, durationSecondsOf } from "./lib/orvyq-loudness.mjs";
 
 const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
-const CUE_EDGE_FADE_SECONDS = 1.5;
+// Widened from 1.5s: task section 11 requires cue transitions controlled
+// enough that "no other film seems to have started" -- a longer, gentler
+// dip-and-return gives the ear more time to track continuity across a cue
+// boundary. A true overlapping crossfade (ffmpeg acrossfade) would be a
+// further improvement but was not made here: it shortens the concatenated
+// output by exactly the crossfade duration per boundary unless every
+// segment's own length is first over-extended to compensate, and that
+// change cannot be verified end-to-end without real ffmpeg execution
+// (unavailable in this sandbox -- see docs/canonical-candidate-audit.md).
+// Flagged as a follow-up requiring CI verification, not shipped unverified.
+const CUE_EDGE_FADE_SECONDS = 2.5;
 
 export function extractRequiredTrackId(cueSheet, mode) {
   if (mode !== "proof")
@@ -120,10 +130,20 @@ async function buildFullMusicBed({ dir, cues, registry, destination }) {
     const licenseUrls = new Set(cueRecords.map((record) => record.license_url));
     const licenseNames = new Set(cueRecords.map((record) => record.license_name));
 
+    const distinctTrackIds = new Set(cueRecords.map((record) => record.track_id));
+    const distinctArtists = new Set(cueRecords.map((record) => record.artist));
     const provenance = {
       schema_version: "1.0",
       asset: "assets/music/approved_bed.mp3",
-      assembly: "nine_cue_concatenation",
+      // Was "nine_cue_concatenation" -- renamed to reflect that this is a
+      // sequenced arc through one composer's tonal library with edge fades
+      // at each boundary, not nine unrelated tracks stitched together. See
+      // docs/canonical-candidate-audit.md section 4 and task section 11
+      // ("tek ve sürekli bir tonal dünya").
+      assembly: "sequenced_tonal_arc",
+      single_tonal_world: distinctArtists.size === 1,
+      distinct_track_count: distinctTrackIds.size,
+      cue_edge_fade_seconds: CUE_EDGE_FADE_SECONDS,
       cues: cueRecords,
       license: licenseNames.size === 1 ? [...licenseNames][0] : [...licenseNames].join(" / "),
       license_url: licenseUrls.size === 1 ? [...licenseUrls][0] : [...licenseUrls].join(" "),

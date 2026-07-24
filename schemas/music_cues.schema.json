@@ -13,11 +13,13 @@
       "type": "object",
       "properties": {
         "minimum_distinct_music_states": { "type": "integer", "minimum": 1 },
-        "continuous_single_loop_forbidden": { "type": "boolean" },
+        "continuous_single_loop_forbidden": { "type": "boolean", "description": "Deprecated -- superseded by single_tonal_world_required. Retained for historical cue sheets only." },
+        "single_tonal_world_required": { "type": "boolean", "description": "The candidate's music must read as one continuous musical backbone (same tonal family / composer, energy automation, controlled crossfades) rather than mandating a minimum number of distinct audio files." },
         "narration_ducking_required": { "type": "boolean" },
         "random_whoosh_glitch_boom_forbidden": { "type": "boolean" },
         "silence_may_be_used_as_an_editorial_cue": { "type": "boolean" },
-        "full_render_requires_all_cues_ready": { "type": "boolean" }
+        "full_render_requires_all_cues_ready": { "type": "boolean" },
+        "policy_note": { "type": "string" }
       }
     },
     "proof_score": {

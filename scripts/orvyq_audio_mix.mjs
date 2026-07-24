@@ -36,11 +36,12 @@ import { promises as fs } from "node:fs";
 import { projectDir, readJson, writeJsonAtomic, pathExists, parseArgs, printJson } from "./lib/fs-utils.mjs";
 import { resolveFullFilmPauses } from "./lib/orvyq-pause-resolver.mjs";
 import { command, extractLoudnorm, measureLoudness, normalizeFilter, durationSecondsOf } from "./lib/orvyq-loudness.mjs";
+import { DEFAULT_PAUSE_RISE_DB, DEFAULT_PAUSE_RISE_RAMP_SECONDS, buildPauseRiseFfmpegExpr } from "./lib/orvyq-music-envelope.mjs";
+import { END_CARD_FADE_SECONDS } from "./lib/orvyq-timeline.mjs";
 
 const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
 const PROOF_SECONDS = 150;
 const UNDER_SPEECH_GAIN_DEFAULT = 0.7;
-const EDITORIAL_PAUSE_GAIN = 1.02;
 const FIRST_EVIDENCE_BEAT_PROOF_SECONDS = 11;
 
 const PROOF_MUSIC_SECTIONS = [
@@ -89,35 +90,25 @@ async function prepareEditorialNarration({ dir, audioDir, voice, availableDurati
   }
 
   const pauseMap = await readOptionalJson(path.join(dir, "direction", "editorial_pause_map.json"));
-  // The golden defect this replaces: this used to read pauseMap.proof.pauses
-  // unconditionally, regardless of mode -- running that against a full-
-  // length narration would silently concentrate all four proof pauses in
-  // the first ~114s of an 800+s recording. Full mode instead resolves its
-  // own text-anchored full_film_pause_anchors against the real per-word ASR
+  // There is only ONE real set of editorial pauses now: the candidate's own
+  // full_film_pause_anchors, resolved against the real per-word ASR
   // timestamps in voice/narration_alignment.json (scripts/lib/orvyq-pause-
   // resolver.mjs) -- the same resolver scripts/orvyq_full_production_plan.mjs
   // uses to place pause shots in the edit plan, so the audio mix's pause
   // timing and the video timeline's pause timing can never independently
-  // drift apart. Proof mode is unchanged.
-  let configuredPauses;
-  if (mode === "full") {
-    const alignment = await readJson(path.join(dir, "voice", "narration_alignment.json"));
-    const anchors = pauseMap?.full_film_pause_anchors || [];
-    if (!anchors.length) throw new Error("Editorial pause mode requires direction/editorial_pause_map.json full_film_pause_anchors");
-    let resolved;
-    ({ pauses: resolved } = resolveFullFilmPauses({ words: alignment.words, anchors }));
-    // Each full_film_pause_anchors entry now carries its own authored
-    // sound_cue (direction/editorial_pause_map.json), mirroring the
-    // restrained low_impact/tonal_bloom rotation proof.pauses already used,
-    // instead of collapsing every full-mode pause onto the same cue. Its
-    // real, already-authored `purpose` text carries through as `emphasis`
-    // for the mix metadata.
-    configuredPauses = resolved.map((pause) => ({ ...pause, emphasis: pause.purpose }));
-  } else {
-    configuredPauses = pauseMap?.proof?.pauses || [];
-  }
-  if (!configuredPauses.length)
-    throw new Error(`Editorial pause mode requires direction/editorial_pause_map.json ${mode === "full" ? "full_film_pause_anchors" : "proof pauses"}`);
+  // drift apart. `pauseMap.proof.pauses` (the old, separately-authored 150s
+  // cut's own 4 pauses) is historical/regression reference only -- see
+  // docs/canonical-candidate-audit.md -- and is never read by a live build:
+  // there is no more separate proof creative content, per task section 2.
+  const alignment = await readJson(path.join(dir, "voice", "narration_alignment.json"));
+  const anchors = pauseMap?.full_film_pause_anchors || [];
+  if (!anchors.length) throw new Error("Editorial pause mode requires direction/editorial_pause_map.json full_film_pause_anchors");
+  const { pauses: resolved } = resolveFullFilmPauses({ words: alignment.words, anchors });
+  // Each full_film_pause_anchors entry carries its own authored sound_cue
+  // (direction/editorial_pause_map.json); its real, already-authored
+  // `purpose` text carries through as `emphasis` for the mix metadata.
+  const configuredPauses = resolved.map((pause) => ({ ...pause, emphasis: pause.purpose }));
+  if (!configuredPauses.length) throw new Error("Editorial pause mode requires direction/editorial_pause_map.json full_film_pause_anchors");
   const pauses = [...configuredPauses].sort((a, b) => Number(a.source_time_seconds) - Number(b.source_time_seconds));
   const filters = [];
   const labels = [];
@@ -231,14 +222,23 @@ export function musicSectionsForDuration(duration, { fullCues, fullCuesAuthoredD
 // Builds the under-speech ducking curve from the SAME per-duration sections
 // musicSectionsForDuration() returns -- see the file header for why this
 // used to be a second, independently-hardcoded copy of the boundaries.
-export function musicVolumeExpression(sections, pauseWindows) {
-  let expression = String(sections.at(-1)?.under_speech_gain ?? UNDER_SPEECH_GAIN_DEFAULT);
+//
+// The pause rise is no longer a hard step to a fixed 1.02x (a ~0.17dB rise,
+// inaudible -- see docs/canonical-candidate-audit.md section 4): it now
+// multiplies the section baseline by scripts/lib/orvyq-music-envelope.mjs's
+// ramped, measurable 2-4dB envelope, built from the exact same function
+// scripts/orvyq_music_pause_rise_audit.mjs uses to verify it, so the audio
+// that renders and the QA that checks it can never independently drift
+// apart.
+export function musicVolumeExpression(sections, pauseWindows, { riseDb = DEFAULT_PAUSE_RISE_DB, rampSeconds = DEFAULT_PAUSE_RISE_RAMP_SECONDS } = {}) {
+  let baseExpression = String(sections.at(-1)?.under_speech_gain ?? UNDER_SPEECH_GAIN_DEFAULT);
   for (let i = sections.length - 2; i >= 0; i -= 1) {
     const section = sections[i];
-    expression = `if(lt(t,${section.end}),${section.under_speech_gain ?? UNDER_SPEECH_GAIN_DEFAULT},${expression})`;
+    baseExpression = `if(lt(t,${section.end}),${section.under_speech_gain ?? UNDER_SPEECH_GAIN_DEFAULT},${baseExpression})`;
   }
-  for (const pause of [...pauseWindows].reverse()) expression = `if(between(t,${pause.start},${pause.end}),${EDITORIAL_PAUSE_GAIN},${expression})`;
-  return expression;
+  if (!pauseWindows.length) return baseExpression;
+  const riseFactorExpression = buildPauseRiseFfmpegExpr(pauseWindows, { riseDb, rampSeconds });
+  return `((${baseExpression})*(${riseFactorExpression}))`;
 }
 
 // Derives SFX placement from real pause data instead of hardcoded (asset,
@@ -287,13 +287,23 @@ function buildSfxFilterGraph({ sfxPlacements, inputIndexByCue }) {
   return { filters, mixLabels };
 }
 
-function mixFilter({ timelineNarrationDuration, outputDuration, pauseWindows, sections, sfxPlacements, inputIndexByCue, loudnorm = null }) {
-  const fadeOut = Math.max(0, outputDuration - 2);
+function mixFilter({ headSilenceSeconds, timelineNarrationDuration, outputDuration, pauseWindows, sections, sfxPlacements, inputIndexByCue, loudnorm = null }) {
+  // The final closing release (task section 13): a controlled fade over the
+  // last END_CARD_FADE_SECONDS, not the old flat 2s -- long enough to be a
+  // real, felt release under the end card rather than an abrupt cut.
+  const fadeOutSeconds = Math.min(END_CARD_FADE_SECONDS, outputDuration);
+  const fadeOut = Math.max(0, outputDuration - fadeOutSeconds);
   const musicArc = musicVolumeExpression(sections, pauseWindows);
   const { filters: sfxFilters, mixLabels: sfxLabels } = buildSfxFilterGraph({ sfxPlacements, inputIndexByCue });
+  const voiceContentDuration = headSilenceSeconds + timelineNarrationDuration;
   const graph = [
-    `[0:a]atrim=duration=${timelineNarrationDuration},apad=pad_dur=${Math.max(0, outputDuration - timelineNarrationDuration)},atrim=duration=${outputDuration},highpass=f=70,lowpass=f=15500,acompressor=threshold=-20dB:ratio=2.2:attack=15:release=180,asplit=2[voice_sc][voice_mix]`,
-    `[1:a]atrim=duration=${outputDuration},loudnorm=I=-23:TP=-3:LRA=11,volume='${musicArc}':eval=frame,afade=t=in:st=0:d=2.2,afade=t=out:st=${fadeOut}:d=2[music]`,
+    // Leading silence equal to the motion hook's real duration, so the
+    // narration lands at the same absolute time it does in the video
+    // timeline (hook first, then narration) -- see
+    // docs/canonical-candidate-audit.md section 5b. Trailing padding then
+    // covers the end card, up to the full candidate duration.
+    `[0:a]adelay=${Math.round(headSilenceSeconds * 1000)}|${Math.round(headSilenceSeconds * 1000)},atrim=duration=${voiceContentDuration},apad=pad_dur=${Math.max(0, outputDuration - voiceContentDuration)},atrim=duration=${outputDuration},highpass=f=70,lowpass=f=15500,acompressor=threshold=-20dB:ratio=2.2:attack=15:release=180,asplit=2[voice_sc][voice_mix]`,
+    `[1:a]atrim=duration=${outputDuration},loudnorm=I=-23:TP=-3:LRA=11,volume='${musicArc}':eval=frame,afade=t=in:st=0:d=2.2,afade=t=out:st=${fadeOut}:d=${fadeOutSeconds}[music]`,
     "[music][voice_sc]sidechaincompress=threshold=0.028:ratio=4:attack=18:release=480[ducked]",
     ...sfxFilters,
     `[voice_mix][ducked]${sfxLabels.join("")}amix=inputs=${2 + sfxLabels.length}:normalize=0,${normalizeFilter(loudnorm)},aformat=channel_layouts=stereo[mix]`
@@ -303,7 +313,23 @@ function mixFilter({ timelineNarrationDuration, outputDuration, pauseWindows, se
 
 export async function buildCanonicalAudioMix(
   projectId = PROJECT_ID,
-  { mode = "proof", durationSeconds = null, narrationLimitSeconds = null, editorialPauses = true, requireApprovedMusic = true, allowPrefixTruncation = false } = {}
+  {
+    mode = "candidate",
+    durationSeconds = null,
+    narrationLimitSeconds = null,
+    editorialPauses = true,
+    requireApprovedMusic = true,
+    allowPrefixTruncation = false,
+    // The real motion-hook duration (seconds) that precedes the narration in
+    // the video timeline. Video places <Audio> at the composition root with
+    // no `from=` offset (templates/remotion/src/Video.tsx), so the mix file
+    // itself must contain this much leading silence before narration starts,
+    // or narration plays hookDuration seconds too early relative to the
+    // picture -- see docs/canonical-candidate-audit.md section 5b. Callers
+    // should resolve this from scripts/lib/orvyq-timeline.mjs, the single
+    // source of truth for the candidate's timeline, not recompute it here.
+    headSilenceSeconds = 0
+  } = {}
 ) {
   const dir = projectDir(projectId);
   const audioDir = path.join(dir, "assets", "audio");
@@ -315,24 +341,34 @@ export async function buildCanonicalAudioMix(
   const approvedMusicProvenancePath = path.join(musicDir, "approved_bed.provenance.json");
   const mix = path.join(audioDir, "final_mix.mp3");
   if (!(await exists(sourceVoice))) throw new Error("Missing required narrator file: assets/audio/final_voice.mp3");
+  if (!Number.isFinite(headSilenceSeconds) || headSilenceSeconds < 0) throw new Error(`headSilenceSeconds must be a non-negative number, got ${headSilenceSeconds}`);
 
   const sourceDuration = await durationSecondsOf(sourceVoice);
   const prepared = await prepareNarrator({ dir, audioDir, sourceVoice, sourceDuration });
   const availableDuration = await durationSecondsOf(prepared.voice);
   const narration = await prepareEditorialNarration({ dir, audioDir, voice: prepared.voice, availableDuration, narrationLimitSeconds, editorialPauses, mode });
+  // Shift every narration-relative time (pauses, and anything derived from
+  // them) forward by the leading hook silence, so they land at the same
+  // absolute position the video timeline (and scripts/orvyq_caption_build.mjs,
+  // which reads pause_windows directly off this file) already uses.
+  const absolutePauseWindows = narration.pauseWindows.map((pause) => ({ ...pause, start: pause.start + headSilenceSeconds, end: pause.end + headSilenceSeconds }));
+  const voiceContentDuration = headSilenceSeconds + narration.timelineNarrationDuration;
 
-  const outputDuration = Number.isFinite(durationSeconds) && durationSeconds > 0 ? durationSeconds : narration.timelineNarrationDuration;
+  const outputDuration = Number.isFinite(durationSeconds) && durationSeconds > 0 ? durationSeconds : voiceContentDuration;
   // A shorter outputDuration normally means broken input (someone forgot to
-  // include the whole paused narration) and must fail loud. The one
-  // legitimate exception is a deliberate proof-boundary prefix render: the
-  // full paused narration timeline is still built above from the complete
-  // narration and all real editorial pauses (narrationLimitSeconds/mode are
-  // untouched), and only the FINAL mix output is intentionally cut short at
-  // outputDuration -- exactly the same real full narration/music content a
-  // full render would produce, just truncated at render time. The caller
-  // must opt into this explicitly; it is never the default.
-  if (outputDuration + 0.001 < narration.timelineNarrationDuration && !allowPrefixTruncation)
-    throw new Error(`Output duration ${outputDuration}s is shorter than the paused narration timeline ${narration.timelineNarrationDuration}s`);
+  // include the whole paused narration, or the leading hook silence) and
+  // must fail loud. The one legitimate exception is a deliberate boundary
+  // prefix render: the full paused narration timeline is still built above
+  // from the complete narration and all real editorial pauses
+  // (narrationLimitSeconds/mode are untouched), and only the FINAL mix
+  // output is intentionally cut short at outputDuration -- exactly the same
+  // real full narration/music content a full-length render would produce,
+  // just truncated at render time. The caller must opt into this
+  // explicitly; it is never the default, and per task section 2 a
+  // deliverable rendered this way is historical/regression reference only,
+  // never a substitute for the full-length review render.
+  if (outputDuration + 0.001 < voiceContentDuration && !allowPrefixTruncation)
+    throw new Error(`Output duration ${outputDuration}s is shorter than the head silence + paused narration timeline ${voiceContentDuration}s`);
 
   const hasApprovedMusic = await exists(approvedMusic);
   if (!hasApprovedMusic && requireApprovedMusic) throw new Error("This render requires assets/music/approved_bed.mp3");
@@ -341,37 +377,33 @@ export async function buildCanonicalAudioMix(
   const provenance = hasApprovedMusic ? await readOptionalJson(approvedMusicProvenancePath) : null;
   if (hasApprovedMusic && !provenance) throw new Error("Approved music requires approved_bed.provenance.json");
 
-  // Full mode's music structure comes from direction/music_cue_sheet.json's
-  // own full_cues -- real, already-authored per-section music states for
-  // the whole film -- not the proof's 5-section structure blindly rescaled.
-  // Its own policy (continuous_single_loop_forbidden,
-  // full_render_requires_all_cues_ready) is enforced here as an explicit
-  // blocking gap, not silently ignored: a full render must not proceed
+  // The candidate's music structure comes from direction/music_cue_sheet.json's
+  // own full_cues -- real, already-authored per-section music states for the
+  // whole film. `full_render_requires_all_cues_ready` is enforced as an
+  // explicit blocking gap, not silently ignored: a render must not proceed
   // against cues that are still spec_ready_asset_pending.
-  let fullCues = null;
-  let fullCuesAuthoredDuration = null;
-  if (mode === "full") {
-    const cueSheet = await readJson(path.join(dir, "direction", "music_cue_sheet.json"));
-    const cues = cueSheet.full_cues || [];
-    if (cues.length < (cueSheet.policy?.minimum_distinct_music_states || 0))
-      throw new Error(`direction/music_cue_sheet.json has fewer full_cues (${cues.length}) than its own minimum_distinct_music_states policy (${cueSheet.policy?.minimum_distinct_music_states})`);
-    if (cueSheet.policy?.continuous_single_loop_forbidden && cues.length < 2)
-      throw new Error("direction/music_cue_sheet.json's continuous_single_loop_forbidden policy requires more than one distinct full_cues state");
-    const notReady = cues.filter((cue) => cue.status !== "ready");
-    if (cueSheet.policy?.full_render_requires_all_cues_ready && notReady.length)
-      throw new Error(`Full ORVYQ render is blocked: direction/music_cue_sheet.json full_cues not yet status "ready": ${notReady.map((cue) => cue.cue_id).join(", ")}`);
-    fullCues = cues;
-    fullCuesAuthoredDuration = Number(cueSheet.duration_seconds);
-  }
+  // `continuous_single_loop_forbidden` (which required >= 2 cues) has been
+  // replaced by `single_tonal_world_required` -- a real continuous musical
+  // backbone is the goal now, not a mandated minimum number of distinct
+  // tracks (see docs/canonical-candidate-audit.md section 4).
+  const cueSheet = await readJson(path.join(dir, "direction", "music_cue_sheet.json"));
+  const cues = cueSheet.full_cues || [];
+  if (cues.length < (cueSheet.policy?.minimum_distinct_music_states || 0))
+    throw new Error(`direction/music_cue_sheet.json has fewer full_cues (${cues.length}) than its own minimum_distinct_music_states policy (${cueSheet.policy?.minimum_distinct_music_states})`);
+  const notReady = cues.filter((cue) => cue.status !== "ready");
+  if (cueSheet.policy?.full_render_requires_all_cues_ready && notReady.length)
+    throw new Error(`Render is blocked: direction/music_cue_sheet.json full_cues not yet status "ready": ${notReady.map((cue) => cue.cue_id).join(", ")}`);
+  const fullCues = cues;
+  const fullCuesAuthoredDuration = Number(cueSheet.duration_seconds);
 
   const sfx = await generateOriginalSfx(sfxDir);
   const sections = musicSectionsForDuration(outputDuration, { fullCues, fullCuesAuthoredDuration });
-  const sfxPlacements = buildSfxPlacements({ pauseWindows: narration.pauseWindows, outputDuration, sfxAssets: sfx });
+  const sfxPlacements = buildSfxPlacements({ pauseWindows: absolutePauseWindows, outputDuration, sfxAssets: sfx });
   const cuesUsed = [...new Set(sfxPlacements.map((placement) => placement.cue))];
   const inputIndexByCue = new Map(cuesUsed.map((cue, index) => [cue, 2 + index]));
   const inputs = ["-i", narration.voice, "-stream_loop", "-1", "-i", music, ...cuesUsed.flatMap((cue) => ["-i", sfx[cue]])];
 
-  const filterOptions = { timelineNarrationDuration: narration.timelineNarrationDuration, outputDuration, pauseWindows: narration.pauseWindows, sections, sfxPlacements, inputIndexByCue };
+  const filterOptions = { headSilenceSeconds, timelineNarrationDuration: narration.timelineNarrationDuration, outputDuration, pauseWindows: absolutePauseWindows, sections, sfxPlacements, inputIndexByCue };
   const firstPass = await command("ffmpeg", ["-hide_banner", "-nostats", ...inputs, "-filter_complex", mixFilter(filterOptions), "-map", "[mix]", "-t", String(outputDuration), "-f", "null", "-"]);
   const analysis = extractLoudnorm(`${firstPass.stdout}\n${firstPass.stderr}`);
   await command("ffmpeg", ["-hide_banner", "-nostats", "-y", ...inputs, "-filter_complex", mixFilter({ ...filterOptions, loudnorm: analysis }), "-map", "[mix]", "-t", String(outputDuration), "-ac", "2", "-ar", "48000", "-c:a", "libmp3lame", "-b:a", "192k", mix]);
@@ -389,10 +421,12 @@ export async function buildCanonicalAudioMix(
     voice_repair: prepared.repair,
     editorial_pause_map: narration.pauseMap,
     duration_seconds: outputDuration,
+    head_silence_seconds: round3(headSilenceSeconds),
     narration_duration_seconds: narration.timelineNarrationDuration,
     narration_source_duration_seconds: narration.sourceNarrationDuration,
     source_duration_seconds: sourceDuration,
     editorial_pause_seconds: narration.editorialPauseSeconds,
+    end_card_fade_seconds: Math.min(END_CARD_FADE_SECONDS, outputDuration),
     mix_asset: "assets/audio/final_mix.mp3",
     music_asset: relative(music),
     music_profile: musicProfile,
@@ -401,11 +435,24 @@ export async function buildCanonicalAudioMix(
       : "Original sectioned ORVYQ fallback score generated from harmonic oscillators only",
     music_provenance: hasApprovedMusic ? "assets/music/approved_bed.provenance.json" : null,
     music_attribution: provenance?.attribution || null,
-    pause_windows: narration.pauseWindows.map((pause) => ({ pause_id: pause.pause_id, start_seconds: round3(pause.start), end_seconds: round3(pause.end) })),
+    // Absolute (hook-inclusive) times -- the same time base as
+    // direction/edit_plan.json's shot frames, since
+    // scripts/orvyq_caption_build.mjs converts these directly to frame
+    // numbers and compares them against edit-plan frames. See
+    // docs/canonical-candidate-audit.md section 5b.
+    pause_windows: absolutePauseWindows.map((pause) => ({ pause_id: pause.pause_id, start_seconds: round3(pause.start), end_seconds: round3(pause.end) })),
     music_sections: sections.map((section) => ({ id: section.id, start_seconds: round3(section.start), end_seconds: round3(section.end) })),
     music_mix_target_lufs: -23,
     music_source_measured: { integrated_lufs: Number(musicMeasured.input_i), true_peak_dbtp: Number(musicMeasured.input_tp), loudness_range: Number(musicMeasured.input_lra) },
-    narration_ducking: { enabled: true, ratio: 4, release_ms: 480, music_rises_during_editorial_pauses: true, editorial_pause_gain: EDITORIAL_PAUSE_GAIN, per_section_under_speech_gain: sections.map((section) => section.under_speech_gain) },
+    narration_ducking: {
+      enabled: true,
+      ratio: 4,
+      release_ms: 480,
+      music_rises_during_editorial_pauses: true,
+      pause_rise_db: DEFAULT_PAUSE_RISE_DB,
+      pause_rise_ramp_seconds: DEFAULT_PAUSE_RISE_RAMP_SECONDS,
+      per_section_under_speech_gain: sections.map((section) => section.under_speech_gain)
+    },
     procedural_noise_generation: false,
     sfx_origin: "original_synthesized_sfx",
     sfx_assets: cuesUsed.map((cue) => relative(sfx[cue])),
@@ -417,18 +464,28 @@ export async function buildCanonicalAudioMix(
       : "Narration plus an original tonal score and original synthesized SFX; no third-party audio."
   };
   await writeJsonAtomic(path.join(audioDir, "final_mix.metadata.json"), metadata);
-  return { outputDuration, narrationTimelineDuration: narration.timelineNarrationDuration, editorialPauseSeconds: narration.editorialPauseSeconds, measured, musicProfile, musicSections: sections.length, sfxAssets: cuesUsed.length };
+  return {
+    outputDuration,
+    headSilenceSeconds,
+    narrationTimelineDuration: narration.timelineNarrationDuration,
+    editorialPauseSeconds: narration.editorialPauseSeconds,
+    measured,
+    musicProfile,
+    musicSections: sections.length,
+    sfxAssets: cuesUsed.length
+  };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const args = parseArgs(process.argv.slice(2));
   buildCanonicalAudioMix(args["project-id"] || PROJECT_ID, {
-    mode: args.mode || "proof",
+    mode: args.mode || "candidate",
     durationSeconds: args["duration-seconds"] ? Number.parseFloat(args["duration-seconds"]) : null,
     narrationLimitSeconds: args["narration-limit-seconds"] ? Number.parseFloat(args["narration-limit-seconds"]) : null,
     editorialPauses: args["no-editorial-pauses"] ? false : true,
     requireApprovedMusic: args["allow-fallback-music"] ? false : true,
-    allowPrefixTruncation: Boolean(args["allow-prefix-truncation"])
+    allowPrefixTruncation: Boolean(args["allow-prefix-truncation"]),
+    headSilenceSeconds: args["head-silence-seconds"] ? Number.parseFloat(args["head-silence-seconds"]) : 0
   })
     .then((result) => printJson({ ok: true, ...result }))
     .catch((error) => {
