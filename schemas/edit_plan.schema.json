@@ -8,7 +8,7 @@
   "properties": {
     "schema_version": { "const": "1.0-canonical" },
     "project_id": { "type": "string" },
-    "mode": { "enum": ["proof", "full"] },
+    "mode": { "enum": ["candidate", "proof", "full"], "description": "\"candidate\" is the live value going forward -- one candidate, no separate creative modes. \"proof\"/\"full\" are accepted only for historical/regression edit plans produced before this hardening." },
     "frame_range": {
       "type": "object",
       "required": ["start_frame", "end_frame"],
