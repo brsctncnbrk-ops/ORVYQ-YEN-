@@ -1,11 +1,27 @@
 #!/usr/bin/env node
 // buildCanonicalFrozenCandidate() -- snapshots exactly what a given render
-// would produce, per schemas/frozen_candidate.schema.json (task section 10).
-// Hashes are computed from the real, already-generated canonical outputs on
-// disk (direction/edit_plan.json, remotion/captions.json,
-// assets/audio/final_mix.metadata.json, assets/asset_registry.json) -- never
-// invented. A proof_approval references this document by hashing it; full
-// render is only permitted from the exact frozen_candidate a human approved.
+// would produce, per schemas/frozen_candidate.schema.json (task section 10,
+// hardened further per the follow-up task's section 10).
+//
+// Deterministic by construction: every field that varies run-to-run for
+// otherwise-identical inputs (created_at, the approval_version label) lives
+// under `operational_metadata`, OUTSIDE what `candidate_hash` is computed
+// over. `canonical_candidate_identity` contains only fields that change if
+// and only if a real creative, technical, or renderer input changed --
+// building a candidate twice from the same inputs must produce the exact
+// same candidate_hash and render_bundle_hash (verified by
+// orvyq_frozen_candidate.test.mjs's determinism test).
+//
+// `render_bundle_hash` covers just the file-identity hashes that make up
+// the actual render bundle (task section 8/9) -- edit plan, captions, audio,
+// asset registry/manifest, renderer sources, render-ready project source.
+// `candidate_hash` covers the render bundle hash PLUS the remaining
+// identity fields (source commit, fps, frame range, mode) -- i.e. "the same
+// render_bundle_hash but rendered from a different commit" is still a
+// different candidate_hash, but "the same everything, checked at a later
+// HEAD after an unrelated approval-record commit" is not (see
+// scripts/orvyq_verify_approval.mjs, which is what actually enforces that
+// distinction operationally).
 import path from "node:path";
 import { execSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -14,12 +30,12 @@ import { projectDir, readJson, writeJsonAtomic, pathExists, parseArgs, printJson
 
 const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
 
-async function sha256OfFile(absPath) {
+export async function sha256OfFile(absPath) {
   const buffer = await fs.readFile(absPath);
   return createHash("sha256").update(buffer).digest("hex");
 }
 
-function sha256OfJson(value) {
+export function sha256OfJson(value) {
   return createHash("sha256").update(JSON.stringify(value)).digest("hex");
 }
 
@@ -53,10 +69,8 @@ async function readOptionalJson(absPath) {
 
 // Deterministic recursive hash of every file under a directory tree (sorted
 // by relative path, hash-of-hashes -- NOT a hash of any single concatenated
-// blob, so adding/removing/renaming a file always changes the result). Used
-// for templates/remotion/src, so a renderer source change is caught even
-// though no single file's hash is itself part of the manifest.
-async function sha256OfDirectoryTree(absDir) {
+// blob, so adding/removing/renaming a file always changes the result).
+export async function sha256OfDirectoryTree(absDir, { skipDirs = new Set(["node_modules", "out", ".remotion"]) } = {}) {
   if (!(await pathExists(absDir))) return null;
   const entries = [];
   async function walk(current, relative) {
@@ -65,7 +79,7 @@ async function sha256OfDirectoryTree(absDir) {
       const childAbs = path.join(current, item.name);
       const childRel = relative ? `${relative}/${item.name}` : item.name;
       if (item.isDirectory()) {
-        if (item.name === "node_modules" || item.name === "out" || item.name === ".remotion") continue;
+        if (skipDirs.has(item.name)) continue;
         await walk(childAbs, childRel);
       } else {
         entries.push({ path: childRel, sha256: await sha256OfFile(childAbs) });
@@ -107,7 +121,13 @@ async function buildAssetManifest(dir, assetRegistry) {
 // compare against the committed candidate, without ever overwriting it --
 // verification must never have a side effect that could silently "fix" a
 // stale approval.
-export async function computeCanonicalFrozenCandidate(projectId = PROJECT_ID) {
+//
+// `renderReadyDir` lets the caller point at the actual assembled
+// render_ready_project (task section 7: freeze happens AFTER that build,
+// not before) -- defaults to this project's own
+// remotion/render_ready_project directory, but a test or a workflow step
+// that assembled the bundle elsewhere can override it.
+export async function computeCanonicalFrozenCandidate(projectId = PROJECT_ID, { renderReadyDir } = {}) {
   const dir = projectDir(projectId);
   const editPlanPath = path.join(dir, "direction", "edit_plan.json");
   const captionsPath = path.join(dir, "remotion", "captions.json");
@@ -122,12 +142,6 @@ export async function computeCanonicalFrozenCandidate(projectId = PROJECT_ID) {
     shots: editPlan.shots
   };
 
-  // Optional hardened fields (schemas/frozen_candidate.schema.json) -- added
-  // without touching the required core fields above, so a frozen_candidate
-  // produced before this hardening (and any proof_approval.json already
-  // hashed against it) keeps validating and keeps its real, already-reviewed
-  // approval; scripts/orvyq_verify_approval.mjs checks each of these when
-  // present rather than requiring every historical candidate to have them.
   const rendererCommitSha = resolveRendererCommitSha();
   const pauseMapHash = await sha256OfFileIfExists(path.join(dir, "direction", "editorial_pause_map.json"));
   const scriptHash = await sha256OfFileIfExists(path.join(dir, "voice", "voice_script.txt"));
@@ -147,16 +161,23 @@ export async function computeCanonicalFrozenCandidate(projectId = PROJECT_ID) {
   const assetManifest = assetRegistry ? await buildAssetManifest(dir, assetRegistry) : [];
   const assetManifestHash = assetManifest.length ? sha256OfJson(assetManifest) : null;
 
-  const candidate = {
+  // The assembled render_ready_project (task section 9): hashed AFTER it is
+  // built, from the real directory on disk -- includes src/**, package.json,
+  // package-lock.json, scene_config.json, asset_map.json, captions.json,
+  // edit_plan.json as copied into the bundle. See docs/canonical-candidate-audit.md
+  // for why this was previously undefined (both sides missing it made
+  // orvyq_review_final_parity.mjs's check a no-op).
+  const renderReadySourceHash = await sha256OfDirectoryTree(renderReadyDir || path.join(dir, "remotion", "render_ready_project"));
+
+  const canonicalCandidateIdentity = {
     project_id: projectId,
     source_commit_sha: resolveSourceCommitSha(),
     renderer_version: await resolveRendererVersion(),
     timeline_hash: sha256OfJson(timeline),
     edit_plan_hash: await sha256OfFile(editPlanPath),
     caption_hash: await sha256OfFile(captionsPath),
-    audio_mix_hash: await sha256OfFile(audioMixPath),
+    audio_mix_metadata_hash: await sha256OfFile(audioMixPath),
     asset_registry_hash: await sha256OfFile(assetRegistryPath),
-    approval_version: "3.0-manifest-hardened",
     ...(rendererCommitSha ? { renderer_commit_sha: rendererCommitSha } : {}),
     ...(narrationStatus?.narration_sha256 ? { narration_sha256: narrationStatus.narration_sha256 } : {}),
     ...(pauseMapHash ? { pause_map_hash: pauseMapHash } : {}),
@@ -167,27 +188,58 @@ export async function computeCanonicalFrozenCandidate(projectId = PROJECT_ID) {
     ...(remotionAssetMapHash ? { remotion_asset_map_hash: remotionAssetMapHash } : {}),
     ...(rendererPackageLockHash ? { renderer_package_lock_hash: rendererPackageLockHash } : {}),
     ...(rendererSourceTreeHash ? { renderer_source_tree_hash: rendererSourceTreeHash } : {}),
-    ...(assetManifestHash ? { asset_manifest_hash: assetManifestHash, asset_manifest: assetManifest } : {}),
+    ...(assetManifestHash ? { asset_manifest_hash: assetManifestHash } : {}),
+    ...(renderReadySourceHash ? { render_ready_source_hash: renderReadySourceHash } : {}),
     fps: editPlan.fps,
     total_frames: editPlan.duration_frames,
     selected_render_range: editPlan.frame_range,
-    mode: editPlan.mode,
-    created_at: new Date().toISOString()
+    mode: editPlan.mode
   };
 
-  return candidate;
+  // render_bundle_hash: the file-level identity of everything a render
+  // actually consumes -- deliberately narrower than candidate_hash (which
+  // also folds in source_commit_sha/fps/frame_range/mode as separate,
+  // individually-checkable fields for scripts/orvyq_verify_approval.mjs).
+  const renderBundleHash = sha256OfJson({
+    edit_plan_hash: canonicalCandidateIdentity.edit_plan_hash,
+    caption_hash: canonicalCandidateIdentity.caption_hash,
+    audio_mix_metadata_hash: canonicalCandidateIdentity.audio_mix_metadata_hash,
+    final_mix_audio_hash: canonicalCandidateIdentity.final_mix_audio_hash || null,
+    music_bed_hash: canonicalCandidateIdentity.music_bed_hash || null,
+    asset_registry_hash: canonicalCandidateIdentity.asset_registry_hash,
+    asset_manifest_hash: canonicalCandidateIdentity.asset_manifest_hash || null,
+    remotion_scene_config_hash: canonicalCandidateIdentity.remotion_scene_config_hash || null,
+    remotion_asset_map_hash: canonicalCandidateIdentity.remotion_asset_map_hash || null,
+    renderer_package_lock_hash: canonicalCandidateIdentity.renderer_package_lock_hash || null,
+    renderer_source_tree_hash: canonicalCandidateIdentity.renderer_source_tree_hash || null,
+    render_ready_source_hash: canonicalCandidateIdentity.render_ready_source_hash || null
+  });
+  canonicalCandidateIdentity.render_bundle_hash = renderBundleHash;
+  const candidateHash = sha256OfJson(canonicalCandidateIdentity);
+
+  return {
+    project_id: projectId,
+    canonical_candidate_identity: canonicalCandidateIdentity,
+    candidate_hash: candidateHash,
+    render_bundle_hash: renderBundleHash,
+    asset_manifest: assetManifest,
+    operational_metadata: {
+      created_at: new Date().toISOString(),
+      approval_version: "4.0-candidate-identity-hardened"
+    }
+  };
 }
 
-export async function buildCanonicalFrozenCandidate(projectId = PROJECT_ID) {
+export async function buildCanonicalFrozenCandidate(projectId = PROJECT_ID, options = {}) {
   const dir = projectDir(projectId);
-  const candidate = await computeCanonicalFrozenCandidate(projectId);
+  const candidate = await computeCanonicalFrozenCandidate(projectId, options);
   await writeJsonAtomic(path.join(dir, "qa", "frozen_candidate.json"), candidate);
   return candidate;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const args = parseArgs(process.argv.slice(2));
-  buildCanonicalFrozenCandidate(args["project-id"] || PROJECT_ID)
+  buildCanonicalFrozenCandidate(args["project-id"] || PROJECT_ID, { renderReadyDir: args["render-ready-dir"] || undefined })
     .then((candidate) => printJson({ ok: true, ...candidate }))
     .catch((error) => {
       console.error(JSON.stringify({ ok: false, error: error.message }));

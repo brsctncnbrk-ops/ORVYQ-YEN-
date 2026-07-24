@@ -181,28 +181,45 @@ const fixtureEvidenceRegistry = {
 };
 check("fixture evidence_registry (real golden claim/source content)", "evidence_registry.schema.json", fixtureEvidenceRegistry, { kind: "fixture" });
 
-const fixtureFrozenCandidate = {
+const fixtureCanonicalCandidateIdentity = {
   project_id: PROJECT_ID,
   source_commit_sha: "9affbd2494d8197a564c4a552b879fadb0e14a4a",
   renderer_version: "templates/remotion@1.0.0",
   timeline_hash: "0".repeat(64),
   edit_plan_hash: "0".repeat(64),
   caption_hash: "0".repeat(64),
-  audio_mix_hash: "0".repeat(64),
+  audio_mix_metadata_hash: "0".repeat(64),
   asset_registry_hash: "0".repeat(64),
-  selected_render_range: { start_frame: 0, end_frame: 4500 },
-  mode: "proof",
-  created_at: "2026-07-22T00:00:00Z"
+  render_bundle_hash: "2".repeat(64),
+  selected_render_range: { start_frame: 0, end_frame: 25719 },
+  fps: 30,
+  total_frames: 25719,
+  mode: "candidate"
+};
+const fixtureFrozenCandidate = {
+  project_id: PROJECT_ID,
+  canonical_candidate_identity: fixtureCanonicalCandidateIdentity,
+  candidate_hash: "1".repeat(64),
+  render_bundle_hash: "2".repeat(64),
+  operational_metadata: { created_at: "2026-07-22T00:00:00Z", approval_version: "4.0-candidate-identity-hardened" }
 };
 check("fixture frozen_candidate", "frozen_candidate.schema.json", fixtureFrozenCandidate, { kind: "fixture" });
 
 const fixtureProofApproval = {
   frozen_candidate_hash: "1".repeat(64),
+  candidate_hash: "1".repeat(64),
+  candidate_source_sha: "9affbd2494d8197a564c4a552b879fadb0e14a4a",
+  render_bundle_hash: "2".repeat(64),
   approved: false,
   approved_by: "",
   approved_at: "2026-07-22T00:00:00Z",
   notes: "Not yet approved -- fixture only, exercises the schema.",
-  proof_artifact: { workflow_run_id: "29655003486", artifact_name: "orvyq-cinematic-proof-150s-29655003486", duration_seconds: 150, resolution: "1920x1080", fps: 30 }
+  review_run_id: "30061057489",
+  review_artifact_name: "orvyq-full-length-review-30061057489",
+  review_total_frames: 25719,
+  review_duration_seconds: 857.29,
+  review_resolution: "1280x720",
+  review_video_sha256: "3".repeat(64)
 };
 check("fixture proof_approval", "proof_approval.schema.json", fixtureProofApproval, { kind: "fixture" });
 

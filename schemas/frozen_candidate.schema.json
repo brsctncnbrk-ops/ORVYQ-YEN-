@@ -2,56 +2,83 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://orvyq.dev/schemas/frozen_candidate.schema.json",
   "title": "Frozen Candidate",
-  "description": "Per the task's canonical freeze model (section 10): a snapshot of exactly what would render, identified by hashes of every canonical input. Proof approval references a frozen_candidate by hash; full render is only permitted from the exact approved frozen_candidate -- any changed hash invalidates the approval.",
+  "description": "Per the task's canonical freeze model (section 10, hardened per the follow-up task's section 10): a snapshot of exactly what would render. `canonical_candidate_identity` contains only deterministic fields -- rebuilding a candidate from the same inputs must reproduce the exact same candidate_hash/render_bundle_hash. Volatile fields (created_at, the approval_version label) live in `operational_metadata`, outside the hash. Approval references a frozen_candidate by candidate_hash + render_bundle_hash (schemas/proof_approval.schema.json); any changed hash invalidates the approval.",
   "type": "object",
-  "required": [
-    "project_id", "source_commit_sha", "renderer_version", "timeline_hash", "edit_plan_hash",
-    "caption_hash", "audio_mix_hash", "asset_registry_hash", "selected_render_range", "mode", "created_at"
-  ],
+  "required": ["project_id", "canonical_candidate_identity", "candidate_hash", "render_bundle_hash", "operational_metadata"],
   "properties": {
     "project_id": { "type": "string" },
-    "source_commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
-    "renderer_version": { "type": "string" },
-    "timeline_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-    "edit_plan_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-    "caption_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-    "audio_mix_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-    "asset_registry_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-    "approval_version": {
-      "type": "string",
-      "description": "Marks which verification scheme (scripts/orvyq_verify_approval.mjs) this candidate expects to be checked under. Optional and absent on frozen candidates produced before hash-hardened approval verification existed -- their approval remains valid under the original approved===true + frozen_candidate_hash check they were reviewed against."
+    "candidate_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "render_bundle_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "asset_manifest": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "bytes", "role"],
+        "properties": {
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "bytes": { "type": "integer", "minimum": 0 },
+          "role": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
     },
-    "renderer_commit_sha": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{40}$",
-      "description": "git SHA of the last commit that touched templates/remotion, independent of source_commit_sha (the checkout commit) -- lets renderer drift be detected even when other project data changes without a renderer change."
-    },
-    "narration_sha256": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{64}$",
-      "description": "sha256 of the exact narration audio this candidate's edit plan was timed against (voice/narration_status.json's narration_sha256 for full mode)."
-    },
-    "pause_map_hash": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{64}$",
-      "description": "sha256 of direction/editorial_pause_map.json's real file content."
-    },
-    "script_hash": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{64}$",
-      "description": "sha256 of voice/voice_script.txt's real file content."
-    },
-    "selected_render_range": {
+    "canonical_candidate_identity": {
       "type": "object",
-      "required": ["start_frame", "end_frame"],
+      "description": "Deterministic identity fields only. No timestamps, run IDs, artifact URLs, log paths, or runner-specific paths belong here.",
+      "required": [
+        "project_id", "source_commit_sha", "renderer_version", "timeline_hash", "edit_plan_hash",
+        "caption_hash", "audio_mix_metadata_hash", "asset_registry_hash", "render_bundle_hash",
+        "fps", "total_frames", "selected_render_range", "mode"
+      ],
       "properties": {
-        "start_frame": { "type": "integer", "minimum": 0 },
-        "end_frame": { "type": "integer", "minimum": 1 }
+        "project_id": { "type": "string" },
+        "source_commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "renderer_version": { "type": "string" },
+        "timeline_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "edit_plan_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "caption_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "audio_mix_metadata_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "asset_registry_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "render_bundle_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "approval_version": { "type": "string", "description": "Deprecated location -- moved to operational_metadata.approval_version. Accepted here only on historical candidates." },
+        "renderer_commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "narration_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "pause_map_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "script_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "final_mix_audio_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "music_bed_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "remotion_scene_config_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "remotion_asset_map_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "renderer_package_lock_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "renderer_source_tree_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "asset_manifest_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "render_ready_source_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "selected_render_range": {
+          "type": "object",
+          "required": ["start_frame", "end_frame"],
+          "properties": {
+            "start_frame": { "type": "integer", "minimum": 0 },
+            "end_frame": { "type": "integer", "minimum": 1 }
+          },
+          "additionalProperties": false
+        },
+        "fps": { "type": "integer", "minimum": 1 },
+        "total_frames": { "type": "integer", "minimum": 1 },
+        "mode": { "enum": ["candidate", "proof", "full"], "description": "\"candidate\" is the live value going forward. \"proof\"/\"full\" are accepted only for historical/regression frozen candidates produced before this hardening." }
       },
       "additionalProperties": false
     },
-    "mode": { "enum": ["candidate", "proof", "full"], "description": "\"candidate\" is the live value going forward. \"proof\"/\"full\" are accepted only for historical/regression frozen candidates produced before this hardening." },
-    "created_at": { "type": "string", "format": "date-time" }
+    "operational_metadata": {
+      "type": "object",
+      "description": "Volatile, non-identity fields. Never part of candidate_hash/render_bundle_hash.",
+      "required": ["created_at"],
+      "properties": {
+        "created_at": { "type": "string", "format": "date-time" },
+        "approval_version": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
   },
   "additionalProperties": false
 }
