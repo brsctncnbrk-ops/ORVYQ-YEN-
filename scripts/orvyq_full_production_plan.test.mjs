@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { kindFor, titleCase, locateClaimWindow, sliceClaimWindow, quantizeShotsToFrames } from "./orvyq_full_production_plan.mjs";
+import { kindFor, titleCase, locateClaimWindow, sliceClaimWindow, quantizeShotsToFrames, expandFootageAssignments } from "./orvyq_full_production_plan.mjs";
 import { tokenizeWords } from "./lib/orvyq-pause-resolver.mjs";
 
 // Mirrors buildCanonicalEditPlan's own cumulative frame assignment
@@ -70,10 +70,11 @@ test("sliceClaimWindow splits a window into slices no longer than the max, with 
   // Interior slices are exactly equal (no DURATION_VARIATION_DELTA jitter).
   const interior = slices.slice(0, -1);
   for (const slice of interior) assert.equal(slice.end - slice.start, interior[0].end - interior[0].start);
-  // footageCandidateSlot is a stable, deterministic bookkeeping position
-  // (every third slice) that FOOTAGE_ASSIGNMENTS may target -- it does not
-  // by itself change `kind` or imply any role.
-  assert.deepEqual(slices.map((slice) => slice.footageCandidateSlot), slices.map((_, i) => i % 3 === 2));
+  // Every slice's own 0-based array index is directly usable as a
+  // FOOTAGE_ASSIGNMENTS[claim_id][sliceIndex] key -- there is no positional
+  // restriction on which slice may carry a footage assignment (no
+  // "footageCandidateSlot" field, no every-third-slice rule).
+  assert.ok(!("footageCandidateSlot" in slices[0]));
 });
 
 test("sliceClaimWindow returns a single slice when the window already fits within the cap", () => {
@@ -82,6 +83,64 @@ test("sliceClaimWindow returns a single slice when the window already fits withi
   assert.equal(slices.length, 1);
   assert.equal(slices[0].start, 10);
   assert.equal(slices[0].end, 14);
+});
+
+// expandFootageAssignments -- the direct replacement for the removed
+// footageCandidateSlot/i%3 mechanism (task follow-up section 17): any slice
+// index is addressable, and a single real clip may span several contiguous
+// slices as one continuous, real-duration-verified pass instead of several
+// separate uses.
+test("expandFootageAssignments resolves a plain single-slice (span 1, default) assignment exactly as before", () => {
+  const table = { CLM_TEST: { 2: { asset: "clip_a.mp4", trimInRatio: 0.5, motion: "hold", role: "context" } } };
+  const sliceDurations = [6, 6, 6, 6];
+  const expanded = expandFootageAssignments("CLM_TEST", sliceDurations, new Map([["clip_a.mp4", 20]]), table);
+  assert.equal(expanded.size, 1);
+  const entry = expanded.get(2);
+  assert.equal(entry.asset, "clip_a.mp4");
+  assert.equal(entry.trimInSec, 10); // 0.5 * 20, well under the 20 - 6 - 0.3 clamp
+  assert.equal(entry.trimOutSec, 16);
+});
+
+test("expandFootageAssignments spans multiple contiguous slices with one continuous, contiguous trim", () => {
+  const table = { CLM_TEST: { 1: { asset: "clip_a.mp4", trimInRatio: 0.1, span: 3, motion: "hold", role: "context" } } };
+  const sliceDurations = [5, 5, 5, 5, 5];
+  const expanded = expandFootageAssignments("CLM_TEST", sliceDurations, new Map([["clip_a.mp4", 30]]), table);
+  assert.deepEqual([...expanded.keys()].sort(), [1, 2, 3]);
+  const first = expanded.get(1);
+  const second = expanded.get(2);
+  const third = expanded.get(3);
+  assert.equal(first.trimInSec, 3); // 0.1 * 30
+  assert.equal(first.trimOutSec, 8); // + 5
+  // Each subsequent slice's trim_in picks up exactly where the previous
+  // one's trim_out left off -- true contiguity, not just "same asset".
+  assert.equal(second.trimInSec, first.trimOutSec);
+  assert.equal(second.trimOutSec, 13);
+  assert.equal(third.trimInSec, second.trimOutSec);
+  assert.equal(third.trimOutSec, 18);
+});
+
+test("expandFootageAssignments throws rather than silently overrunning a span past the clip's own real duration", () => {
+  const table = { CLM_TEST: { 0: { asset: "clip_a.mp4", trimInRatio: 0.5, span: 2, motion: "hold", role: "context" } } };
+  const sliceDurations = [7, 7];
+  assert.throws(() => expandFootageAssignments("CLM_TEST", sliceDurations, new Map([["clip_a.mp4", 10]]), table), /overruns that real duration/);
+});
+
+test("expandFootageAssignments throws when a span reaches past the claim's own last slice", () => {
+  const table = { CLM_TEST: { 0: { asset: "clip_a.mp4", trimInRatio: 0, span: 5, motion: "hold", role: "context" } } };
+  const sliceDurations = [5, 5];
+  assert.throws(() => expandFootageAssignments("CLM_TEST", sliceDurations, new Map([["clip_a.mp4", 100]]), table), /does not exist/);
+});
+
+test("expandFootageAssignments throws when two declared assignments both cover the same slice", () => {
+  const table = { CLM_TEST: { 0: { asset: "clip_a.mp4", trimInRatio: 0, span: 2, motion: "hold", role: "context" }, 1: { asset: "clip_b.mp4", trimInRatio: 0, motion: "hold", role: "context" } } };
+  const sliceDurations = [5, 5];
+  const durations = new Map([["clip_a.mp4", 100], ["clip_b.mp4", 100]]);
+  assert.throws(() => expandFootageAssignments("CLM_TEST", sliceDurations, durations, table), /more than one footage assignment/);
+});
+
+test("expandFootageAssignments returns an empty map for a claim with no declared assignments", () => {
+  const expanded = expandFootageAssignments("CLM_NOT_IN_TABLE", [5, 5], new Map(), {});
+  assert.equal(expanded.size, 0);
 });
 
 // Regression test for the "shot_XXX lacks evidence hierarchy"-adjacent proof
