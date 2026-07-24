@@ -167,7 +167,17 @@ async function buildCueSegment({ sourcePath, requiredDuration, outputPath, tempD
   }
   const inputArgs = needsLoop ? ["-stream_loop", "-1", "-i", readPath] : ["-i", readPath];
   const filters = ["atrim=duration=" + requiredDuration, "asetpts=PTS-STARTPTS", "loudnorm=I=-23:TP=-3:LRA=11", "aformat=sample_rates=48000:channel_layouts=stereo"];
-  await command("ffmpeg", ["-hide_banner", "-nostats", "-y", ...inputArgs, "-filter:a", filters.join(","), "-t", String(requiredDuration), "-ac", "2", "-ar", "48000", "-c:a", "pcm_s16le", outputPath]);
+  // No output-level "-t" here: `atrim=duration=` already cuts this segment to
+  // the exact requiredDuration. Adding a redundant "-t" on top of that
+  // measurably truncates the result a few dozen milliseconds SHORT of
+  // requiredDuration when loudnorm sits in the same filter chain (confirmed
+  // with real ffmpeg fixtures: identical filters, only difference is
+  // "-t" present vs absent, correct duration vs a consistent deficit) --
+  // and that per-segment deficit compounds across every cue in
+  // chainAcrossfade, which assumes each segment is exactly requiredDuration
+  // long. A single cue-level deficit is invisible against this file's own
+  // ≤3-frame/0.1s tolerance; nine of them in one bed is not.
+  await command("ffmpeg", ["-hide_banner", "-nostats", "-y", ...inputArgs, "-filter:a", filters.join(","), "-ac", "2", "-ar", "48000", "-c:a", "pcm_s16le", outputPath]);
   return { looped: needsLoop, sourceDuration };
 }
 
@@ -283,7 +293,10 @@ async function buildFullMusicBed({ dir, cues, registry, destination, targetDurat
       throw new Error(`Full music bed crossfade assembly drifted ${drift.toFixed(3)}s from its target ${targetTotal}s total (assembled to ${preTrimDuration}s) -- exceeds the allowed ~3-frame/0.1s tolerance`);
     await command("ffmpeg", [
       "-hide_banner", "-nostats", "-y", "-i", crossfadedPath,
-      "-af", `apad=pad_dur=${Math.max(0, drift)}`, "-t", String(targetTotal),
+      // toFixed(): a near-zero drift (e.g. 3.3e-7) formats in scientific
+      // notation by default, which ffmpeg's apad "pad_dur" option rejects
+      // outright ("Unable to parse option value ... as duration").
+      "-af", `apad=pad_dur=${Math.max(0, drift).toFixed(6)}`, "-t", String(targetTotal),
       "-ac", "2", "-ar", "48000", "-c:a", "libmp3lame", "-b:a", "192k", destination
     ]);
 
