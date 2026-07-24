@@ -17,7 +17,7 @@
 import path from "node:path";
 import { promises as fs } from "node:fs";
 import { createHash } from "node:crypto";
-import { projectDir, readJson, writeJsonAtomic, parseArgs, printJson } from "./lib/fs-utils.mjs";
+import { projectDir, readJson, readJsonSafe, writeJsonAtomic, parseArgs, printJson } from "./lib/fs-utils.mjs";
 
 const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
 
@@ -36,20 +36,47 @@ export async function buildCanonicalNarrationAlignment(projectId = PROJECT_ID, {
     throw new Error(`${reportPath} has no per-word timestamps -- was it produced with word_timestamps enabled?`);
   }
 
-  const alignment = {
+  const contentFields = {
     schema_version: "1.0-canonical",
     project_id: projectId,
     source_audio_sha256: await sha256OfFile(audioPath),
     model: report.model,
-    generated_at: new Date().toISOString(),
     duration_seconds: report.source_duration_seconds,
     script_similarity: report.script_similarity,
     transcript: report.transcript,
     words: report.words.map((word) => ({ text: word.text, start: word.start, end: word.end, probability: word.probability }))
   };
 
-  await writeJsonAtomic(path.join(dir, "voice", "narration_alignment.json"), alignment);
-  return { word_count: alignment.words.length, duration_seconds: alignment.duration_seconds };
+  // generated_at is operational metadata, not content: re-running ASR
+  // against the exact same audio/script reproduces the exact same
+  // contentFields (real, deterministic Whisper inference observed in this
+  // project's own history), and a bare timestamp bump was the ONLY reason
+  // orvyq-narration-validation.yml's "commit if changed" check ever saw a
+  // diff, producing a bot commit on every run regardless of whether
+  // anything real changed. Reuse the existing file's generated_at when the
+  // real content is unchanged, so the file -- and therefore the commit
+  // step's `git diff --cached --quiet` check -- stays genuinely stable.
+  const alignmentPath = path.join(dir, "voice", "narration_alignment.json");
+  const existing = await readJsonSafe(alignmentPath, null);
+  const existingContentFields = existing ? { ...existing, generated_at: undefined } : null;
+  const contentUnchanged = existingContentFields && JSON.stringify(existingContentFields) === JSON.stringify({ ...contentFields, generated_at: undefined });
+  // Field order matches the historical file (generated_at right after
+  // model) so an unchanged run also produces byte-identical JSON, not just
+  // semantically-equal JSON.
+  const alignment = {
+    schema_version: contentFields.schema_version,
+    project_id: contentFields.project_id,
+    source_audio_sha256: contentFields.source_audio_sha256,
+    model: contentFields.model,
+    generated_at: contentUnchanged ? existing.generated_at : new Date().toISOString(),
+    duration_seconds: contentFields.duration_seconds,
+    script_similarity: contentFields.script_similarity,
+    transcript: contentFields.transcript,
+    words: contentFields.words
+  };
+
+  await writeJsonAtomic(alignmentPath, alignment);
+  return { word_count: alignment.words.length, duration_seconds: alignment.duration_seconds, content_unchanged: Boolean(contentUnchanged) };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
