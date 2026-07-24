@@ -149,11 +149,18 @@ export const FOOTAGE_ASSIGNMENTS = {
     8: { asset: "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4", trimInRatio: 0.35, motion: "drift_left", role: "context", reuse_reason: "Returns from the opening motion hook under this claim's third footage slice, at a distinct trim window." }
   },
   CLM_010_CYBER_ESPIONAGE: {
-    // Every slice of this short (2-slice) claim is footage -- a single
-    // continuous pass -- since it sits directly between two dense evidence
-    // arcs (CLM_009, CLM_011) with no spare evidence-run budget on either
-    // side.
-    0: { asset: "assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4", trimInRatio: 0.05, span: 2, motion: "hold", role: "context" }
+    // Only slice 1 (of this claim's own 2 slices) becomes footage, breaking
+    // the run into CLM_011's own dense evidence arc. Slice 0 is deliberately
+    // left at its default (this claim's own visual_treatment.primary,
+    // "campaign_phase_diagram" -> real source-backed "evidence_chain") --
+    // this is a critical (importance 5), source-attributed claim
+    // (SRC_ANTHROPIC_ESPIONAGE_2025), and scripts/orvyq_evidence_audit.mjs
+    // hard-requires at least one physical, source-backed evidence shot per
+    // critical claim; making BOTH slices footage (the original span:2 pass)
+    // left this claim with zero evidence shots and failed that audit in
+    // real CI (confirmed: "CLM_010_CYBER_ESPIONAGE has no physical,
+    // source-backed visual evidence").
+    1: { asset: "assets/footage/scene_026_8a460acd7183fb80baaa455e.mp4", trimInRatio: 0.05, motion: "hold", role: "context" }
   },
   CLM_011_BIO_SAFEGUARD_THRESHOLD: {
     2: { asset: "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4", trimInRatio: 0.55, motion: "hold", role: "context", reuse_reason: "A later trim window of the same clip used for CLM_006; both claims belong to the same controlled-evaluation evidence arc (SEC_02)." },
