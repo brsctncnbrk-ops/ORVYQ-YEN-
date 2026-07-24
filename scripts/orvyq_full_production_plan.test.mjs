@@ -58,14 +58,22 @@ test("locateClaimWindow throws when a claim cannot be located at all", () => {
   assert.throws(() => locateClaimWindow(tokens, claim, 0), /could not be located/);
 });
 
-test("sliceClaimWindow splits a window into slices no longer than the max, rotating kind and role", () => {
+test("sliceClaimWindow splits a window into slices no longer than the max, with no rotation and no artificial duration variation", () => {
   const claim = { visual_treatment: { primary: "evidence_mosaic", secondary: "comparison_overlay", metaphor: "distributed_risk" } };
   const slices = sliceClaimWindow(claim, 0, 20, 8);
   assert.ok(slices.every((slice) => slice.end - slice.start <= 8 + 1e-9));
   const total = slices.reduce((sum, slice) => sum + (slice.end - slice.start), 0);
   assert.ok(Math.abs(total - 20) < 1e-9);
-  assert.equal(slices[0].kind, "concept_map");
-  assert.equal(slices[0].role, "evidence");
+  // Every slice uses the claim's own primary visual_treatment -- there is no
+  // evidence/context/metaphor rotation and no forced "boundary" kind.
+  for (const slice of slices) assert.equal(slice.kind, "concept_map");
+  // Interior slices are exactly equal (no DURATION_VARIATION_DELTA jitter).
+  const interior = slices.slice(0, -1);
+  for (const slice of interior) assert.equal(slice.end - slice.start, interior[0].end - interior[0].start);
+  // footageCandidateSlot is a stable, deterministic bookkeeping position
+  // (every third slice) that FOOTAGE_ASSIGNMENTS may target -- it does not
+  // by itself change `kind` or imply any role.
+  assert.deepEqual(slices.map((slice) => slice.footageCandidateSlot), slices.map((_, i) => i % 3 === 2));
 });
 
 test("sliceClaimWindow returns a single slice when the window already fits within the cap", () => {
