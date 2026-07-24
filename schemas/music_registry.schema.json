@@ -25,6 +25,11 @@
         "track_id": { "type": "string", "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$" },
         "title": { "type": "string", "minLength": 1 },
         "artist": { "type": "string", "minLength": 1 },
+        "composition_family": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Groups distinct main/variant/stem files that are the SAME underlying composition (e.g. sb_signal_to_noise and sb_signal_to_noise_nomelody both = \"signal_to_noise\"). Two tracks by the same artist but a different composition (e.g. sb_catalyst) have different families -- task follow-up section 12 requires the candidate's music bed to use only one family."
+        },
         "asset_path": {
           "type": "string",
           "description": "Path relative to the repository root of the canonical local asset (a Git LFS-tracked file under music_library/tracks/)."
