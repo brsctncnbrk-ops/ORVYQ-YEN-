@@ -173,11 +173,14 @@ export const FOOTAGE_ASSIGNMENTS = {
     // evidence run of 21.8s (> 15s cap) from CLM_010_CYBER_ESPIONAGE to
     // CLM_011_BIO_SAFEGUARD_THRESHOLD" -- CLM_010 itself cannot host this
     // break since it must keep its own one required evidence slot, see its
-    // own comment above). scene_011 ("institutions can't absorb the pace")
-    // is a real, only-once-used-so-far asset (CLM_009 slice 8, a different
-    // trim window) with ample real duration (14.23s) and institutional
-    // framing that fits a governance-threshold claim.
-    0: { asset: "assets/footage/scene_011_bff417a92fed9423fe0dd580.mp4", trimInRatio: 0.6, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window; the same institutional-scale framing (CLM_009's own use of this clip) recurs here for the bio-safeguard governance-threshold claim." },
+    // own comment above). scene_011 was tried first but its own real usage
+    // (hook_preloaded_uses:1 + CLM_009 slice 8) was ALREADY at the 2-use
+    // cap -- confirmed live in CI ("scene_011 ... exceeds the 2-use
+    // limit"). scene_006 is this claim's own already-established asset
+    // (slice 7, below) with exactly one prior use, so a second trim window
+    // here stays within budget and keeps the same "designed test vs real
+    // incident" framing at both ends of the claim.
+    0: { asset: "assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4", trimInRatio: 0.05, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window within this same claim; the designed-test-vs-real-incident framing anchors both this opening break and the claim's closing slice (slice 7)." },
     2: { asset: "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4", trimInRatio: 0.55, motion: "hold", role: "context", reuse_reason: "A later trim window of the same clip used for CLM_006; both claims belong to the same controlled-evaluation evidence arc (SEC_02)." },
     // Spans slices 5-6 with one continuous pass so the claim's own final
     // two slices (otherwise both evidence) don't chain into CLM_021's
