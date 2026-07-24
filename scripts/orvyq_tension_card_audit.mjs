@@ -11,7 +11,15 @@ const MAX_TOTAL_EMPHASIS_SECONDS = 50;
 const TYPICAL_MIN_SECONDS = 2.5;
 const TYPICAL_MAX_SECONDS = 4.5;
 const EXCEPTION_THRESHOLD_SECONDS = 6;
-const STRUCTURAL_GRAPHIC_TYPES = new Set(["section_title", "end_card"]);
+// "claim_recap_card" (scripts/orvyq_full_production_plan.mjs's
+// GRAPHIC_BREAK_ASSIGNMENTS) is an ordinary, narration-synced claim slice
+// rendered as a graphic instead of footage or evidence -- it exists to
+// break up an evidence run or recover footage-fraction budget, not as a
+// pause-driven editorial emphasis beat, so it is structural the same way a
+// section title is: its own duration is set by real narration timing, not
+// authored to the 2.5-4.5s emphasis-card band, and it must not count
+// against the emphasis-card time/duration budget below.
+const STRUCTURAL_GRAPHIC_TYPES = new Set(["section_title", "end_card", "claim_recap_card"]);
 
 function shotDuration(shot, fps) {
   return (shot.end_frame - shot.start_frame) / fps;

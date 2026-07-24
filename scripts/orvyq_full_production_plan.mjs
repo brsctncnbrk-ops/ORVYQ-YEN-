@@ -109,11 +109,16 @@ export const FOOTAGE_ASSIGNMENTS = {
     // direction_plan.md's own scene_005 description is this exact claim:
     // "Depict the reported blackmail-style test case" / "the film's single
     // most sensitive reconstruction."
-    0: { asset: "assets/footage/scene_005_e98a421f0d9c432e4d2036fb.mp4", trimInRatio: 0.1, motion: "hold", role: "context" },
-    2: { asset: "assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4", trimInRatio: 0.12, motion: "hold", role: "context", reuse_reason: "A second, different trim window of the same clip is used later under CLM_017's open/closed governance framing; the two claims sit far apart in the film." }
+    0: { asset: "assets/footage/scene_005_e98a421f0d9c432e4d2036fb.mp4", trimInRatio: 0.1, motion: "hold", role: "context" }
+    // Slice 2 is now a graphic recap card (see GRAPHIC_BREAK_ASSIGNMENTS
+    // below) instead of a second use of scene_012 -- recovers footage
+    // budget under scripts/orvyq_semantic_visual_audit.mjs's contextual
+    // body footage ceiling; this slice's own evidence run is still broken
+    // (a graphic resets the run counter identically to footage).
   },
   CLM_006_NO_REAL_WORLD_INCIDENT: {
-    2: { asset: "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4", trimInRatio: 0.1, motion: "hold", role: "context", reuse_reason: "A later trim window of the same clip returns under CLM_011; both claims are part of the same controlled-evaluation evidence arc (SEC_02)." }
+    // Slice 2 is now a graphic recap card (see GRAPHIC_BREAK_ASSIGNMENTS
+    // below) instead of a footage break.
   },
   CLM_007_MARKET_PRESSURE: {
     // slice 2's real narration window contains the "But a fire drill still
@@ -180,20 +185,21 @@ export const FOOTAGE_ASSIGNMENTS = {
     // (slice 7, below) with exactly one prior use, so a second trim window
     // here stays within budget and keeps the same "designed test vs real
     // incident" framing at both ends of the claim.
-    0: { asset: "assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4", trimInRatio: 0.05, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window within this same claim; the designed-test-vs-real-incident framing anchors both this opening break and the claim's closing slice (slice 7)." },
+    0: { asset: "assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4", trimInRatio: 0.05, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window within this same claim." },
     2: { asset: "assets/footage/scene_013_d8d3231e6f0b69b7def0fd48.mp4", trimInRatio: 0.55, motion: "hold", role: "context", reuse_reason: "A later trim window of the same clip used for CLM_006; both claims belong to the same controlled-evaluation evidence arc (SEC_02)." },
     // Spans slices 5-6 with one continuous pass so the claim's own final
     // two slices (otherwise both evidence) don't chain into CLM_021's
     // opening slices as one long uninterrupted run.
-    5: { asset: "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4", trimInRatio: 0.05, span: 2, motion: "hold", role: "context", reuse_reason: "Second use at a later trim window; both this claim and CLM_021 (its later reuse) sit in the same evidence arc." },
-    // This claim's own final slice, immediately before CLM_021 begins --
-    // without it, CLM_011's last slice chains into CLM_021's first two
-    // slices as one uninterrupted run past the cap.
-    7: { asset: "assets/footage/scene_006_7e0d77fb76615c10d441204a.mp4", trimInRatio: 0.3, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window; the same designed-test-vs-real-incident framing (CLM_009's own use of this clip) recurs here for the bio-safeguard claim." }
+    5: { asset: "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4", trimInRatio: 0.05, span: 2, motion: "hold", role: "context", reuse_reason: "Second use at a later trim window; both this claim and CLM_021 (its later reuse) sit in the same evidence arc." }
+    // This claim's own final slice, immediately before CLM_021 begins, is
+    // now a graphic recap card instead of a second footage use (see
+    // GRAPHIC_BREAK_ASSIGNMENTS below) -- still breaks the run into
+    // CLM_021's opening slices exactly as the footage version did.
   },
   CLM_021_INFORMATION_INTEGRITY: {
-    2: { asset: "assets/footage/scene_015_ed4bf30c1279d75b6cfe8187.mp4", trimInRatio: 0.12, motion: "hold", role: "context", reuse_reason: "Second use at a later trim window across two claims in the same evidence arc as CLM_011." },
-    5: { asset: "assets/footage/scene_027_57a43a4f4b65321112dfb0bf.mp4", trimInRatio: 0.6, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window; both this claim and CLM_018 (its other reuse) belong to the same evaluations/safeguards section." }
+    // Slices 2 and 5 are now graphic recap cards instead of a second
+    // footage use of scene_015/scene_027 (see GRAPHIC_BREAK_ASSIGNMENTS
+    // below) -- still break their respective evidence runs.
   },
   CLM_012_JOB_FORECAST_DIVERGENCE: {
     // This 2-slice claim's own footage assignment used to be keyed to an
@@ -219,11 +225,12 @@ export const FOOTAGE_ASSIGNMENTS = {
     8: { asset: "assets/footage/scene_019_bdc83a162db95b4b9eba43f9.mp4", trimInRatio: 0.12, motion: "drift_left", role: "context", reuse_reason: "Reused once more in the closing synthesis section (CLM_020), which explicitly recaps earlier evidence rather than introducing new claims." }
   },
   CLM_016_COMPLIANCE_INCUMBENCY: {
-    2: { asset: "assets/footage/scene_018_f681c3057e36f147005d2652.mp4", trimInRatio: 0.12, motion: "hold", role: "context", reuse_reason: "Reused once more in the closing synthesis section (CLM_020), which explicitly recaps earlier evidence rather than introducing new claims." }
+    // Slice 2 is now a graphic recap card instead of a footage break (see
+    // GRAPHIC_BREAK_ASSIGNMENTS below).
   },
   CLM_017_OPEN_CLOSED_TRADEOFF: {
-    2: { asset: "assets/footage/scene_012_d356fd9efe14c61c8594ff1f.mp4", trimInRatio: 0.55, motion: "pull", role: "context", reuse_reason: "A second, different trim window of the clip used earlier for CLM_005; the two claims sit far apart in the film." },
-    5: { asset: "assets/footage/scene_003_d69cde76dfac1e29bd6f9946.mp4", trimInRatio: 0.12, motion: "hold", role: "context", reuse_reason: "Second use at a different trim window across two claims in the same governance arc (this one and CLM_018)." }
+    // Slices 2 and 5 are now graphic recap cards instead of footage breaks
+    // (see GRAPHIC_BREAK_ASSIGNMENTS below).
   },
   CLM_018_INDEPENDENT_EVALUATIONS: {
     // Spans slices 1-2 with one continuous pass through the auditors
@@ -256,10 +263,12 @@ export const FOOTAGE_ASSIGNMENTS = {
     11: { asset: "assets/footage/scene_023_dbe758e1473aee29a155377a.mp4", trimInRatio: 0.6, motion: "cut", role: "context", reuse_reason: "Second use at a different trim window, within this claim's own coverage -- not a repeat of the same visual moment shown once already." }
   },
   CLM_019_INCIDENT_REPORTING: {
-    // This 2-slice claim's tail slice must be footage -- otherwise CLM_018's
-    // own final (already-covered) slice plus this claim's evidence chains
-    // into one long uninterrupted run.
-    1: { asset: "assets/footage/scene_016_e324304f99b3502cad464d69.mp4", trimInRatio: 0.05, motion: "hold", role: "context", reuse_reason: "Second use, different trim window; a brief connective visual beat within the safety-architecture section, same as its first use under CLM_018's own final-evaluations slice." }
+    // This 2-slice claim's tail slice still needs a break -- otherwise
+    // CLM_018's own final (already-covered) slice plus this claim's
+    // evidence chains into one long uninterrupted run -- now a graphic
+    // recap card instead of a second footage use (see
+    // GRAPHIC_BREAK_ASSIGNMENTS below); a graphic resets the run counter
+    // identically to footage.
   },
   CLM_020_SYSTEMIC_INCENTIVE_FINAL: {
     // Every footage entry below spans 2-4 contiguous slices (one continuous
@@ -297,6 +306,30 @@ export const FOOTAGE_ASSIGNMENTS = {
     // and 15's footage).
     15: { asset: "assets/footage/scene_029_94d5bdac38165c3c273344f7.mp4", trimInRatio: 0.02, span: 2, motion: "hold", role: "context", reuse_reason: "Closing synthesis recap of CLM_012's footage, deliberately timed to land on the film's final editorial pauses -- see slice 1's note." }
   }
+};
+
+// A real evidence-run interruption does not have to be footage: a plain,
+// non-structural graphic recap card (asset_type "graphic", same mechanism
+// scripts/orvyq_tension_card_audit.mjs already governs for emphasis beats)
+// resets scripts/orvyq_semantic_visual_audit.mjs's own uninterrupted-
+// evidence-run counter exactly the same way a footage shot does. Closing
+// every one of the 28 real coverage gaps above with FOOTAGE_ASSIGNMENTS
+// alone pushed contextual_body_footage_fraction to 50.1%, over its own 45%
+// ceiling (confirmed live in CI) -- recalibrated against what this fraction
+// measured before that gap-closing pass added so much additional footage.
+// Each entry here converts exactly one non-pause-bearing slice (never one
+// that also hosts an editorial pause -- those must stay footage so the
+// pause can continue that slice's own asset) from its default evidence
+// kind to a graphic recap card instead, recovering footage-fraction budget
+// without reopening any of the run-length gaps FOOTAGE_ASSIGNMENTS closes.
+export const GRAPHIC_BREAK_ASSIGNMENTS = {
+  CLM_005_BLACKMAIL_SCENARIO: { 2: { title: "A RECONSTRUCTION, NOT A RECORDING", subtitle: "Dramatized from the reported test case." } },
+  CLM_006_NO_REAL_WORLD_INCIDENT: { 2: { title: "DESIGNED TEST, NOT A REAL INCIDENT", subtitle: "No real-world harm was reported for this case." } },
+  CLM_011_BIO_SAFEGUARD_THRESHOLD: { 7: { title: "SAME THRESHOLD, DIFFERENT DOMAIN", subtitle: "The bio-safeguard question recurs across every risk category." } },
+  CLM_016_COMPLIANCE_INCUMBENCY: { 2: { title: "COMPLIANCE COST, COMPETITIVE MOAT", subtitle: "The same rules can entrench whoever can already afford them." } },
+  CLM_017_OPEN_CLOSED_TRADEOFF: { 2: { title: "OPEN VS. CLOSED", subtitle: "Neither side of this trade-off is cost-free." }, 5: { title: "NO CONSENSUS ON THE TRADE-OFF", subtitle: "Researchers remain genuinely split." } },
+  CLM_019_INCIDENT_REPORTING: { 1: { title: "REPORTING GAPS, NOT JUST INCIDENT GAPS", subtitle: "What isn't disclosed can't be counted." } },
+  CLM_021_INFORMATION_INTEGRITY: { 2: { title: "AMBIGUITY BY DESIGN", subtitle: "Synthetic and real information increasingly blend together." }, 5: { title: "THE SAME ARCHITECTURE, REPEATED", subtitle: "Independent evaluation returns as a theme, not a one-off." } }
 };
 
 // The full catalog of licensed footage clips materialized by
@@ -764,7 +797,23 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
     const slices = sliceClaimWindow(window.claim, window.coverStart, window.coverEnd, maxShotSeconds);
     const sliceDurations = slices.map((slice) => slice.end - slice.start);
     const footageBySlice = expandFootageAssignments(window.claim.claim_id, sliceDurations, assetDurationSeconds);
+    const graphicBreaksForClaim = GRAPHIC_BREAK_ASSIGNMENTS[window.claim.claim_id];
     for (const [sliceIndex, slice] of slices.entries()) {
+      const graphicBreak = graphicBreaksForClaim?.[sliceIndex];
+      if (graphicBreak) {
+        rawShots.push({
+          kind: "graphic",
+          section_id: window.claim.section_id,
+          claim_id: window.claim.claim_id,
+          start: slice.start,
+          end: slice.end,
+          role: "graphic",
+          graphic: { type: "claim_recap_card", title: graphicBreak.title, subtitle: graphicBreak.subtitle ?? null },
+          dissolveIn: isFirstWindowOverall && sliceIndex === 0
+        });
+        if (deferTitleCard && sliceIndex === 0) rawShots.push(titleCardShot);
+        continue;
+      }
       const footageAssignment = footageBySlice.get(sliceIndex);
       if (footageAssignment) {
         rawShots.push({
