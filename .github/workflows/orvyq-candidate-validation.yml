@@ -158,6 +158,34 @@ jobs:
           echo "--- frozen_candidate.json ---"
           cat "projects/$PROJECT_ID/qa/frozen_candidate.json"
 
+      # This is the ONE place the candidate bundle is ever assembled (task
+      # follow-up: "validation candidate == review candidate == final
+      # candidate"). orvyq-review.yml no longer runs any of the steps above
+      # itself -- it downloads this exact bundle by this run's ID, verifies
+      # it, and renders it as-is. orvyq-final-encode.yml's own bundle
+      # (downloaded from the review run) is this same bundle passed through
+      # unchanged by review, never rebuilt.
+      - name: Upload the immutable validated candidate bundle (consumed by review, unchanged, never rebuilt)
+        uses: actions/upload-artifact@v4
+        with:
+          name: orvyq-validated-candidate-bundle-${{ github.run_id }}
+          retention-days: 90
+          path: |
+            validation-source-sha.txt
+            projects/${{ env.PROJECT_ID }}/qa/frozen_candidate.json
+            projects/${{ env.PROJECT_ID }}/direction/edit_plan.json
+            projects/${{ env.PROJECT_ID }}/remotion/captions.json
+            projects/${{ env.PROJECT_ID }}/assets/asset_registry.json
+            projects/${{ env.PROJECT_ID }}/assets/audio/final_mix.mp3
+            projects/${{ env.PROJECT_ID }}/assets/audio/final_mix.metadata.json
+            projects/${{ env.PROJECT_ID }}/assets/music/approved_bed.mp3
+            projects/${{ env.PROJECT_ID }}/assets/music/approved_bed.provenance.json
+            projects/${{ env.PROJECT_ID }}/assets/sfx/*.wav
+            projects/${{ env.PROJECT_ID }}/remotion/render_ready_project/**
+            !projects/${{ env.PROJECT_ID }}/remotion/render_ready_project/node_modules
+            !projects/${{ env.PROJECT_ID }}/remotion/render_ready_project/out
+            !projects/${{ env.PROJECT_ID }}/remotion/render_ready_project/.remotion
+
       - name: Run full pre-render QA chain (creative + technical)
         run: |
           set +e
