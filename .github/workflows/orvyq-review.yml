@@ -7,6 +7,15 @@ name: ORVYQ Full-Length Candidate Review
 # bitrate at render time -- see docs/canonical-candidate-audit.md and task
 # section 16. A short proof clip, a selected-scene montage, or any partial
 # cut is not an acceptable output of this workflow.
+#
+# This workflow NEVER commits or pushes anything back to the branch (fixed
+# after a real run showed the bot-commit pattern moves HEAD mid-pipeline and
+# entangles candidate identity with an unrelated commit -- see
+# docs/canonical-candidate-audit.md). Every generated file (regenerated shot
+# list, edit plan, audio mix, captions, asset registry, frozen candidate,
+# render-ready project) lives only on this runner's filesystem and in the
+# artifacts uploaded at the end. Checkout happens once, at one immutable
+# source commit, and that commit never changes for the rest of the run.
 on:
   workflow_dispatch:
   pull_request:
@@ -16,12 +25,9 @@ on:
     paths-ignore:
       - "docs/**"
       - "**/*.md"
-      - ".github/workflows/orvyq-narration-validation.yml"
-      - "projects/*/qa/frozen_candidate.json"
-      - "projects/*/qa/proof_approval.json"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: orvyq-review-${{ github.ref }}
@@ -33,6 +39,8 @@ env:
   # 1920x1080 composition, never a different composition or timeline.
   REVIEW_SCALE: "0.6667"
   REVIEW_BITRATE: "6M"
+  REVIEW_WIDTH: "1280"
+  REVIEW_HEIGHT: "720"
 
 jobs:
   review:
@@ -75,32 +83,17 @@ jobs:
           sudo apt-get install -y --no-install-recommends ffmpeg poppler-utils
           python -m pip install --disable-pip-version-check faster-whisper==1.2.0 requests==2.32.5
 
-      # ---- build the candidate ONCE (task section 16 step 3) ----
-      - name: Regenerate the full production shot list from real data
+      # ---- 1. build the canonical shot plan (never committed back) ----
+      - name: Build the canonical full production shot list from real data
         run: node scripts/orvyq_full_production_plan.mjs --project-id="$PROJECT_ID"
 
       - name: Validate canonical schemas and recovered project data
         run: npm run validate:canonical
 
-      - name: Commit regenerated full production shot list
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        run: |
-          set -euo pipefail
-          git config user.name "orvyq-review-bot"
-          git config user.email "orvyq-review-bot@users.noreply.github.com"
-          git add "projects/$PROJECT_ID/direction/editorial_blueprint.json" "projects/$PROJECT_ID/direction/editorial_pause_map.json"
-          if git diff --cached --quiet; then
-            echo "full production shot list unchanged; nothing to commit."
-            exit 0
-          fi
-          git commit -m "Regenerate full production shot list for review run ${{ github.run_id }} [skip ci]"
-          git pull --rebase origin "${{ github.ref_name }}"
-          git push origin "HEAD:${{ github.ref_name }}"
-
       - name: Fetch and verify official primary evidence
         run: node scripts/orvyq_fetch_primary_evidence.mjs
 
-      # Full-length, always -- no --mode=proof / frame-prefix selection.
+      # ---- 2. build edit plan (full length, no truncation) ----
       - name: Build the canonical candidate edit plan (full length, no truncation)
         run: node scripts/orvyq_edit_plan.mjs --project-id="$PROJECT_ID" --mode=full
 
@@ -116,12 +109,13 @@ jobs:
           " | tee -a "$GITHUB_ENV"
 
       - name: Resolve canonical music (no network)
-        run: node scripts/orvyq_music_resolve.mjs --project-id="$PROJECT_ID" --mode=full
+        run: node scripts/orvyq_music_resolve.mjs --project-id="$PROJECT_ID" --mode=full --target-duration-seconds="$CANDIDATE_DURATION_SECONDS"
 
-      # Builds the ONE real audio mix: full paused narration + leading
-      # hook-silence + trailing end-card room, sized to the exact same
-      # candidate_duration_frames the video timeline uses -- never a
-      # separately-resolved "proof" soundtrack (task section 5/13).
+      # ---- 3. build the final audio mix ----
+      # Full paused narration + leading hook-silence + trailing end-card
+      # room, sized to the exact same candidate_duration_frames the video
+      # timeline uses -- never a separately-resolved "proof" soundtrack
+      # (task section 5/13).
       - name: Build the full candidate narration/music mix
         run: node scripts/orvyq_audio_mix.mjs --project-id="$PROJECT_ID" --mode=candidate --duration-seconds="$CANDIDATE_DURATION_SECONDS" --head-silence-seconds="$HOOK_DURATION_SECONDS"
 
@@ -154,51 +148,40 @@ jobs:
       - name: Stop when narration verification failed
         run: test "$(cat narration-qa.status)" = "0"
 
+      # ---- 4. build captions ----
       - name: Build canonical captions
         run: node scripts/orvyq_caption_build.mjs --project-id="$PROJECT_ID"
 
+      # ---- 5. build asset registry ----
       - name: Build canonical asset registry
         run: node scripts/orvyq_asset_registry.mjs --project-id="$PROJECT_ID"
 
-      # ---- freeze the candidate (task section 16 step 5) ----
-      - name: Compute frozen candidate manifest
-        run: |
-          node scripts/orvyq_frozen_candidate.mjs --project-id="$PROJECT_ID"
-          echo "--- frozen_candidate.json ---"
-          cat "projects/$PROJECT_ID/qa/frozen_candidate.json"
-
-      - name: Commit frozen candidate to the branch
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        run: |
-          set -euo pipefail
-          FILE="projects/$PROJECT_ID/qa/frozen_candidate.json"
-          git config user.name "orvyq-review-bot"
-          git config user.email "orvyq-review-bot@users.noreply.github.com"
-          git add "$FILE"
-          if git diff --cached --quiet; then
-            echo "frozen_candidate.json unchanged; nothing to commit."
-            exit 0
-          fi
-          git commit -m "Record frozen candidate for review run ${{ github.run_id }} [skip ci]"
-          git pull --rebase origin "${{ github.ref_name }}"
-          git push origin "HEAD:${{ github.ref_name }}"
-
-      # ---- all pre-render QA gates (task section 16 step 4) ----
-      - name: Run full pre-render QA chain (creative + technical)
-        run: npm run orvyq:qa
-
-      # ---- render-ready project (task section 16 step 6) ----
+      # ---- 6. build render-ready project ----
       - name: Build render-ready project
         run: |
           set -euo pipefail
           node scripts/remotion_build.mjs derive-configs --project-id="$PROJECT_ID"
           node scripts/remotion_build.mjs build-project --project-id="$PROJECT_ID"
 
+      # ---- 7. typecheck render-ready project ----
       - name: Install Remotion dependencies and type-check
         working-directory: projects/${{ env.PROJECT_ID }}/remotion/render_ready_project
         run: |
           npm ci --no-audit --no-fund
           npx tsc --noEmit
+
+      # ---- 8+9+10. hash render-ready + freeze the candidate + pre-render QA ----
+      # Freeze happens AFTER the render-ready project is built and
+      # typechecked, so render_ready_source_hash reflects what will actually
+      # be rendered -- not a pre-build guess (task follow-up section 7).
+      - name: Compute frozen candidate manifest (after render-ready build)
+        run: |
+          node scripts/orvyq_frozen_candidate.mjs --project-id="$PROJECT_ID"
+          echo "--- frozen_candidate.json ---"
+          cat "projects/$PROJECT_ID/qa/frozen_candidate.json"
+
+      - name: Run full pre-render QA chain (creative + technical)
+        run: npm run orvyq:qa
 
       - name: Resolve browser executable
         run: |
@@ -208,11 +191,15 @@ jobs:
           echo "FACTFORGE_REMOTION_BROWSER_EXECUTABLE=$BROWSER" >> "$GITHUB_ENV"
           "$BROWSER" --version
 
-      # ---- render the FULL film at review profile (task section 16 step 7) ----
+      # ---- 11. render the FULL film at review profile ----
       # No --frames flag: the entire candidate renders, every time. --scale
       # only changes output pixel dimensions (1920*0.6667 ~= 1280x720); it
       # does not touch the composition's timeline data, captions, or any
-      # creative content. No watermark, no "proof" text overlay.
+      # creative content. No watermark, no "proof" text overlay. No
+      # post-render brightness "repair" step -- see docs/canonical-candidate-audit.md
+      # for why an asymmetric review-only post-process (applied here but
+      # never in the final encode workflow) would itself have broken review/
+      # final parity.
       - name: Render the full candidate at review quality
         working-directory: projects/${{ env.PROJECT_ID }}/remotion/render_ready_project
         run: |
@@ -235,69 +222,80 @@ jobs:
           sys.exit(0 if abs(d - expected) < 1.0 else 1)
           " || { echo "::error::rendered duration ${DURATION}s is not within 1s of the full candidate duration ${CANDIDATE_DURATION_SECONDS}s -- a partial/short cut is not an acceptable review render"; exit 1; }
 
-      - name: Repair isolated renderer brightness corruption
-        run: node scripts/orvyq_brightness_repair.mjs --project-id="$PROJECT_ID" --video="projects/$PROJECT_ID/remotion/render_ready_project/out/orvyq_review.mp4"
+      - name: Compute review video sha256
+        run: |
+          set -euo pipefail
+          echo "REVIEW_VIDEO_SHA256=$(sha256sum "projects/$PROJECT_ID/remotion/render_ready_project/out/orvyq_review.mp4" | cut -d' ' -f1)" >> "$GITHUB_ENV"
 
+      # ---- 12. write the review render manifest ----
+      # New identity/encode/artifact schema (task follow-up section 4) --
+      # `identity` must match the final encode's manifest exactly;
+      # `encode`/`artifact` are expected to differ and are never compared.
       - name: Write review render manifest (for review/final parity verification)
         run: |
           set -euo pipefail
           node -e "
             const fs = require('fs');
-            const crypto = require('crypto');
             const candidate = JSON.parse(fs.readFileSync('projects/$PROJECT_ID/qa/frozen_candidate.json', 'utf8'));
-            const editPlan = JSON.parse(fs.readFileSync('projects/$PROJECT_ID/direction/edit_plan.json', 'utf8'));
-            const videoPath = 'projects/$PROJECT_ID/remotion/render_ready_project/out/orvyq_review.mp4';
-            const videoSha256 = crypto.createHash('sha256').update(fs.readFileSync(videoPath)).digest('hex');
+            const identity = candidate.canonical_candidate_identity;
             const manifest = {
-              candidate_hash: crypto.createHash('sha256').update(fs.readFileSync('projects/$PROJECT_ID/qa/frozen_candidate.json')).digest('hex'),
-              edit_plan_hash: candidate.edit_plan_hash,
-              caption_hash: candidate.caption_hash,
-              audio_mix_hash: candidate.audio_mix_hash,
-              final_mix_audio_hash: candidate.final_mix_audio_hash || null,
-              asset_registry_hash: candidate.asset_registry_hash,
-              asset_manifest_hash: candidate.asset_manifest_hash || null,
-              total_frames: editPlan.duration_frames,
-              fps: editPlan.fps,
-              frame_range: editPlan.frame_range,
-              composition_props: { width: 1920, height: 1080 },
-              width: null, height: null, codec: 'h264', bitrate: process.env.REVIEW_BITRATE,
-              profile: 'review',
-              run_id: '${{ github.run_id }}',
-              video_path: videoPath,
-              video_sha256: videoSha256
+              schema_version: '2.0',
+              identity: {
+                candidate_hash: candidate.candidate_hash,
+                render_bundle_hash: candidate.render_bundle_hash,
+                edit_plan_hash: identity.edit_plan_hash,
+                caption_hash: identity.caption_hash,
+                final_mix_audio_hash: identity.final_mix_audio_hash || null,
+                audio_mix_metadata_hash: identity.audio_mix_metadata_hash,
+                asset_manifest_hash: identity.asset_manifest_hash || null,
+                render_ready_source_hash: identity.render_ready_source_hash || null,
+                renderer_source_hash: identity.renderer_source_tree_hash || null,
+                total_frames: identity.total_frames,
+                fps: identity.fps,
+                frame_range: identity.selected_render_range
+              },
+              encode: { profile: 'review', width: Number(process.env.REVIEW_WIDTH), height: Number(process.env.REVIEW_HEIGHT), codec: 'h264', bitrate: process.env.REVIEW_BITRATE, crf: null, encoder_preset: null },
+              artifact: {
+                run_id: '${{ github.run_id }}',
+                video_path: 'out/orvyq_review.mp4',
+                video_sha256: process.env.REVIEW_VIDEO_SHA256
+              }
             };
             fs.writeFileSync('projects/$PROJECT_ID/qa/review_render_manifest.json', JSON.stringify(manifest, null, 2));
             console.log(JSON.stringify(manifest, null, 2));
           "
 
       # The final encode-only workflow (orvyq-final-encode.yml) must never
-      # regenerate edit_plan.json/captions/audio mix/asset registry itself
-      # (task section 17) -- those files are gitignored, always-regenerate
-      # build output (see .gitignore), so the ONLY way the final workflow can
-      # avoid regenerating them is to download the exact frozen bytes THIS
-      # run just produced. This is that package: every creative file a
-      # render depends on, plus the frozen candidate manifest itself, so the
-      # final workflow can verify hashes and skip straight to encoding.
-      - name: Upload frozen candidate package (consumed by the final encode-only workflow)
+      # regenerate edit_plan.json/captions/audio mix/asset registry/render-
+      # ready project itself (task section 17) -- those are gitignored,
+      # always-regenerate build output that is never committed to the branch
+      # (see above), so the ONLY way the final workflow can avoid
+      # regenerating them is to download the exact frozen bytes THIS run
+      # just produced -- including the fully assembled render_ready_project
+      # SOURCE (not rebuilt, just reused), so the final workflow never runs
+      # derive-configs/build-project either.
+      - name: Upload the immutable render bundle (consumed by the final encode-only workflow)
         uses: actions/upload-artifact@v4
         with:
-          name: orvyq-frozen-candidate-package-${{ github.run_id }}
+          name: orvyq-render-bundle-${{ github.run_id }}
           retention-days: 90
           path: |
             projects/${{ env.PROJECT_ID }}/qa/frozen_candidate.json
             projects/${{ env.PROJECT_ID }}/qa/review_render_manifest.json
             projects/${{ env.PROJECT_ID }}/direction/edit_plan.json
             projects/${{ env.PROJECT_ID }}/remotion/captions.json
-            projects/${{ env.PROJECT_ID }}/remotion/scene_config.json
-            projects/${{ env.PROJECT_ID }}/remotion/asset_map.json
             projects/${{ env.PROJECT_ID }}/assets/asset_registry.json
             projects/${{ env.PROJECT_ID }}/assets/audio/final_mix.mp3
             projects/${{ env.PROJECT_ID }}/assets/audio/final_mix.metadata.json
             projects/${{ env.PROJECT_ID }}/assets/music/approved_bed.mp3
             projects/${{ env.PROJECT_ID }}/assets/music/approved_bed.provenance.json
             projects/${{ env.PROJECT_ID }}/assets/sfx/*.wav
+            projects/${{ env.PROJECT_ID }}/remotion/render_ready_project/**
+            !projects/${{ env.PROJECT_ID }}/remotion/render_ready_project/node_modules
+            !projects/${{ env.PROJECT_ID }}/remotion/render_ready_project/out
+            !projects/${{ env.PROJECT_ID }}/remotion/render_ready_project/.remotion
 
-      # ---- upload the review MP4 BEFORE media QA (task section 16 step 8/9) ----
+      # ---- 13. upload the review MP4 BEFORE post-render QA ----
       - name: Upload review render (before media QA -- must survive a media QA failure)
         if: always()
         uses: actions/upload-artifact@v4
@@ -309,6 +307,7 @@ jobs:
             projects/${{ env.PROJECT_ID }}/remotion/render_ready_project/out/review_render_stdout.txt
           if-no-files-found: error
 
+      # ---- 14. post-render QA ----
       - name: Verify speech in rendered review
         run: python scripts/orvyq_speech_qa.py --project-id "$PROJECT_ID" --media "projects/$PROJECT_ID/remotion/render_ready_project/out/orvyq_review.mp4" --output-name speech_transcript.json
 
@@ -342,8 +341,7 @@ jobs:
             ffprobe -v error -show_format -show_streams -print_format json "$VIDEO" > "$OUT/orvyq_quality_control_probe.json"
           fi
 
-      # ---- candidate manifest + all QA reports as a SEPARATE artifact (task section 16 step 10) ----
-      - name: Upload candidate manifest and QA reports
+      - name: Upload candidate manifest and QA reports (separate artifact)
         if: always()
         uses: actions/upload-artifact@v4
         with:
