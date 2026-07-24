@@ -50,7 +50,7 @@
       },
       "additionalProperties": false
     },
-    "mode": { "enum": ["proof", "full"] },
+    "mode": { "enum": ["candidate", "proof", "full"], "description": "\"candidate\" is the live value going forward. \"proof\"/\"full\" are accepted only for historical/regression frozen candidates produced before this hardening." },
     "created_at": { "type": "string", "format": "date-time" }
   },
   "additionalProperties": false

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://orvyq.dev/schemas/proof_approval.schema.json",
-  "title": "Proof Approval",
-  "description": "Human sign-off on a specific frozen_candidate (identified by hashing the frozen_candidate document -- see frozen_candidate.schema.json). Full render is blocked unless a proof_approval exists whose frozen_candidate_hash matches the current frozen candidate exactly.",
+  "title": "Review Approval",
+  "description": "Human sign-off on a specific frozen candidate's FULL-LENGTH review render (task section 18) -- not a short proof cut. Final (1080p) render is blocked unless an approval exists whose candidate_hash matches the current frozen candidate exactly AND whose review_total_frames equals the candidate's own total_frames (a partial-duration cut cannot be approved as the review). `proof_artifact`/legacy top-level fields are retained only so historical approval records (from before this hardening) keep validating as a historical record; a NEW approval must use the review_* fields below.",
   "type": "object",
   "required": ["frozen_candidate_hash", "approved", "approved_at"],
   "properties": {
@@ -11,8 +11,16 @@
     "approved_by": { "type": "string" },
     "approved_at": { "type": "string", "format": "date-time" },
     "notes": { "type": "string" },
+    "candidate_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "Same value as frozen_candidate_hash -- named per task section 18's required field list." },
+    "review_run_id": { "type": "string", "description": "The 'ORVYQ Full-Length Candidate Review' workflow run that produced the approved review artifact." },
+    "review_artifact_name": { "type": "string" },
+    "review_total_frames": { "type": "integer", "minimum": 1, "description": "Must equal the frozen candidate's own total_frames -- a review of anything less than the full candidate cannot be approved." },
+    "review_duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+    "review_resolution": { "type": "string" },
+    "review_video_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "sha256 of the actual reviewed MP4 file, so the approval names exact reviewed bytes, not just a run id." },
     "proof_artifact": {
       "type": "object",
+      "description": "Legacy/historical field name (short-proof era) -- do not populate on a new approval; use the review_* fields instead.",
       "properties": {
         "workflow_run_id": { "type": "string" },
         "artifact_name": { "type": "string" },

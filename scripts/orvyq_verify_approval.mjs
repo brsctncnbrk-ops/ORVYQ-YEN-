@@ -21,7 +21,19 @@ import { computeCanonicalFrozenCandidate } from "./orvyq_frozen_candidate.mjs";
 
 const PROJECT_ID = "001-the-ai-race-no-one-can-afford-to-win";
 const FRESHNESS_FIELDS = ["edit_plan_hash", "caption_hash", "audio_mix_hash", "asset_registry_hash", "timeline_hash", "renderer_version"];
-const OPTIONAL_HARDENED_FIELDS = ["renderer_commit_sha", "narration_sha256", "pause_map_hash", "script_hash"];
+const OPTIONAL_HARDENED_FIELDS = [
+  "renderer_commit_sha",
+  "narration_sha256",
+  "pause_map_hash",
+  "script_hash",
+  "final_mix_audio_hash",
+  "music_bed_hash",
+  "remotion_scene_config_hash",
+  "remotion_asset_map_hash",
+  "renderer_package_lock_hash",
+  "renderer_source_tree_hash",
+  "asset_manifest_hash"
+];
 
 async function sha256OfFile(absPath) {
   return createHash("sha256").update(await fs.readFile(absPath)).digest("hex");
@@ -66,6 +78,19 @@ export async function verifyApprovalRecord(projectId = PROJECT_ID, { expectedMod
 
   if (currentCommitSha && storedCandidate.source_commit_sha !== currentCommitSha)
     failures.push(`qa/frozen_candidate.json.source_commit_sha (${storedCandidate.source_commit_sha}) does not match the commit being verified (${currentCommitSha}).`);
+
+  // Task section 18: approval must belong to the FULL-LENGTH review
+  // candidate, not a partial/short cut. Checked only when the approval
+  // actually declares review_total_frames (the new field) -- a historical
+  // approval recorded before this hardening has neither this field nor any
+  // claim to be a full-length review, and is already correctly rejected by
+  // the hash-freshness check above if it's ever used against a live build.
+  if (Number.isFinite(approval.review_total_frames) && Number.isFinite(storedCandidate.total_frames) && approval.review_total_frames !== storedCandidate.total_frames) {
+    failures.push(
+      `qa/proof_approval.json.review_total_frames (${approval.review_total_frames}) does not equal the frozen candidate's own total_frames (${storedCandidate.total_frames}) -- ` +
+        "only a review covering the full candidate can be approved; a partial-duration review cannot stand in for it."
+    );
+  }
 
   return { pass: failures.length === 0, failures, approval, storedCandidate };
 }
