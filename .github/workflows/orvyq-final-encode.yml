@@ -1,0 +1,262 @@
+name: ORVYQ Final Encode
+
+# Encode-only (task section 17). This workflow must NEVER regenerate any
+# creative data -- no music resolution, no audio mix, no edit plan, no
+# captions, no footage/evidence selection, no candidate build, no creative
+# script of any kind. It downloads the exact frozen candidate package a human
+# already approved off the "ORVYQ Full-Length Candidate Review" run named in
+# approved_review_run_id, verifies every hash, and re-encodes the SAME
+# candidate at the 1080p final profile. If review and final ever produce
+# different frames, captions, or audio, that is this workflow's own bug, not
+# an acceptable outcome -- see scripts/orvyq_review_final_parity.mjs.
+#
+# This workflow must NEVER run automatically and must NEVER be triggered
+# without an explicit human approval already committed to the repository
+# (qa/proof_approval.json, verified by scripts/orvyq_verify_approval.mjs).
+on:
+  workflow_dispatch:
+    inputs:
+      quality_control_approved:
+        description: "Human has reviewed and approved the FULL-LENGTH review artifact referenced by qa/proof_approval.json"
+        type: boolean
+        default: false
+      approved_review_run_id:
+        description: "orvyq-review.yml run ID that produced the approved full-length review artifact and frozen candidate package"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: orvyq-final-encode
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: 001-the-ai-race-no-one-can-afford-to-win
+  FINAL_WIDTH: "1920"
+  FINAL_HEIGHT: "1080"
+  FINAL_CRF: "16"
+
+jobs:
+  final-encode:
+    if: ${{ inputs.quality_control_approved == true && inputs.approved_review_run_id != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Cheap check (task section 18): the approval on file still names the
+      # candidate committed at this exact commit and references the review
+      # run given as input. Does not require any generated build output to
+      # exist yet.
+      - name: Verify a matching, approved frozen candidate exists
+        run: |
+          set -euo pipefail
+          node scripts/orvyq_verify_approval.mjs --project-id="$PROJECT_ID" --mode=full --stage=early
+          RECORDED_RUN_ID="$(node -e "console.log(require('./projects/$PROJECT_ID/qa/proof_approval.json').review_run_id || '')")"
+          if [ -n "$RECORDED_RUN_ID" ] && [ "$RECORDED_RUN_ID" != "${{ inputs.approved_review_run_id }}" ]; then
+            echo "::error::qa/proof_approval.json.review_run_id ($RECORDED_RUN_ID) does not match the run id given as input (${{ inputs.approved_review_run_id }})"
+            exit 1
+          fi
+
+      # ---- download the exact frozen candidate package the review run produced (task section 17 step 3/4) ----
+      # No creative script runs here -- these are the literal bytes a human
+      # already reviewed in the full-length review artifact.
+      - name: Download the approved frozen candidate package
+        uses: actions/download-artifact@v4
+        with:
+          name: orvyq-frozen-candidate-package-${{ inputs.approved_review_run_id }}
+          path: frozen-package
+          run-id: ${{ inputs.approved_review_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Place the downloaded frozen candidate files into the project tree
+        run: |
+          set -euo pipefail
+          DEST="projects/$PROJECT_ID"
+          mkdir -p "$DEST/direction" "$DEST/remotion" "$DEST/assets/audio" "$DEST/assets/music" "$DEST/assets/sfx" "$DEST/qa"
+          cp "frozen-package/projects/$PROJECT_ID/direction/edit_plan.json" "$DEST/direction/edit_plan.json"
+          cp "frozen-package/projects/$PROJECT_ID/remotion/captions.json" "$DEST/remotion/captions.json"
+          cp "frozen-package/projects/$PROJECT_ID/remotion/scene_config.json" "$DEST/remotion/scene_config.json"
+          cp "frozen-package/projects/$PROJECT_ID/remotion/asset_map.json" "$DEST/remotion/asset_map.json"
+          cp "frozen-package/projects/$PROJECT_ID/assets/asset_registry.json" "$DEST/assets/asset_registry.json"
+          cp "frozen-package/projects/$PROJECT_ID/assets/audio/final_mix.mp3" "$DEST/assets/audio/final_mix.mp3"
+          cp "frozen-package/projects/$PROJECT_ID/assets/audio/final_mix.metadata.json" "$DEST/assets/audio/final_mix.metadata.json"
+          cp "frozen-package/projects/$PROJECT_ID/assets/music/approved_bed.mp3" "$DEST/assets/music/approved_bed.mp3"
+          cp "frozen-package/projects/$PROJECT_ID/assets/music/approved_bed.provenance.json" "$DEST/assets/music/approved_bed.provenance.json"
+          cp frozen-package/projects/$PROJECT_ID/assets/sfx/*.wav "$DEST/assets/sfx/" 2>/dev/null || true
+          cp "frozen-package/projects/$PROJECT_ID/qa/frozen_candidate.json" "$DEST/qa/frozen_candidate.json.downloaded"
+          cp "frozen-package/projects/$PROJECT_ID/qa/review_render_manifest.json" review_render_manifest.json
+
+      # ---- verify every asset hash against the frozen candidate (task section 17 step 5) ----
+      - name: Verify all downloaded creative file hashes match the committed frozen candidate
+        run: |
+          set -euo pipefail
+          node -e "
+            const fs = require('fs');
+            const crypto = require('crypto');
+            const dir = 'projects/$PROJECT_ID';
+            const committed = JSON.parse(fs.readFileSync(dir + '/qa/frozen_candidate.json', 'utf8'));
+            const downloaded = JSON.parse(fs.readFileSync(dir + '/qa/frozen_candidate.json.downloaded', 'utf8'));
+            const sha256 = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+            const checks = [
+              ['edit_plan_hash', dir + '/direction/edit_plan.json'],
+              ['caption_hash', dir + '/remotion/captions.json'],
+              ['audio_mix_hash', dir + '/assets/audio/final_mix.metadata.json'],
+              ['asset_registry_hash', dir + '/assets/asset_registry.json'],
+              ['final_mix_audio_hash', dir + '/assets/audio/final_mix.mp3'],
+              ['music_bed_hash', dir + '/assets/music/approved_bed.mp3']
+            ];
+            let failed = false;
+            for (const [field, file] of checks) {
+              const expected = committed[field];
+              if (!expected) continue;
+              const actual = sha256(file);
+              if (actual !== expected) { console.error('HASH MISMATCH for ' + field + ': expected ' + expected + ', got ' + actual + ' (' + file + ')'); failed = true; }
+            }
+            if (committed.edit_plan_hash !== downloaded.edit_plan_hash) { console.error('Downloaded frozen candidate package does not match the committed frozen_candidate.json (edit_plan_hash differs)'); failed = true; }
+            if (failed) process.exit(1);
+            console.log('All downloaded creative file hashes match the approved frozen candidate.');
+          "
+
+      - name: Materialize real footage from the pinned source commit (asset fetch only -- no creative selection)
+        run: node scripts/orvyq_materialize_footage.mjs --project-id="$PROJECT_ID"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install media tooling
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+
+      # Recomputes hashes from the now-placed files and confirms every one
+      # still matches the committed, human-approved frozen_candidate.json --
+      # NOT by regenerating any creative output, only by re-hashing what was
+      # downloaded and placed above.
+      - name: Verify the placed candidate still matches the approved frozen candidate
+        run: node scripts/orvyq_verify_approval.mjs --project-id="$PROJECT_ID" --stage=late
+
+      # ---- render-ready project: deterministic assembly of already-frozen inputs, not creative work (task section 17 step 6) ----
+      - name: Build render-ready project (assembly only, from the frozen edit plan/captions/asset registry)
+        run: |
+          set -euo pipefail
+          node scripts/remotion_build.mjs derive-configs --project-id="$PROJECT_ID"
+          node scripts/remotion_build.mjs build-project --project-id="$PROJECT_ID"
+
+      - name: Install Remotion dependencies and type-check
+        working-directory: projects/${{ env.PROJECT_ID }}/remotion/render_ready_project
+        run: |
+          npm ci --no-audit --no-fund
+          npx tsc --noEmit
+
+      - name: Resolve browser executable
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium-browser || command -v chromium || true)"
+          test -n "$BROWSER"
+          echo "FACTFORGE_REMOTION_BROWSER_EXECUTABLE=$BROWSER" >> "$GITHUB_ENV"
+
+      # ---- encode the SAME candidate at 1080p final quality (task section 17 step 6) ----
+      # No --frames flag: the full candidate, exactly as reviewed. Only
+      # resolution/CRF differ from the review encode.
+      - name: Render full candidate at final quality
+        working-directory: projects/${{ env.PROJECT_ID }}/remotion/render_ready_project
+        run: npx remotion render src/index.ts FactForgeVideo out/final_video.mp4 --codec=h264 --crf="$FINAL_CRF"
+
+      - name: Write final render manifest (for review/final parity verification)
+        run: |
+          set -euo pipefail
+          node -e "
+            const fs = require('fs');
+            const crypto = require('crypto');
+            const candidate = JSON.parse(fs.readFileSync('projects/$PROJECT_ID/qa/frozen_candidate.json', 'utf8'));
+            const editPlan = JSON.parse(fs.readFileSync('projects/$PROJECT_ID/direction/edit_plan.json', 'utf8'));
+            const videoPath = 'projects/$PROJECT_ID/remotion/render_ready_project/out/final_video.mp4';
+            const manifest = {
+              candidate_hash: crypto.createHash('sha256').update(fs.readFileSync('projects/$PROJECT_ID/qa/frozen_candidate.json')).digest('hex'),
+              edit_plan_hash: candidate.edit_plan_hash,
+              caption_hash: candidate.caption_hash,
+              audio_mix_hash: candidate.audio_mix_hash,
+              final_mix_audio_hash: candidate.final_mix_audio_hash || null,
+              asset_registry_hash: candidate.asset_registry_hash,
+              asset_manifest_hash: candidate.asset_manifest_hash || null,
+              total_frames: editPlan.duration_frames,
+              fps: editPlan.fps,
+              frame_range: editPlan.frame_range,
+              composition_props: { width: 1920, height: 1080 },
+              width: Number(process.env.FINAL_WIDTH), height: Number(process.env.FINAL_HEIGHT), codec: 'h264', crf: Number(process.env.FINAL_CRF),
+              profile: 'final',
+              run_id: '${{ github.run_id }}',
+              video_path: videoPath,
+              video_sha256: crypto.createHash('sha256').update(fs.readFileSync(videoPath)).digest('hex')
+            };
+            fs.writeFileSync('projects/$PROJECT_ID/qa/final_render_manifest.json', JSON.stringify(manifest, null, 2));
+            console.log(JSON.stringify(manifest, null, 2));
+          "
+
+      # ---- hard parity gate: review and final must be the same candidate (task section 15) ----
+      - name: Verify review/final parity (must fail on ANY creative-identity hash difference)
+        run: node scripts/orvyq_review_final_parity.mjs --review-manifest review_render_manifest.json --final-manifest "projects/$PROJECT_ID/qa/final_render_manifest.json" --report "projects/$PROJECT_ID/qa/review_final_parity.json"
+
+      - name: Run post-render media QA
+        run: |
+          set +e
+          node scripts/orvyq_media_qa.mjs --project-id "$PROJECT_ID" --video "projects/$PROJECT_ID/remotion/render_ready_project/out/final_video.mp4" --report "projects/$PROJECT_ID/qa/orvyq_full_media_qa.json" > media-qa.log 2>&1
+          echo $? > media-qa.status
+          cat media-qa.log
+          exit 0
+
+      - name: Copy to output
+        run: |
+          set -euo pipefail
+          mkdir -p "projects/$PROJECT_ID/output"
+          cp "projects/$PROJECT_ID/remotion/render_ready_project/out/final_video.mp4" "projects/$PROJECT_ID/output/final_video.mp4"
+          {
+            echo "Rendered at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "Workflow run: ${{ github.run_id }}"
+            echo "Approved review run: ${{ inputs.approved_review_run_id }}"
+            echo "Source commit: ${{ github.sha }}"
+          } > "projects/$PROJECT_ID/output/render_log.txt"
+
+      # MP4 uploaded regardless of media QA's result (task section 17 step 8).
+      - name: Upload final render (before/regardless of media QA result)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orvyq-final-render-${{ github.run_id }}
+          retention-days: 30
+          path: |
+            projects/${{ env.PROJECT_ID }}/output/final_video.mp4
+            projects/${{ env.PROJECT_ID }}/output/render_log.txt
+          if-no-files-found: error
+
+      - name: Upload final QA reports (separate artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orvyq-final-qa-reports-${{ github.run_id }}
+          retention-days: 30
+          path: |
+            projects/${{ env.PROJECT_ID }}/qa/*.json
+            media-qa.log
+            media-qa.status
+
+      - name: Stop when post-render media QA failed
+        run: test "$(cat media-qa.status)" = "0"
