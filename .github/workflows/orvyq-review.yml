@@ -16,15 +16,16 @@ name: ORVYQ Full-Length Candidate Review
 # render-ready project) lives only on this runner's filesystem and in the
 # artifacts uploaded at the end. Checkout happens once, at one immutable
 # source commit, and that commit never changes for the rest of the run.
+#
+# workflow_dispatch only, deliberately: this workflow renders the entire
+# candidate and is comparatively expensive/slow. "ORVYQ Candidate
+# Validation" (.github/workflows/orvyq-candidate-validation.yml) is the fast,
+# cheap gate that runs automatically on every push/PR (the same pre-render
+# pipeline plus the full QA/test suite, no render); this workflow must only
+# ever be triggered once that gate is green, never automatically alongside
+# it -- see docs/canonical-candidate-audit.md.
 on:
   workflow_dispatch:
-  pull_request:
-  push:
-    branches:
-      - "claude/orvyq-canonical-candidate-parity-bl7w0u"
-    paths-ignore:
-      - "docs/**"
-      - "**/*.md"
 
 permissions:
   contents: read
