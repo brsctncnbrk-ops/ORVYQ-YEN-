@@ -798,6 +798,17 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
     // timestamp -- should never conceptually land inside one; skip them
     // defensively anyway rather than emit an invalid graphic-typed pause
     // shot with no graphic content if a numeric edge case ever occurs.
+    // Chained trim cursor: if MORE THAN ONE pause lands inside the same
+    // enclosing shot's window (both of the film's own final two pauses land
+    // back-to-back inside the same terminal shot), each subsequent pause
+    // must continue from the PREVIOUS pause's own trim_out, not restart
+    // from the enclosing shot's trim_out every time -- otherwise two
+    // pauses sharing one enclosing shot would both read the identical
+    // trim window and register as a second, non-contiguous use of that
+    // asset (confirmed via a real CI failure: "exceeds the 2-use limit"
+    // on an asset used only twice, once per claim, because its second
+    // claim's own two trailing pauses were not chained).
+    let pauseTrimCursor = raw.trimOutSec;
     while (
       raw.kind !== "graphic" &&
       pauseCursor < pauses.length &&
@@ -806,6 +817,8 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
     ) {
       const pause = pauses[pauseCursor];
       const pauseOutputStart = raw.end + insertedSeconds;
+      const pauseTrimIn = pauseTrimCursor;
+      const pauseTrimOut = Math.round((pauseTrimIn + pause.duration_seconds) * 1000) / 1000;
       finalShots.push({
         kind: raw.kind,
         evidenceKind: raw.evidenceKind,
@@ -814,19 +827,22 @@ export async function buildFullProductionPlan(projectId = PROJECT_ID) {
         role: raw.role,
         // A footage-kind pause hold becomes its own shot immediately
         // continuing the SAME clip from exactly where the enclosing shot's
-        // trim left off (rather than extending that shot's own duration,
-        // which could push a single shot over max_shot_seconds) -- the
-        // licensed footage keeps playing under the narration pause across
-        // two contiguous shots. buildCanonicalEditPlan's source-usage count
-        // (scripts/orvyq_edit_plan.mjs) treats two contiguous same-asset
-        // shots like this as one continuous use, not two, so this never
-        // silently doubles a clip's max_uses_per_source count for what is
-        // visually a single unbroken shot.
-        ...(raw.kind === "footage" ? { asset: raw.asset, trimInSec: raw.trimOutSec, trimOutSec: Math.round((raw.trimOutSec + pause.duration_seconds) * 1000) / 1000, motion: raw.motion } : {}),
+        // trim (or the previous pause's own trim, if this is not the first
+        // pause inside this shot) left off (rather than extending that
+        // shot's own duration, which could push a single shot over
+        // max_shot_seconds) -- the licensed footage keeps playing under the
+        // narration pause(s) across contiguous shots. buildCanonicalEditPlan's
+        // source-usage count (scripts/orvyq_edit_plan.mjs) treats a whole
+        // chain of contiguous same-asset shots like this as one continuous
+        // use, not several, so this never silently inflates a clip's
+        // max_uses_per_source count for what is visually a single unbroken
+        // shot.
+        ...(raw.kind === "footage" ? { asset: raw.asset, trimInSec: pauseTrimIn, trimOutSec: pauseTrimOut, motion: raw.motion } : {}),
         outputStart: pauseOutputStart,
         outputEnd: pauseOutputStart + pause.duration_seconds,
         emphasis: pause
       });
+      pauseTrimCursor = pauseTrimOut;
       insertedSeconds += pause.duration_seconds;
       pauseCursor += 1;
     }
