@@ -95,7 +95,7 @@ export const FOOTAGE_ASSIGNMENTS = {
     // (direction/direction_plan.md's own scene_004 description) -- this
     // claim IS that introduction, and this slice is also where the claim's
     // own editorial pause lands, so it must be footage regardless.
-    0: { asset: "assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4", trimInRatio: 0.1, motion: "push", role: "context" },
+    0: { asset: "assets/footage/scene_004_52abd7f745cc24b4ecad0215.mp4", trimInRatio: 0, motion: "push", role: "context" },
     2: { asset: "assets/footage/scene_022_740741da33e14d6a45468490.mp4", trimInRatio: 0.1, motion: "push", role: "context", reuse_reason: "Reused once more, at a different trim window, in the film's closing synthesis section (CLM_020), which explicitly recaps earlier evidence rather than introducing new claims." }
   },
   CLM_005_BLACKMAIL_SCENARIO: {

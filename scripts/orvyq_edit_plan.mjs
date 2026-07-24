@@ -226,7 +226,10 @@ async function buildFullPlan(dir, projectId, blueprint) {
     const trimIn = Number(spec.trim_in_sec || 0);
     const trimOut = Number(spec.trim_out_sec || trimIn + duration);
     if (!Number.isFinite(sourceDuration) || trimIn < 0 || trimOut <= trimIn || trimOut > sourceDuration + 0.02)
-      throw new Error(`${common.shot_id} has an invalid footage trim`);
+      throw new Error(
+        `${common.shot_id} has an invalid footage trim on ${spec.asset}: trim_in=${trimIn}, trim_out=${trimOut}, ` +
+          `real source duration=${sourceDuration} -- ${trimOut > sourceDuration + 0.02 ? "trim_out overruns the clip's own real duration" : "trim_in/trim_out are not a valid non-empty range"}`
+      );
     if (Math.abs(trimOut - trimIn - duration) > 0.02) throw new Error(`full_production.shots[${index}] trim does not match timeline duration`);
     // A shot that continues the immediately preceding shot's own asset from
     // exactly where its trim left off (an editorial pause hold on the same

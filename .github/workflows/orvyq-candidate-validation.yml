@@ -88,6 +88,14 @@ jobs:
       - name: Fetch and verify official primary evidence
         run: node scripts/orvyq_fetch_primary_evidence.mjs
 
+      # Real per-clip durations from the actually-materialized footage's own
+      # provenance -- uploaded even if a later step fails, so a footage-trim
+      # failure downstream is diagnosable from this one artifact instead of
+      # guessing at real clip lengths.
+      - name: Report real footage clip durations
+        if: always()
+        run: node scripts/orvyq_footage_duration_report.mjs --project-id="$PROJECT_ID" | tee "projects/$PROJECT_ID/qa/footage_duration_report.json"
+
       # ---- 2. build edit plan (full length, no truncation) ----
       - name: Build the canonical candidate edit plan (full length, no truncation)
         run: node scripts/orvyq_edit_plan.mjs --project-id="$PROJECT_ID" --mode=full
